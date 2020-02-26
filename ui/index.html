@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <meta name="viewport" content="device-width">
+        <style type="text/css">
+            body 
+            {
+                background-color: black;
+                margin: 0;
+                padding: 0;
+            }
+
+            button 
+            {
+                border: 0;
+                padding: 0;
+            }
+
+            #container
+            {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                height: 100%;
+                max-width: 2000px;
+                max-height: 2000px;
+                margin: auto;
+                background-color: grey;
+            }   
+
+            #ImgBox 
+            {
+                order: 1;
+                background-color: white;
+                width: 100vw;
+                height: 100vh;
+                max-width: 70%;
+                max-height: 70%;
+                margin: auto;
+                border: solid 3px;
+            }
+
+            #PrevImg 
+            {
+                order: 0;
+                float: left;
+                transform: rotate(180deg);
+            }
+
+            #NextImg 
+            {
+                order: 2;
+                float: right;
+            }
+
+            #NextImg, #PrevImg
+            {
+                background-color: grey;
+            }
+        </style>
+    </head>
+
+    <body>       
+        <div id="container">
+            <button type="button" id="PrevImg"><img src="arrow.png" height="200" width="200"></button>
+            <div id="ImgBox">
+                <h2>Testing..</h2>
+            </div>
+            <button type="button" id="NextImg"><img src="arrow.png" height="200" width="200"></button>
+        </div>
+
+        <script type="text/tiscript">
+            function self.ready()
+            {
+                $(body).text = view.customMessage();
+            }
+        </script>
+    </body>
+</html>

@@ -1,8 +1,10 @@
 <html>
     <head>
         <meta name="viewport" content="device-width">
-        <style type="text/css">
-            body 
+        <title>Random Photo</title>
+
+        <style>
+ 			body 
             {
                 background-color: black;
                 margin: 0;
@@ -17,62 +19,69 @@
 
             #container
             {
-                display: flex;
-                justify-content: space-between;
-                width: 100%;
-                height: 100%;
-                max-width: 2000px;
-                max-height: 2000px;
-                margin: auto;
+				flow : horizontal;
+          		width: *;
+                height: *;
+                max-width: 2000dip;
+                max-height: 2000dip;
                 background-color: grey;
+				margin: 0 auto;
             }   
+
+			.toolbar
+			{
+				width: *;
+			}
 
             #ImgBox 
             {
-                order: 1;
                 background-color: white;
-                width: 100vw;
-                height: 100vh;
-                max-width: 70%;
-                max-height: 70%;
-                margin: auto;
+                height: 80vh;
+   				width: 50%;
+                max-height: 100vh;  
+				max-width: 2000px;   
                 border: solid 3px;
+				margin: auto;
             }
 
             #PrevImg 
             {
-                order: 0;
-                float: left;
                 transform: rotate(180deg);
             }
 
-            #NextImg 
+            #NextImg, #PrevImg, #PickFolder
             {
-                order: 2;
-                float: right;
+				height: max-content;
             }
 
-            #NextImg, #PrevImg
-            {
-                background-color: grey;
-            }
+			.arrow
+			{
+				background-color: grey;
+			}
+
+			.folder
+			{
+				background-color: black;
+			}
         </style>
     </head>
 
-    <body>       
+    <body>    
         <div id="container">
-            <button type="button" id="PrevImg"><img src="arrow.png" height="200" width="200"></button>
-            <div id="ImgBox">
+            <button type="button" id="PrevImg"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" height="200" width="200" class="arrow"></button>
+   			
+            <div id="ImgBox"> 			
+				<div id="toolbar">
+					 <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="folder"></button>
+				</div>
+
                 <h2>Testing..</h2>
             </div>
-            <button type="button" id="NextImg"><img src="arrow.png" height="200" width="200"></button>
+            <button type="button" id="NextImg"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" height="200" width="200" class="arrow"></button>
         </div>
 
         <script type="text/tiscript">
-            function self.ready()
-            {
-                $(body).text = view.customMessage();
-            }
+
         </script>
     </body>
 </html>

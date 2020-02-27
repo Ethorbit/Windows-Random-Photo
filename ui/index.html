@@ -1,4 +1,6 @@
-<html>
+<!-- Web page created by Ethan Christie -->
+
+<html onresize="centerImg()">
     <head>
         <meta name="viewport" content="device-width">
         <title>Random Photo</title>
@@ -13,36 +15,33 @@
 
             button 
             {
-                border: 0;
                 padding: 0;
             }
-
+            
             #container
             {
-				flow : horizontal;
-          		width: *;
-                height: *;
-                max-width: 2000dip;
-                max-height: 2000dip;
-                background-color: grey;
-				margin: 0 auto;
-            }   
-
-			.toolbar
-			{
-				width: *;
-			}
+                margin: auto;
+                max-width: 2000dip;  
+            }
 
             #ImgBox 
             {
-                background-color: white;
-                height: 80vh;
-   				width: 50%;
-                max-height: 100vh;  
-				max-width: 2000px;   
-                border: solid 3px;
-				margin: auto;
+   				width: *; 
+                border: solid 3dip;    
             }
+
+            #container, #Img
+            {
+                height: auto;
+                width: *;
+                max-width: 100vh;
+            }
+
+            #toolbar
+			{
+				flow: horizontal;
+				background-color: #005580;
+			}
 
             #PrevImg 
             {
@@ -52,6 +51,7 @@
             #NextImg, #PrevImg, #PickFolder
             {
 				height: max-content;
+				background-color: transparent;
             }
 
 			.arrow
@@ -61,27 +61,41 @@
 
 			.folder
 			{
-				background-color: black;
+				background-color: #005580;
 			}
         </style>
     </head>
 
     <body>    
-        <div id="container">
-            <button type="button" id="PrevImg"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" height="200" width="200" class="arrow"></button>
-   			
+        <div id="container">		
             <div id="ImgBox"> 			
 				<div id="toolbar">
 					 <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="folder"></button>
 				</div>
+                
+                <img src="G:\Pictures\debug\Jordan-19A-017_-_A_really_big_sandbox.jpg" height="500" width="500" id="Img">
 
-                <h2>Testing..</h2>
+                <!-- New Folder\nzcounterprogressbarthumbnail4.png-->
             </div>
-            <button type="button" id="NextImg"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" height="200" width="200" class="arrow"></button>
         </div>
 
         <script type="text/tiscript">
+            // Center Image Box:
+            function self.ready()
+            {
+                centerImg();
+            }
 
+            view.on("size", () => {
+                centerImg();
+            });
+
+            function centerImg()
+            {
+                var htmlHeight = view.box(#height);
+                var imgboxHeight = $(#ImgBox).box(#height);
+                $(#ImgBox).style#margin-top = (htmlHeight / 2) - imgboxHeight / 2;
+            }
         </script>
     </body>
 </html>

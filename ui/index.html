@@ -17,22 +17,30 @@
             {
                 padding: 0;
                 height: max-content;
+                cursor: pointer;
+            }
+
+            #toolbar button
+            {
+                margin-left: 10px;
             }
             
-            #container
+            .ImgOverlay
             {
-                position: relative;
-                z-index: 50;
+                position: absolute;
                 padding: 0;
                 margin: 0;
+                z-index: 50;
+                cursor: pointer;
             }
 
             #toolbar
 			{
+                cursor: default;
 				flow: horizontal;
                 width: *;
                 opacity: 0.5;
-				background-color: #005580;
+				background-color: #005580;       
 			}
 
             #FillImg
@@ -41,10 +49,12 @@
                 position: absolute;
                 top: 0;
             }
-            
-            #Info
-            {
-                direction:ltr;
+
+            #ImgMenu
+            {             
+
+                opacity: 0.5;
+                background-color: grey;
             }
 
             #PrevImg 
@@ -64,13 +74,17 @@
                 width: 5vmin;
                 max-width: 50dip;
                 min-width: 15dip;
-                padding: 4px 4px 4px 15px;
+                padding: 4px 4px 4px 5px;
 			}
         </style>
     </head>
 
     <body> 
-        <div id="container">
+        <div class="ImgOverlay" id="ImgMenu">
+
+        </div>
+        
+        <div class="ImgOverlay">
             <div id="toolbar">
                 <button type="button" id="Settings"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\gear.png" alt="settings" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="tbImg"></button>
@@ -81,7 +95,6 @@
         <div id="FillImg">
         </div>
            
-
         <script type="text/tiscript">
             var htmlHeight = 0.0, htmlWidth = 0.0;
 
@@ -114,10 +127,17 @@
                 gfx.drawImage(initialImg, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
 
                 // Match container's size and position to the image:
-                $(#container).style["width"] = (imgWidth * imgRatio);
-                $(#container).style["height"] = (imgHeight * imgRatio);
-                $(#container).style["margin-top"] = centerHeight;
-                $(#container).style["margin-left"] = centerWidth;
+                for (var (k,v) in $$(.ImgOverlay))
+                {
+                    v.style["width"] = (imgWidth * imgRatio);
+                    v.style["height"] = (imgHeight * imgRatio);
+                    v.style["margin-top"] = centerHeight;
+                    v.style["margin-left"] = centerWidth;
+                }
+        
+                // Move toolbar item to the right of toolbar:
+                $(#Info).style["margin-left"] = $(#toolbar).style#width;
+                $(#Info).style["margin-right"] = 5;
             }
 
             $(#FillImg).paintContent = paint;

@@ -10,6 +10,7 @@
                 background-color: black;
                 margin: 0;
                 padding: 0;
+                overflow: hidden;
             }
 
             button 
@@ -18,21 +19,28 @@
                 height: max-content;
             }
             
-            #container2
+            #container
             {
-                position: absolute;
-                top: 50%;
-                bottom: 50%;
+                position: relative;
+                z-index: 50;
+                padding: 0;
+                margin: 0;
             }
 
             #toolbar
 			{
-                position: absolute;
 				flow: horizontal;
                 width: *;
                 opacity: 0.5;
 				background-color: #005580;
 			}
+
+            #FillImg
+            {  
+                display: inline-block;
+                position: absolute;
+                top: 0;
+            }
             
             #Info
             {
@@ -62,23 +70,23 @@
     </head>
 
     <body> 
-        <div id="toolbar">
-            <button type="button" id="Settings"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\gear.png" alt="settings" height="50" width="50" class="tbImg"></button>
-            <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="tbImg"></button>
-            <button type="button" id="Info"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.png" alt="info" height="50" width="50" class="tbImg"></button>
-        </div>   
+        <div id="container">
+            <div id="toolbar">
+                <button type="button" id="Settings"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\gear.png" alt="settings" height="50" width="50" class="tbImg"></button>
+                <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="tbImg"></button>
+                <button type="button" id="Info"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.png" alt="info" height="50" width="50" class="tbImg"></button>
+            </div>   
+        </div>
         
         <div id="FillImg">
         </div>
            
 
         <script type="text/tiscript">
-            view.on("ready", () => 
-            {
-                moveToolbar();
-            });
-            
-            // Handle image rendering/size/positioning:
+            var htmlHeight = 0.0, htmlWidth = 0.0;
+
+            //////////////////////////////////////////////////////////////
+            // Handle image rendering/size/positioning:   
             var initialImg = self.loadImage("G:/Pictures/debug/Jordan-19A-017_-_A_really_big_sandbox.jpg");
             
             function GetRatio(htmlHeight, htmlWidth, imgHeight, imgWidth)
@@ -95,30 +103,25 @@
                 return ratio * 1.0;
             }
 
-            var (imgWidth, imgHeight) = 0.0;
             function paint(gfx)
             {
-                (imgWidth, imgHeight) = initialImg.size();
-                var htmlHeight = view.box(#height);
-                var htmlWidth = view.box(#width);
-                var ratio = GetRatio(htmlHeight, htmlWidth - 50, imgHeight, imgWidth);
-                var centerWidth = (htmlWidth / 2.0) - (imgWidth * ratio) / 2.0;
-                var centerHeight = (htmlHeight / 2.0) - (imgHeight * ratio) / 2.0;
-                gfx.drawImage(initialImg, centerWidth - 25, centerHeight, imgWidth * ratio, imgHeight * ratio);
+                var (imgWidth, imgHeight) = initialImg.size();  
+                htmlHeight = view.box(#height);
+                htmlWidth = view.box(#width);
+                var imgRatio = GetRatio(htmlHeight, htmlWidth - 50, imgHeight, imgWidth);
+                var centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0) - 25;
+                var centerHeight = (htmlHeight / 2.0) - (imgHeight * imgRatio) / 2.0;
+                gfx.drawImage(initialImg, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
+
+                // Match container's size and position to the image:
+                $(#container).style["width"] = (imgWidth * imgRatio);
+                $(#container).style["height"] = (imgHeight * imgRatio);
+                $(#container).style["margin-top"] = centerHeight;
+                $(#container).style["margin-left"] = centerWidth;
             }
 
             $(#FillImg).paintContent = paint;
-
-            // Position toolbar on top of image:
-            view.on("size", () => 
-            {
-                moveToolbar();
-            });
-
-            function moveToolbar()
-            {  
-               // $(#FillImg).style#background-image = "url(G:/Pictures/debug/Jordan-19A-017_-_A_really_big_sandbox.jpg)";
-            }
+            //////////////////////////////////////////////////////////////
         </script>
     </body>
 </html>

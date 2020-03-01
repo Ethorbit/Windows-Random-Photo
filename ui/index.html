@@ -41,7 +41,7 @@
 				flow: horizontal;
                 width: *;
                 opacity: 0.5;
-				background-color: #005580;       
+				background-color: #005580;      
 			}
 
             #FillImg
@@ -49,6 +49,7 @@
                 display: inline-block;
                 position: absolute;
                 top: 0;
+                z-index: -100;
             }
 
             #ImgMenu
@@ -76,15 +77,22 @@
                 z-index: 200;
             }
 
-            #PrevImg 
+            #PrevImgImg
             {
-                transform: rotate(180deg);
+                transform: scale(-1, 1);
             }
 
-			.arrow
-			{
-				background-color: grey;
-			}
+            #NextImgImg
+            {
+                right: 5;
+            }
+
+            .arrow
+            {
+                height: auto;
+                width: 15vmin;
+                position: absolute;
+            }
 
 			.tbImg
 			{
@@ -101,6 +109,9 @@
     <body> 
         <div class="ImgOverlay" id="ImgMenu">
             <button type="button" id="CancelMenu"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\x.png" alt="cancel" height="80" width="80" class="ImgMenuBtn"></button>
+            
+            <button type="button"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="previous img" height="50" width="50" class="arrow" id="PrevImgImg"></button>
+            <button type="button"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="next img" height="50" width="50" class="arrow" id="NextImgImg"></button>
         </div>
         
         <div class="ImgOverlay">
@@ -115,13 +126,38 @@
         </div>
            
         <script type="text/tiscript">
-            var htmlHeight = 0.0, htmlWidth = 0.0;
-
             function self.ready()
             {
                 $(#ImgMenu).style["display"] = "none";
             }
+            /////////////////////////////////////
+            // Global variables:
+            var htmlHeight = 0.0, htmlWidth = 0.0;
+            var onToolbar = false;
+            var onBtn = false;
+            
+            $(#toolbar).on("mouseenter", () =>
+            {
+                onToolbar = true;
+            });
 
+            $(#toolbar).on("mouseleave", () =>
+            {
+                onToolbar = false;
+            });
+
+            for (var (k, v) in $$(button))
+            {
+                v.on("mouseenter", () => 
+                {
+                    onBtn = true;
+                });
+
+                v.on("mouseleave", () => 
+                {
+                    onBtn = false;
+                });
+            }
             //////////////////////////////////////////////////////////////
             // Handle image rendering/size/positioning:   
             var initialImg = self.loadImage("G:/Pictures/debug/Jordan-19A-017_-_A_really_big_sandbox.jpg");
@@ -158,7 +194,12 @@
                     v.style["margin-top"] = centerHeight;
                     v.style["margin-left"] = centerWidth;
                 }
-        
+
+                // Place image arrows at center of image on Y axis:
+                var parentHeight = $(.ImgOverlay).style["height"];
+                $(#NextImgImg).style["top"] = parentHeight / 2;
+                $(#PrevImgImg).style["top"] = parentHeight / 2;
+
                 // Move toolbar item to the right of toolbar:
                 $(#Info).style["margin-left"] = $(#toolbar).style#width;
                 $(#Info).style["margin-right"] = 5;
@@ -167,8 +208,6 @@
             $(#FillImg).paintContent = paint;
             //////////////////////////////////////////////////////////////
             // Add image menu functionality:
-            var showImgMenu = false;
-            
             $(#CancelMenu).on("click", () =>
             {
                 $(#ImgMenu).style["display"] = "none";
@@ -177,8 +216,11 @@
             
             $$(.ImgOverlay)[1].on("click", () =>
             {   
-                $(#ImgMenu).style["display"] = "block";
-                $(#toolbar).style["margin-top"] = -500;      
+                if (!onBtn && !onToolbar)
+                {
+                    $(#ImgMenu).style["display"] = "block";
+                    $(#toolbar).style["margin-top"] = -500;  
+                }   
             });
             //////////////////////////////////////////////////////////////
         </script>

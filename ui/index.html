@@ -55,7 +55,7 @@
             #ImgMenu
             {             
                 opacity: 0.5;
-                background-color: grey;
+                background-color: transparent;
                 z-index: 1;
                 cursor: default;
             }
@@ -64,7 +64,8 @@
             {
                 position: absolute;
                 right: 0;
-                padding: 5;
+                top: 0;
+                padding: 5dip;
                 width: 10vmin;
                 height: auto;
                 max-width: 80dip;
@@ -108,8 +109,6 @@
 
     <body> 
         <div class="ImgOverlay" id="ImgMenu">
-            <button type="button" id="CancelMenu"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\x.png" alt="cancel" height="80" width="80" class="ImgMenuBtn"></button>
-            
             <button type="button"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="previous img" height="50" width="50" class="arrow" id="PrevImgImg"></button>
             <button type="button"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="next img" height="50" width="50" class="arrow" id="NextImgImg"></button>
         </div>
@@ -148,16 +147,17 @@
 
             for (var (k, v) in $$(button))
             {
-                v.on("mouseenter", () => 
+                 v.on("mouseenter", () => 
                 {
                     onBtn = true;
                 });
-
+                
                 v.on("mouseleave", () => 
                 {
                     onBtn = false;
                 });
             }
+
             //////////////////////////////////////////////////////////////
             // Handle image rendering/size/positioning:   
             var initialImg = self.loadImage("G:/Pictures/debug/Jordan-19A-017_-_A_really_big_sandbox.jpg");
@@ -208,20 +208,23 @@
             $(#FillImg).paintContent = paint;
             //////////////////////////////////////////////////////////////
             // Add image menu functionality:
-            $(#CancelMenu).on("click", () =>
+            var ShowOverlay = false;
+
+            for (var (k, v) in $$(.ImgOverlay))
             {
-                $(#ImgMenu).style["display"] = "none";
-                $(#toolbar).style["margin-top"] = 0;
-            });
-            
-            $$(.ImgOverlay)[1].on("click", () =>
-            {   
-                if (!onBtn && !onToolbar)
-                {
-                    $(#ImgMenu).style["display"] = "block";
-                    $(#toolbar).style["margin-top"] = -500;  
-                }   
-            });
+                v.on("click", () =>
+                {   
+                    ShowOverlay = !ShowOverlay;
+                   
+                    if (!onToolbar && !onBtn)
+                    {
+                        if (ShowOverlay)
+                            $(#ImgMenu).style["display"] = "block";
+                        else
+                            $(#ImgMenu).style["display"] = "none";
+                    }
+                });
+            }
             //////////////////////////////////////////////////////////////
         </script>
     </body>

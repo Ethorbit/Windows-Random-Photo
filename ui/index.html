@@ -16,6 +16,7 @@
             button 
             {
                 padding: 0;
+                border-width: 0;
                 height: max-content;
                 cursor: pointer;
                 z-index: 100;
@@ -181,8 +182,8 @@
                 var (imgWidth, imgHeight) = initialImg.size();  
                 htmlHeight = view.box(#height);
                 htmlWidth = view.box(#width);
-                var imgRatio = GetRatio(htmlHeight, htmlWidth - 50, imgHeight, imgWidth);
-                var centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0) - 25;
+                var imgRatio = GetRatio(htmlHeight, htmlWidth, imgHeight, imgWidth);
+                var centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0);
                 var centerHeight = (htmlHeight / 2.0) - (imgHeight * imgRatio) / 2.0;
                 gfx.drawImage(initialImg, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
 
@@ -206,25 +207,22 @@
             }
 
             $(#FillImg).paintContent = paint;
+
             //////////////////////////////////////////////////////////////
             // Add image menu functionality:
-            var ShowOverlay = false;
+            $$(.ImgOverlay)[1].on("mousemove", () =>
+            {  
+                $(#ImgMenu).style["display"] = "block";      
+            });
 
-            for (var (k, v) in $$(.ImgOverlay))
+            $$(.ImgOverlay)[1].on("mousestop", () => 
             {
-                v.on("click", () =>
-                {   
-                    ShowOverlay = !ShowOverlay;
-                   
-                    if (!onToolbar && !onBtn)
-                    {
-                        if (ShowOverlay)
-                            $(#ImgMenu).style["display"] = "block";
-                        else
-                            $(#ImgMenu).style["display"] = "none";
-                    }
-                });
-            }
+                self.timer(800ms, () => 
+                {
+                    $(#ImgMenu).style["display"] = "none";
+                    return false;
+                });      
+            });
             //////////////////////////////////////////////////////////////
         </script>
     </body>

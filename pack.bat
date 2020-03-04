@@ -1,2 +1,3 @@
 packfolder.exe ui resources.cpp -v "resources"
-pause
+cd Debug
+"Random Photo.exe"

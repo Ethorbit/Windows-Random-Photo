@@ -1,4 +1,9 @@
 #include "main.h"
+#include <sciter-x.h>
+#include <sciter-x-window.hpp>
+#include <sciter-win-main.cpp>
+#include "resources.cpp"
+#include "stdafx.h"
 
 class MainWindow : public sciter::window
 {
@@ -6,11 +11,11 @@ public:
 	MainWindow() :
 		window
 		(
-			SW_TITLEBAR |
-			SW_RESIZEABLE |
 			SW_CONTROLS |
+			SW_ENABLE_DEBUG |
+			SW_TITLEBAR |
 			SW_MAIN |
-			SW_ENABLE_DEBUG,
+			SW_RESIZEABLE,
 			{ 0, 0, 500, 500 }
 		){};
 
@@ -43,16 +48,15 @@ int uimain(std::function<int()> run)
 	aux::asset_ptr<MainWindow> mainWin = new MainWindow;
 	mainWin->load(L"this://app/index.html");
 	mainWin->expand();
-
 	sciter::dom::element root = mainWin->get_root();
 	HWND wnd = mainWin->get_hwnd();
 
-	//BEHAVIOR_EVENT_PARAMS params;
-	//params.cmd = CUSTOM;
-	//params.he = root;
-	//params.heTarget = root;
-	//params.name = L"mousestop";
-	//root.fire_event(params, false);
+	BEHAVIOR_EVENT_PARAMS params;
+	params.cmd = CUSTOM;
+	params.he = root;
+	params.heTarget = root;
+	params.name = L"mousestop";
+	root.fire_event(params, false);
 	
 	return run();
 }

@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="viewport" content="device-width">
-        <title>Random Photo</title>
+        <title>Random Photo - By Ethorbit</title>
         <style>
  			body 
             {
@@ -215,14 +215,13 @@
                 $(#ImgMenu).style["display"] = "block";      
             });
 
-            $$(.ImgOverlay)[1].on("mousestop", () => 
+            event mousestop
             {
-                self.timer(800ms, () => 
+                self.timer(300ms, () => 
                 {
                     $(#ImgMenu).style["display"] = "none";
-                    return false;
-                });      
-            });
+                })
+            }
             //////////////////////////////////////////////////////////////
         </script>
     </body>

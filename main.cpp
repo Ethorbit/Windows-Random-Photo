@@ -1,9 +1,10 @@
-#include "main.h"
 #include <sciter-x.h>
 #include <sciter-x-window.hpp>
 #include <sciter-win-main.cpp>
 #include "resources.cpp"
-#include "stdafx.h"
+#include <thread>
+
+static sciter::dom::element root;
 
 class MainWindow : public sciter::window
 {
@@ -31,6 +32,53 @@ public:
 	}
 }; 
 
+class EventHandler : public sciter::event_handler
+{
+public:
+	EventHandler() 
+	{
+		m_bCheckingCursor = false;
+	};
+
+	bool handle_mouse(HELEMENT he, MOUSE_PARAMS& params)
+	{ 
+		if (params.cmd == MOUSE_MOVE)
+		{
+			if (!m_bCheckingCursor)
+			{
+				m_bCheckingCursor = true;
+				POINT prevPoint{ 0 };
+				GetCursorPos(&prevPoint);
+				auto checkCursor = [prevPoint]()
+				{
+					Sleep(200);
+					POINT nextPoint{ 0 };
+					GetCursorPos(&nextPoint);
+
+					if (prevPoint.x == nextPoint.x && prevPoint.y == nextPoint.y)
+					{
+						BEHAVIOR_EVENT_PARAMS params{ 0 };
+						params.cmd = CUSTOM;
+						params.he = root;
+						params.heTarget = root;
+						params.name = L"mousestop";
+						root.fire_event(params, true);
+					}
+				};
+
+				std::thread t(checkCursor);
+				t.detach();
+				return false;
+			}
+		}
+		m_bCheckingCursor = false;
+		return false;
+	}
+
+private:
+	bool m_bCheckingCursor;
+};
+
 int uimain(std::function<int()> run)
 {
 	SciterSetOption
@@ -48,15 +96,11 @@ int uimain(std::function<int()> run)
 	aux::asset_ptr<MainWindow> mainWin = new MainWindow;
 	mainWin->load(L"this://app/index.html");
 	mainWin->expand();
-	sciter::dom::element root = mainWin->get_root();
-	HWND wnd = mainWin->get_hwnd();
-
-	BEHAVIOR_EVENT_PARAMS params;
-	params.cmd = CUSTOM;
-	params.he = root;
-	params.heTarget = root;
-	params.name = L"mousestop";
-	root.fire_event(params, false);
 	
+	root = mainWin->get_root();
+	HWND wnd = mainWin->get_hwnd();
+	EventHandler eh;
+	root.attach_event_handler(&eh);
+
 	return run();
 }

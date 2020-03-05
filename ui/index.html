@@ -13,7 +13,7 @@
                 overflow: hidden;
             }
 
-            button 
+            button
             {
                 padding: 0;
                 border-width: 0;
@@ -27,13 +27,12 @@
                 margin-left: 10px;
             }
             
-            .ImgOverlay
+            #ImgOverlay
             {
                 position: absolute;
                 padding: 0;
                 margin: 0;
-                z-index: 1;
-                cursor: pointer;
+                z-index: 50;
             }
 
             #toolbar
@@ -53,25 +52,9 @@
                 z-index: -100;
             }
 
-            #ImgMenu
-            {             
-                opacity: 0.5;
-                background-color: transparent;
-                z-index: 1;
-                cursor: default;
-            }
-
-            .ImgMenuBtn
+            #ImgMenu * 
             {
-                position: absolute;
-                right: 0;
-                top: 0;
-                padding: 5dip;
-                width: 10vmin;
-                height: auto;
-                max-width: 80dip;
-                min-width: 15dip;
-                z-index: 200;
+                opacity: 0.6;
             }
 
             #CancelMenu
@@ -86,7 +69,7 @@
 
             #NextImgImg
             {
-                right: 5;
+                right: 2;
             }
 
             .arrow
@@ -108,18 +91,18 @@
         </style>
     </head>
 
-    <body> 
-        <div class="ImgOverlay" id="ImgMenu">
-            <button type="button"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="previous img" height="50" width="50" class="arrow" id="PrevImgImg"></button>
-            <button type="button"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="next img" height="50" width="50" class="arrow" id="NextImgImg"></button>
-        </div>
-        
-        <div class="ImgOverlay">
+    <body>   
+        <div id="ImgOverlay">
             <div id="toolbar">
                 <button type="button" id="Settings"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\gear.png" alt="settings" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="Info"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.png" alt="info" height="50" width="50" class="tbImg"></button>
             </div>   
+
+            <div id="ImgMenu">
+                <button type="button" class="ImgMenuBtn"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="previous img" height="50" width="50" class="arrow" id="PrevImgImg"></button>
+                <button type="button" class="ImgMenuBtn"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="next img" height="50" width="50" class="arrow" id="NextImgImg"></button>
+            </div>
         </div>
         
         <div id="FillImg">
@@ -128,8 +111,9 @@
         <script type="text/tiscript">
             function self.ready()
             {
-                $(#ImgMenu).style["display"] = "none";
+                $(#ImgMenu).style["display"] = "none";     
             }
+            
             /////////////////////////////////////
             // Global variables:
             var htmlHeight = 0.0, htmlWidth = 0.0;
@@ -148,15 +132,18 @@
 
             for (var (k, v) in $$(button))
             {
-                 v.on("mouseenter", () => 
+                if (v.parent != $(#ImgMenu))
                 {
-                    onBtn = true;
-                });
-                
-                v.on("mouseleave", () => 
-                {
-                    onBtn = false;
-                });
+                    v.on("mouseenter", () => 
+                    {
+                        onBtn = true;
+                    });
+                    
+                    v.on("mouseleave", () => 
+                    {
+                        onBtn = false;
+                    });
+                }
             }
 
             //////////////////////////////////////////////////////////////
@@ -188,16 +175,13 @@
                 gfx.drawImage(initialImg, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
 
                 // Match container's size and position to the image:
-                for (var (k,v) in $$(.ImgOverlay))
-                {
-                    v.style["width"] = (imgWidth * imgRatio);
-                    v.style["height"] = (imgHeight * imgRatio);
-                    v.style["margin-top"] = centerHeight;
-                    v.style["margin-left"] = centerWidth;
-                }
+                $(#ImgOverlay).style["width"] = (imgWidth * imgRatio);
+                $(#ImgOverlay).style["height"] = (imgHeight * imgRatio);
+                $(#ImgOverlay).style["margin-top"] = centerHeight;
+                $(#ImgOverlay).style["margin-left"] = centerWidth;
 
                 // Place image arrows at center of image on Y axis:
-                var parentHeight = $(.ImgOverlay).style["height"];
+                var parentHeight = $(#ImgOverlay).style["height"];
                 $(#NextImgImg).style["top"] = parentHeight / 2;
                 $(#PrevImgImg).style["top"] = parentHeight / 2;
 
@@ -207,20 +191,43 @@
             }
 
             $(#FillImg).paintContent = paint;
-
             //////////////////////////////////////////////////////////////
             // Add image menu functionality:
-            $$(.ImgOverlay)[1].on("mousemove", () =>
+            var onImgMenuBtn = false;
+
+            for (var (k,v) in $$(.ImgMenuBtn))
+            {
+                v.on("mouseenter", () => 
+                {
+                    onImgMenuBtn = true;
+                })
+
+                v.on("mouseleave", () => 
+                {
+                    onImgMenuBtn = false;
+                })
+            }
+
+            $(#ImgOverlay).on("mousemove", () =>
             {  
-                $(#ImgMenu).style["display"] = "block";      
+                if (!onToolbar)
+                    $(#ImgMenu).style["display"] = "block";      
+            });
+
+            $(#ImgOverlay).on("mouseleave", () =>
+            {
+                HideArrows();
             });
 
             event mousestop
             {
-                self.timer(300ms, () => 
-                {
+                HideArrows();
+            }
+
+            function HideArrows()
+            {
+                if (!onImgMenuBtn)
                     $(#ImgMenu).style["display"] = "none";
-                })
             }
             //////////////////////////////////////////////////////////////
         </script>

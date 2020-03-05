@@ -51,7 +51,7 @@ public:
 				GetCursorPos(&prevPoint);
 				auto checkCursor = [prevPoint]()
 				{
-					Sleep(200);
+					Sleep(800);
 					POINT nextPoint{ 0 };
 					GetCursorPos(&nextPoint);
 
@@ -68,10 +68,10 @@ public:
 
 				std::thread t(checkCursor);
 				t.detach();
+				m_bCheckingCursor = false;
 				return false;
 			}
 		}
-		m_bCheckingCursor = false;
 		return false;
 	}
 
@@ -95,10 +95,9 @@ int uimain(std::function<int()> run)
 	
 	aux::asset_ptr<MainWindow> mainWin = new MainWindow;
 	mainWin->load(L"this://app/index.html");
-	mainWin->expand();
-	
+	mainWin->expand();	
 	root = mainWin->get_root();
-	HWND wnd = mainWin->get_hwnd();
+
 	EventHandler eh;
 	root.attach_event_handler(&eh);
 

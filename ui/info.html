@@ -1,0 +1,134 @@
+<html>
+    <head>
+        <title>Info</title>
+        <style>
+            html 
+            {
+                margin: 0;
+                background-color: transparent;
+                overflow: hidden;
+            }
+
+            h1 
+            {
+                text-align: center;
+            }
+
+            h3
+            {
+                font-weight: normal;
+            }
+
+            #container
+            {
+                margin: auto;
+                text-align: center;
+                background-color: white;
+                line-height: 35dip;
+                padding: 5px;
+                border: black solid 10px;
+                border-radius: 20dip;
+                height: 100vh;
+                width: *;
+                max-height: 500dip;
+                max-width: 1000dip;
+                min-width: 520dip;
+            }
+
+            span
+            {
+                color: rgb(0, 119, 255);
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <h1>Info</h1>
+            <hr>
+            <h3>
+                Random Photo is an application designed for viewing photos from a folder in a random order
+                <br>
+                and was made using the <span href="https://sciter.com/">Sciter library</span>.
+                <br>
+                <br>
+                <br>
+                Random Photo was developed by Ethorbit (Ethan Christie), the project began on February 25th 2020.
+                <br>
+                It is open source and the repository can be found <span href="https://github.com/Ethorbit/RandomPhoto-PC">here</span>.
+            </h3>
+    
+            <hr>
+            <h1>Support the developer</h1>
+            <h3>
+                Random Photo is free and will <b>never</b> cost money, so if you would like to support the developer you can make a donation <span href="https://www.paypal.me/Ethorbit">here</span>!
+            </h3>
+        </div>
+
+        <script type="text/tiscript">
+        ///////////////////////////////////////////////////////////
+        // Handle small sized window
+            const maxLineHeight = "35dip";
+            const h3FontSize = "13dip";
+
+            function self.ready()
+            {
+                handleSmallWindow();
+            }
+
+            view.on("size", () =>
+            {        
+                handleSmallWindow();
+            });
+
+            function handleSmallWindow()
+            {
+                var container = $(#container);
+                var conWidth = container.box(#width);
+                if (conWidth <= 881)
+                {
+                    for (var (k,v) in $$(h1))
+                    {
+                        v.style["font-size"] = "4vmin";
+                    }
+
+                    for (var (k,v) in $$(h3))
+                    {
+                        v.style["font-size"] = "2vmin";
+                        v.style["font-weight"] = "bold";
+                    }
+
+                    container.style["line-height"] = "5vmin";
+                    self.style["overflow"] = "auto";
+                }
+                else
+                {
+                    for (var (k,v) in $$(h3))
+                    {
+                        v.style["font-size"] = h3FontSize;
+                        v.style["font-weight"] = "normal";
+                    }
+
+                    self.style["overflow"] = "hidden";
+                }
+            }
+        //////////////////////////////////////////////////////////
+        // Handle URLs (in default browser):
+
+            $$(span)[0].on("click", () => 
+            {
+                Sciter.launch($$(span)[0].attributes["href"]);
+            });
+
+            $$(span)[1].on("click", () => 
+            {
+                Sciter.launch($$(span)[1].attributes["href"]);
+            });
+
+            $$(span)[2].on("click", () => 
+            {
+                Sciter.launch($$(span)[2].attributes["href"]);
+            });
+        </script>
+    </body>
+</html>

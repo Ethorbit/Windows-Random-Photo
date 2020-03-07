@@ -1,0 +1,41 @@
+#InfoMenu h3
+{
+    font-weight: normal;
+}
+
+#ImgOverlay #InfoMenu #container
+{
+    text-align: center;
+    background-color: white;
+    line-height: 35dip;
+    padding: 8dip;
+    border: black solid 10dip;
+    border-radius: 20dip;
+    font-size: 1vw;
+    text-shadow: grey 0 0 1dip;
+}
+
+#InfoMenu span
+{
+    color: rgb(0, 119, 255);
+    cursor: pointer;
+}
+
+@media window-size == "max" 
+{
+    #InfoMenu #container
+    {
+        font-size: 18dip;
+    }
+}
+
+@media window-size == "min"
+{
+    #InfoMenu #container
+    {
+        font-size: 9dip;
+        margin: 0;
+        line-height: 20dip;
+        border: black solid 5dip;
+    }
+}

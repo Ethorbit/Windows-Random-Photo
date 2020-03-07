@@ -3,100 +3,41 @@
 <html>
     <head>
         <title>Random Photo - By Ethorbit</title>
-        <style>
- 			body 
-            {
-                background-color: black;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-            }
-
-            button
-            {
-                padding: 0;
-                border-width: 0;
-                height: max-content;
-                cursor: pointer;
-                z-index: 100;
-            }
-
-            #toolbar button
-            {
-                margin-left: 10px;
-            }
-            
-            #ImgOverlay
-            {
-                position: absolute;
-                padding: 0;
-                margin: 0;
-                z-index: 50;
-            }
-
-            #toolbar
-			{
-                cursor: default;
-				flow: horizontal;
-                width: *;
-                opacity: 0.5;
-				background-color: #005580;      
-			}
-
-            #FillImg
-            {  
-                display: inline-block;
-                position: absolute;
-                top: 0;
-                z-index: -100;
-            }
-
-            #ImgMenu * 
-            {
-                opacity: 0.6;
-            }
-
-            #CancelMenu
-            {
-                z-index: 200;
-            }
-
-            #PrevImgImg
-            {
-                transform: scale(-1, 1);
-            }
-
-            #NextImgImg
-            {
-                right: 2;
-            }
-
-            .arrow
-            {
-                height: auto;
-                width: 15vmin;
-                position: absolute;
-            }
-
-			.tbImg
-			{
-				background-color: #005580;
-                height: auto;
-                width: 5vmin;
-                max-width: 50dip;
-                min-width: 15dip;
-                padding: 4px 4px 4px 5px;
-			}
-        </style>
+        <link rel="stylesheet" type="text/css" href="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\index.css">
+        <link rel="stylesheet" type="text/css" href="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.css">
     </head>
 
     <body>   
         <div id="ImgOverlay">
-            <div id="toolbar">
-                <button type="button" id="Settings"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\gear.png" alt="settings" height="50" width="50" class="tbImg"></button>
-                <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="tbImg"></button>
-                <button type="button" id="Info"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.png" alt="info" height="50" width="50" class="tbImg"></button>
-            </div>   
+        <div id="toolbar">
+            <button type="button" id="Settings"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\gear.png" alt="settings" height="50" width="50" class="tbImg"></button>
+            <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="tbImg"></button>
+            <button type="button" id="Info"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.png" alt="info" height="50" width="50" class="tbImg"></button>
+        </div> 
+        
+        <div id="InfoMenu" class="BtnMenu">
+                <div id="container">
+                    <h1>Info</h1>
+                    <hr>
+                    <h3>
+                        Random Photo is an application designed for viewing photos from a folder in a random order
+                        <br>
+                        and was made using the <span href="https://sciter.com/">Sciter library</span>.
+                        <br>
+                        <br>
+                        <br>
+                        Random Photo was developed by Ethorbit (Ethan Christie), the project began on February 25th 2020.
+                        <br>
+                        It is open source and the repository can be found <span href="https://github.com/Ethorbit/RandomPhoto-PC">here</span>.
+                    </h3>
+            
+                    <hr>
+                    <h1>Support the developer</h1>
+                    <h3>
+                        Random Photo is free and will <b>never</b> cost money, so if you would like to support the developer you can make a donation <span href="https://www.paypal.me/Ethorbit">here</span>!
+                    </h3>
+                </div>
+            </div>
 
             <div id="ImgMenu">
                 <button type="button" class="ImgMenuBtn"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="previous img" height="50" width="50" class="arrow" id="PrevImgImg"></button>
@@ -106,13 +47,13 @@
         
         <div id="FillImg">
         </div>
-           
+
         <script type="text/tiscript">
             function self.ready()
             {
                 $(#ImgMenu).style["display"] = "none";     
             }
-            
+        
             /////////////////////////////////////
             // Global variables:
             var htmlHeight = 0.0, htmlWidth = 0.0;
@@ -163,9 +104,10 @@
                 return ratio * 1.0;
             }
 
+            var (imgWidth, imgHeight) = 0.0;
             function paint(gfx)
             {
-                var (imgWidth, imgHeight) = initialImg.size();  
+                (imgWidth, imgHeight) = initialImg.size();  
                 htmlHeight = view.box(#height);
                 htmlWidth = view.box(#width);
                 var imgRatio = GetRatio(htmlHeight, htmlWidth, imgHeight, imgWidth);
@@ -187,6 +129,14 @@
                 // Move toolbar item to the right of toolbar:
                 $(#Info).style["margin-left"] = $(#toolbar).style#width;
                 $(#Info).style["margin-right"] = 5;
+
+                // Fit all button menus inside image overlay:    
+                $(#InfoMenu).style["height"] = $(#InfoMenu).$(#container).box(#height);  
+                
+                if ($(#InfoMenu).$(#container).box(#height) < $(#ImgOverlay).box(#height))
+                {
+                    $(#InfoMenu).$(#container).style["height"] = $(#ImgOverlay).box(#height);         
+                }
             }
 
             $(#FillImg).paintContent = paint;
@@ -229,6 +179,22 @@
                     $(#ImgMenu).style["display"] = "none";
             }
             //////////////////////////////////////////////////////////////
+            // Handle button popups:
+            $(#Info).on("click", () => 
+            {
+                // self.popup($(popup#InfoMenu), 0);
+
+            });
+            //////////////////////////////////////////////////////////
+            // Handle links (in default browser):
+            for (var v in $$(span))
+            {
+                var theElement = v; // The inside of the event won't have access to 'v' so use this variable instead
+                v.on("click", () =>
+                {
+                    Sciter.launch(theElement.attributes["href"]);
+                });
+            }
         </script>
     </body>
 </html>

@@ -1,0 +1,92 @@
+body 
+{
+    background-color: black;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+button
+{
+    padding: 0;
+    border-width: 0;
+    height: max-content;
+    cursor: pointer;
+    z-index: 100;
+}
+
+#toolbar button
+{
+    margin-left: 10px;
+}
+
+#ImgOverlay
+{
+    overflow: auto;
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    z-index: 50;
+}
+
+#toolbar
+{
+    cursor: default;
+    flow: horizontal;
+    width: *;
+    opacity: 0.5;
+    background-color: #005580; 
+    z-index: 300;     
+}
+
+#FillImg
+{  
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    z-index: -100;
+}
+
+#ImgMenu * 
+{
+    opacity: 0.6;
+}
+
+#CancelMenu
+{
+    z-index: 200;
+}
+
+#PrevImgImg
+{
+    transform: scale(-1, 1);
+}
+
+#NextImgImg
+{
+    right: 2;
+}
+
+.arrow
+{
+    height: auto;
+    width: 15vmin;
+    position: absolute;
+}
+
+.tbImg
+{
+    background-color: #005580;
+    height: auto;
+    width: 5vmin;
+    max-width: 50dip;
+    min-width: 15dip;
+    padding: 4px 4px 4px 5px;
+}
+
+.BtnMenu
+{
+    z-index: 200;
+    margin: 5dip auto;
+    height: 0;
+}

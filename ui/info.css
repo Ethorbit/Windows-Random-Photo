@@ -11,7 +11,7 @@
     padding: 8dip;
     border: black solid 10dip;
     border-radius: 20dip;
-    font-size: 1vw;
+    font-size: 2vmin;
     text-shadow: grey 0 0 1dip;
 }
 
@@ -21,17 +21,22 @@
     cursor: pointer;
 }
 
-@media window-size == "max" 
+@media window-percent >= 65.0 
 {
-    #InfoMenu #container
+    #ImgOverlay #InfoMenu #container
     {
         font-size: 18dip;
     }
+
+    #ImgOverlay #InfoMenu #dev
+    {
+        margin-top: 10%;
+    }
 }
 
-@media window-size == "min"
+@media window-percent <= 50.0
 {
-    #InfoMenu #container
+    #ImgOverlay #InfoMenu #container
     {
         font-size: 9dip;
         margin: 0;

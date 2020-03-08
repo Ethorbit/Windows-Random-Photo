@@ -1,3 +1,5 @@
+/* CSS by Ethan Christie */
+
 body 
 {
     background-color: black;
@@ -89,4 +91,21 @@ button
     z-index: 200;
     margin: 5dip auto;
     height: 0;
+    transition: opacity(linear, 650ms);
+}
+
+.BtnMenu[fade=in]
+{
+    opacity: 0.8; 
+}
+
+.BtnMenuCloseImg
+{
+    position: absolute; 
+    right: 3vmin;
+    height: auto;
+    width: 10vmin;
+    min-width: 20dip;
+    padding: 4dip;
+    background-color: transparent;
 }

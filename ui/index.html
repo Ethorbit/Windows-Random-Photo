@@ -18,6 +18,7 @@
         <div id="InfoMenu" class="BtnMenu">
             <div id="container">
                 <h1>Info</h1>
+                <br>
                 <hr>
                 <h3>
                     Random Photo is an application designed for viewing photos from a folder in a random order
@@ -51,12 +52,28 @@
         function self.ready()
         {
             $(#ImgMenu).style["display"] = "none";    
-            setMediaQueries(); 
+
+            for (var v in $$(.BtnMenu)) // Add a button with click handler to all button menus
+            {
+                var thisEle = v;
+
+                v.$(#container).$prepend
+                (
+                    <button type="button" class="BtnMenuClose">
+                    <img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\x.png" alt="Close" class="BtnMenuCloseImg">
+                    </button>
+                ).on("click", () => 
+                {
+                    thisEle.style["display"] = "none";
+                });
+
+                v.style["display"] = "none";
+            }
         }
     
-        /////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////
         // Global variables:
-        var initialImg = self.loadImage("G:/Pictures/debug/Jordan-19A-017_-_A_really_big_sandbox.jpg");
+        var imgToDisplay = self.loadImage("G:/Pictures/debug/Jordan-19A-017_-_A_really_big_sandbox.jpg");
         var (imgWidth, imgHeight) = 0.0;
         var imgRatio = 0.0;
         var htmlHeight = 0.0, htmlWidth = 0.0;
@@ -134,13 +151,13 @@
 
         function paint(gfx)
         {
-            (imgWidth, imgHeight) = initialImg.size();  
+            (imgWidth, imgHeight) = imgToDisplay.size();  
             htmlHeight = view.box(#height);
             htmlWidth = view.box(#width);
             imgRatio = GetRatio();
             var centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0);
             var centerHeight = (htmlHeight / 2.0) - (imgHeight * imgRatio) / 2.0;
-            gfx.drawImage(initialImg, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
+            gfx.drawImage(imgToDisplay, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
 
             // Match container's size and position to the image:
             $(#ImgOverlay).style["width"] = (imgWidth * imgRatio);
@@ -158,43 +175,24 @@
             $(#Info).style["margin-right"] = 5;
 
             // Fit all button menus inside image overlay:    
-            $(#InfoMenu).style["height"] = $(#InfoMenu).$(#container).box(#height);  
+            for (var v in $$(.BtnMenu))
+            {   
+                v.style["height"] = $(#InfoMenu).$(#container).box(#height);  
             
-            if ($(#InfoMenu).$(#container).box(#height) < $(#ImgOverlay).box(#height))
-            {
-                $(#InfoMenu).$(#container).style["height"] = $(#ImgOverlay).box(#height);         
+                if (v.$(#container).box(#height) < $(#ImgOverlay).box(#height))
+                {
+                    v.$(#container).style["height"] = $(#ImgOverlay).box(#height);         
+                }
             }
 
             (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
-            setMediaQueries();
+            view.mediaVars { window-percent : GetImgPercent() };
         }
 
-        $(#FillImg).paintContent = paint;
-        ///////////////////////////////////
-        // Handle Media Queries:
-        function setMediaQueries()
-        {   
-            // Info Menu:
-            var infosize = "default";
-            var conWidth = $(#ImgOverlay).box(#width);
-            var conHeight = $(#ImgOverlay).box(#height);
-    
-            if (percent <= 50)
-            {
-                infosize = "min";
-            }
-
-            if (percent >= 85)
-            {
-              infosize = "max";
-            }
-
-            view.mediaVars { window-percent : GetImgPercent() };
-        }    
+        $(#FillImg).paintContent = paint;  
         //////////////////////////////////////////////////////////////
         // Add image menu functionality:
         var onImgMenuBtn = false;
-
         for (var (k,v) in $$(.ImgMenuBtn))
         {
             v.on("mouseenter", () => 
@@ -230,11 +228,22 @@
                 $(#ImgMenu).style["display"] = "none";
         }
         //////////////////////////////////////////////////////////////
-        // Handle button popups:
+        // Handle button menus:
+        function ShowMenu(element)
+        {
+            for (var v in $$(BtnMenu)) // Hide all other menus
+            {
+                if (v != element) v.style["display"] = "none";
+            }
+
+            element.style["display"] = "block";
+            element.attributes["fade"] = "none";
+            element.attributes["fade"] = "in";
+        }
+
         $(#Info).on("click", () => 
         {
-            // self.popup($(popup#InfoMenu), 0);
-
+            ShowMenu($(#InfoMenu));
         });
         //////////////////////////////////////////////////////////
         // Handle links (in default browser):

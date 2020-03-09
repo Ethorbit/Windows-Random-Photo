@@ -110,38 +110,12 @@ button,
     position: absolute;
     margin-left: 110dip;
     height: auto;
-    width: 8vmin;
+    width: 7vmin;
     background-color: transparent;
 }
 
 .rightBtn
 {
     text-align: right;
-    margin-right: 8vmin;
-}
-
-@media window-percent >= 70
-{
-    .BtnMenuClose
-    {
-        width: 70dip;
-    }
-
-    .rightBtn
-    {
-        margin-right: 70dip;
-    }
-}
-
-@media window-percent <= 20
-{
-    .BtnMenuClose
-    {
-        width: 20dip;
-    }
-
-    .rightBtn
-    {
-        margin-right: 20dip;
-    }
+    margin-right: 7vmin;
 }

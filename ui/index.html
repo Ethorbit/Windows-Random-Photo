@@ -19,20 +19,13 @@
             <div id="SettingsMenu" class="BtnMenu">
                 <div class="container">
                     <div id="CenterSettings">
-                        <h1>Settings</h1>
-                        <hr>
-                        <thead>
-                            <tr>
-                                <th>Controls</th>
-                                <th>Other</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Previous Image:</td>
-                                <td>Next Image:</td>
-                            </tr>
-                        </tbody>
+                        <ul>
+                            <h1>Settings</h1>
+                            <hr>
+                            <h2>Controls</h2>
+                            <li>Next Image:</li>
+                            <li>Previous Image:</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -203,15 +196,18 @@
                 $(#Info).style["margin-right"] = 5;
 
                 // Fit all button menus inside image overlay:    
+                
                 for (var v in $$(.BtnMenu))
                 {   
                     v.style["height"] = $(#InfoMenu).$(.container).box(#height);  
-                
+                         
                     if (v.$(.container).box(#height) < $(#ImgOverlay).box(#height))
                     {
-                        v.$(.container).style["height"] = $(#ImgOverlay).box(#height);         
+                        v.$(.container).style["height"] = $(#ImgOverlay).box(#height);       
                     }
                 }
+
+                $(#SettingsMenu).style["height"] = $(#ImgOverlay).box(#height);  
 
                 (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
                 view.mediaVars { window-percent : GetImgPercent() };

@@ -5,24 +5,52 @@
     font-size: 40dip;
 }
 
+ul
+{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
 #ImgOverlay #SettingsMenu .container
 {
     text-align: center;
     color: black;
     background-color: white;
     padding: 10dip; 
+    width: *;
+    border: black solid 10dip;
+    border-radius: 20dip;
 }
 
-@media window-percent > 45
+@media window-percent > 55
 {
     #ImgOverlay #SettingsMenu
     {
         max-width: 50%;
     }
+}
 
+@media window-percent <= 55
+{
     #ImgOverlay #SettingsMenu .container
     {
-        border: black solid 10dip;
-        border-radius: 20dip;
+        border: black solid 5dip;
+    }
+}
+
+@media window-percent < 55 && window-percent > 45
+{
+    #ImgOverlay #SettingsMenu
+    {
+        max-width: 70%;
+    }
+}
+
+@media window-percent <= 45
+{
+    #ImgOverlay #SettingsMenu
+    {
+        max-width: 100%;
     }
 }

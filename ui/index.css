@@ -8,7 +8,13 @@ body
     overflow: hidden;
 }
 
-button
+h1 h2 h3
+{
+    text-shadow: grey 0 0 1dip;
+}
+
+button,
+.fakeBtn
 {
     padding: 0;
     border-width: 0;
@@ -86,7 +92,7 @@ button
     padding: 4px 4px 4px 5px;
 }
 
-.BtnMenu
+#ImgOverlay .BtnMenu
 {
     z-index: 200;
     margin: 5dip auto;
@@ -99,13 +105,43 @@ button
     opacity: 0.8; 
 }
 
-.BtnMenuCloseImg
+.BtnMenuClose
 {
-    position: absolute; 
-    right: 3vmin;
+    position: absolute;
+    margin-left: 110dip;
     height: auto;
-    width: 10vmin;
-    min-width: 20dip;
-    padding: 4dip;
+    width: 8vmin;
     background-color: transparent;
+}
+
+.rightBtn
+{
+    text-align: right;
+    margin-right: 8vmin;
+}
+
+@media window-percent >= 70
+{
+    .BtnMenuClose
+    {
+        width: 70dip;
+    }
+
+    .rightBtn
+    {
+        margin-right: 70dip;
+    }
+}
+
+@media window-percent <= 20
+{
+    .BtnMenuClose
+    {
+        width: 20dip;
+    }
+
+    .rightBtn
+    {
+        margin-right: 20dip;
+    }
 }

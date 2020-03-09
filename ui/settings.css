@@ -1,0 +1,28 @@
+/* CSS by Ethan Christie */
+
+#SettingsMenu h1
+{
+    font-size: 40dip;
+}
+
+#ImgOverlay #SettingsMenu .container
+{
+    text-align: center;
+    color: black;
+    background-color: white;
+    padding: 10dip; 
+}
+
+@media window-percent > 45
+{
+    #ImgOverlay #SettingsMenu
+    {
+        max-width: 50%;
+    }
+
+    #ImgOverlay #SettingsMenu .container
+    {
+        border: black solid 10dip;
+        border-radius: 20dip;
+    }
+}

@@ -5,7 +5,7 @@
     font-weight: normal;
 }
 
-#ImgOverlay #InfoMenu #container
+#ImgOverlay #InfoMenu .container
 {
     text-align: center;
     background-color: white;
@@ -14,7 +14,6 @@
     border: black solid 10dip;
     border-radius: 20dip;
     font-size: 2vmin;
-    text-shadow: grey 0 0 1dip;
 }
 
 #InfoMenu span
@@ -25,7 +24,7 @@
 
 @media window-percent >= 65.0 
 {
-    #ImgOverlay #InfoMenu #container
+    #ImgOverlay #InfoMenu .container
     {
         font-size: 18dip;
     }
@@ -38,7 +37,7 @@
 
 @media window-percent <= 50.0
 {
-    #ImgOverlay #InfoMenu #container
+    #ImgOverlay #InfoMenu .container
     {
         font-size: 9dip;
         margin: 0;

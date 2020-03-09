@@ -5,256 +5,293 @@
         <title>Random Photo - By Ethorbit</title>
         <link rel="stylesheet" type="text/css" href="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\index.css">
         <link rel="stylesheet" type="text/css" href="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.css">
+        <link rel="stylesheet" type="text/css" href="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\settings.css">
     </head>
 
     <body>   
         <div id="ImgOverlay">
-        <div id="toolbar">
-            <button type="button" id="Settings"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\gear.png" alt="settings" height="50" width="50" class="tbImg"></button>
-            <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="tbImg"></button>
-            <button type="button" id="Info"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.png" alt="info" height="50" width="50" class="tbImg"></button>
-        </div> 
+            <div id="toolbar">
+                <button type="button" id="Settings"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\gear.png" alt="settings" height="50" width="50" class="tbImg"></button>
+                <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="tbImg"></button>
+                <button type="button" id="Info"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.png" alt="info" height="50" width="50" class="tbImg"></button>
+            </div> 
         
-        <div id="InfoMenu" class="BtnMenu">
-            <div id="container">
-                <h1>Info</h1>
-                <br>
-                <hr>
-                <h3>
-                    Random Photo is an application designed for viewing photos from a folder in a random order
+            <div id="SettingsMenu" class="BtnMenu">
+                <div class="container">
+                    <div id="CenterSettings">
+                        <h1>Settings</h1>
+                        <hr>
+                        <thead>
+                            <tr>
+                                <th>Controls</th>
+                                <th>Other</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Previous Image:</td>
+                                <td>Next Image:</td>
+                            </tr>
+                        </tbody>
+                    </div>
+                </div>
+            </div>
+
+            <div id="InfoMenu" class="BtnMenu">
+                <div class="container">
+                    <h1>Info</h1>
                     <br>
-                    and was made using the <span href="https://sciter.com/">Sciter library</span>.
-                    <br>
-                    <br>
-                    <br>
-                    Random Photo was developed by Ethorbit (Ethan Christie), the project began on February 25th 2020.
-                    <br>
-                    It is open source and the repository can be found <span href="https://github.com/Ethorbit/RandomPhoto-PC">here</span>.
-                </h3>
-                <hr id="dev">
-                <h1>Support the developer</h1>
-                <h3>
-                    Random Photo is free and will <b>never</b> cost money, so if you would like to support the developer you can make a donation <span href="https://www.paypal.me/Ethorbit">here</span>!
-                </h3>
+                    <hr>
+                    <h3>
+                        Random Photo is an application designed for viewing photos from a folder in a random order
+                        <br>
+                        and was made using the <span href="https://sciter.com/">Sciter library</span>.
+                        <br>
+                        <br>
+                        <br>
+                        Random Photo was developed by Ethorbit (Ethan Christie), the project began on February 25th 2020.
+                        <br>
+                        It is open source and the repository can be found <span href="https://github.com/Ethorbit/RandomPhoto-PC">here</span>.
+                    </h3>
+                    <hr id="dev">
+                    <h1>Support the developer</h1>
+                    <h3>
+                        Random Photo is free and will <b>never</b> cost money, so if you would like to support the developer you can make a donation <span href="https://www.paypal.me/Ethorbit">here</span>!
+                    </h3>
+                </div>
+            </div>
+
+            <div id="ImgMenu">
+                <button type="button" class="ImgMenuBtn"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="previous img" height="50" width="50" class="arrow" id="PrevImgImg"></button>
+                <button type="button" class="ImgMenuBtn"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="next img" height="50" width="50" class="arrow" id="NextImgImg"></button>
             </div>
         </div>
-
-        <div id="ImgMenu">
-            <button type="button" class="ImgMenuBtn"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="previous img" height="50" width="50" class="arrow" id="PrevImgImg"></button>
-            <button type="button" class="ImgMenuBtn"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="next img" height="50" width="50" class="arrow" id="NextImgImg"></button>
-        </div>
-    </div>
         
-    <div id="FillImg">
-    </div>
+        <div id="FillImg">
+        </div>
 
-    <script type="text/tiscript">
-        function self.ready()
-        {
-            $(#ImgMenu).style["display"] = "none";    
-
-            for (var v in $$(.BtnMenu)) // Add a button with click handler to all button menus
+        <script type="text/tiscript">
+            function self.ready()
             {
-                var thisEle = v;
+                $(#ImgMenu).style["visibility"] = "none";    
 
-                v.$(#container).$prepend
-                (
-                    <button type="button" class="BtnMenuClose">
-                    <img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\x.png" alt="Close" class="BtnMenuCloseImg">
-                    </button>
-                ).on("click", () => 
+                for (var v in $$(.BtnMenu)) // Add a button with click handler to all button menus
                 {
-                    thisEle.style["display"] = "none";
-                });
+                    var thisEle = v;
 
-                v.style["display"] = "none";
+                    v.$(.container).$prepend
+                    (
+                        <div class="rightBtn">
+                            <img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\x.png" alt="Close" class="BtnMenuClose" class="fakeBtn">
+                        </div>
+                    ).on("click", () => 
+                    {
+                        thisEle.style["visibility"] = "none";
+                    });
+
+                    v.style["visibility"] = "none";
+                }
             }
-        }
-    
-        ////////////////////////////////////////////////////////////////////////////////////////////
-        // Global variables:
-        var imgToDisplay = self.loadImage("G:/Pictures/debug/Jordan-19A-017_-_A_really_big_sandbox.jpg");
-        var (imgWidth, imgHeight) = 0.0;
-        var imgRatio = 0.0;
-        var htmlHeight = 0.0, htmlWidth = 0.0;
-        var onToolbar = false;
-        var onBtn = false;
-        var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
+        
+            ////////////////////////////////////////////////////////////////////////////////////////////
+            // Global variables:
+            var imgToDisplay = self.loadImage("G:/Pictures/debug/Jordan-19A-017_-_A_really_big_sandbox.jpg");
 
-        $(#toolbar).on("mouseenter", () =>
-        {
-            onToolbar = true;
-        });
+            function ShowImage(imgPath)
+            {
+                imgToDisplay = self.loadImage(imgPath);
+            }
 
-        $(#toolbar).on("mouseleave", () =>
-        {
-            onToolbar = false;
-        });
+            var (imgWidth, imgHeight) = 0.0;
+            var imgRatio = 0.0;
+            var htmlHeight = 0.0, htmlWidth = 0.0;
+            var onToolbar = false;
+            var onBtn = false;
+            var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
 
-        for (var (k, v) in $$(button))
-        {
-            if (v.parent != $(#ImgMenu))
+            $(#toolbar).on("mouseenter", () =>
+            {
+                onToolbar = true;
+            });
+
+            $(#toolbar).on("mouseleave", () =>
+            {
+                onToolbar = false;
+            });
+
+            for (var (k, v) in $$(button))
+            {
+                if (v.parent != $(#ImgMenu))
+                {
+                    v.on("mouseenter", () => 
+                    {
+                        onBtn = true;
+                    });
+                    
+                    v.on("mouseleave", () => 
+                    {
+                        onBtn = false;
+                    });
+                }
+            }
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            // Handle image and all positioning/sizing over the image (This is used instead of size):    
+            function GetRatio()
+            {
+                var widthRatio = htmlWidth * 1.0 / imgWidth * 1.0;
+                var heightRatio = htmlHeight * 1.0 / imgHeight * 1.0;      
+                var ratio = widthRatio * 1.0;
+
+                if (imgHeight * 1.0 * widthRatio * 1.0 > htmlHeight * 1.0)
+                {
+                    ratio = heightRatio * 1.0;
+                }
+
+                return ratio * 1.0;
+            }
+
+            function GetMaxRatio() // For determining the max possible size of the image on the window
+            {
+                var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
+                var widthRatio = scrWidth * 1.0 / imgWidth * 1.0;
+                var heightRatio = scrHeight * 1.0 / imgHeight * 1.0;      
+                var ratio = widthRatio * 1.0;
+
+                if (imgHeight * 1.0 * widthRatio * 1.0 > htmlHeight * 1.0)
+                {
+                    ratio = heightRatio * 1.0;
+                }
+
+                return ratio * 1.0;
+            }
+
+            function GetImgPercent() // Get the percentage the image takes up on the window comparing to the max possible ratio for the monitor
+            {
+                var maxRatio = imgWidth * GetMaxRatio();
+                var curWidth = $(#ImgOverlay).box(#width) * 1.0;
+                var curHeight = $(#ImgOverlay).box(#height) * 1.0;
+
+                var heightPercent = curHeight / maxRatio * 100.0;
+                var widthPercent = curWidth / maxRatio * 100.0;
+
+                return widthPercent;
+            }
+
+            function paint(gfx)
+            {
+                (imgWidth, imgHeight) = imgToDisplay.size();  
+                htmlHeight = view.box(#height);
+                htmlWidth = view.box(#width);
+                imgRatio = GetRatio();
+                var centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0);
+                var centerHeight = (htmlHeight / 2.0) - (imgHeight * imgRatio) / 2.0;
+                gfx.drawImage(imgToDisplay, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
+
+                // Match container's size and position to the image:
+                $(#ImgOverlay).style["width"] = (imgWidth * imgRatio);
+                $(#ImgOverlay).style["height"] = (imgHeight * imgRatio);
+                $(#ImgOverlay).style["margin-top"] = centerHeight;
+                $(#ImgOverlay).style["margin-left"] = centerWidth;
+
+                // Place image arrows at center of image on Y axis:
+                var parentHeight = $(#ImgOverlay).style["height"];
+                $(#NextImgImg).style["top"] = parentHeight / 2;
+                $(#PrevImgImg).style["top"] = parentHeight / 2;
+
+                // Move toolbar item to the right of toolbar:
+                $(#Info).style["margin-left"] = $(#toolbar).style#width;
+                $(#Info).style["margin-right"] = 5;
+
+                // Fit all button menus inside image overlay:    
+                for (var v in $$(.BtnMenu))
+                {   
+                    v.style["height"] = $(#InfoMenu).$(.container).box(#height);  
+                
+                    if (v.$(.container).box(#height) < $(#ImgOverlay).box(#height))
+                    {
+                        v.$(.container).style["height"] = $(#ImgOverlay).box(#height);         
+                    }
+                }
+
+                (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
+                view.mediaVars { window-percent : GetImgPercent() };
+            }
+
+            $(#FillImg).paintContent = paint;  
+            //////////////////////////////////////////////////////////////
+            // Add image menu functionality:
+            var onImgMenuBtn = false;
+            for (var (k,v) in $$(.ImgMenuBtn))
             {
                 v.on("mouseenter", () => 
                 {
-                    onBtn = true;
-                });
-                
+                    onImgMenuBtn = true;
+                })
+
                 v.on("mouseleave", () => 
                 {
-                    onBtn = false;
-                });
+                    onImgMenuBtn = false;
+                })
             }
-        }
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        // Handle image and all positioning/sizing over the image (This is used instead of size):    
-        function GetRatio()
-        {
-            var widthRatio = htmlWidth * 1.0 / imgWidth * 1.0;
-            var heightRatio = htmlHeight * 1.0 / imgHeight * 1.0;      
-            var ratio = widthRatio * 1.0;
 
-            if (imgHeight * 1.0 * widthRatio * 1.0 > htmlHeight * 1.0)
+            $(#ImgOverlay).on("mousemove", () =>
+            {  
+                if (!onToolbar)
+                    $(#ImgMenu).style["visibility"] = "visible";      
+            });
+
+            $(#ImgOverlay).on("mouseleave", () =>
             {
-                ratio = heightRatio * 1.0;
-            }
+                HideArrows();
+            });
 
-            return ratio * 1.0;
-        }
-
-        function GetMaxRatio() // For determining the max possible size of the image on the window
-        {
-            var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
-            var widthRatio = scrWidth * 1.0 / imgWidth * 1.0;
-            var heightRatio = scrHeight * 1.0 / imgHeight * 1.0;      
-            var ratio = widthRatio * 1.0;
-
-            if (imgHeight * 1.0 * widthRatio * 1.0 > htmlHeight * 1.0)
+            event mousestop
             {
-                ratio = heightRatio * 1.0;
+                HideArrows();
             }
 
-            return ratio * 1.0;
-        }
-
-        function GetImgPercent() // Get the percentage the image takes up on the window comparing to the total html size
-        {
-            var maxRatio = imgWidth * GetMaxRatio();
-            var curWidth = $(#ImgOverlay).box(#width) * 1.0;
-            var curHeight = $(#ImgOverlay).box(#height) * 1.0;
-
-            var heightPercent = curHeight / maxRatio * 100.0;
-            var widthPercent = curWidth / maxRatio * 100.0;
-
-            return widthPercent;
-        }
-
-        function paint(gfx)
-        {
-            (imgWidth, imgHeight) = imgToDisplay.size();  
-            htmlHeight = view.box(#height);
-            htmlWidth = view.box(#width);
-            imgRatio = GetRatio();
-            var centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0);
-            var centerHeight = (htmlHeight / 2.0) - (imgHeight * imgRatio) / 2.0;
-            gfx.drawImage(imgToDisplay, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
-
-            // Match container's size and position to the image:
-            $(#ImgOverlay).style["width"] = (imgWidth * imgRatio);
-            $(#ImgOverlay).style["height"] = (imgHeight * imgRatio);
-            $(#ImgOverlay).style["margin-top"] = centerHeight;
-            $(#ImgOverlay).style["margin-left"] = centerWidth;
-
-            // Place image arrows at center of image on Y axis:
-            var parentHeight = $(#ImgOverlay).style["height"];
-            $(#NextImgImg).style["top"] = parentHeight / 2;
-            $(#PrevImgImg).style["top"] = parentHeight / 2;
-
-            // Move toolbar item to the right of toolbar:
-            $(#Info).style["margin-left"] = $(#toolbar).style#width;
-            $(#Info).style["margin-right"] = 5;
-
-            // Fit all button menus inside image overlay:    
-            for (var v in $$(.BtnMenu))
-            {   
-                v.style["height"] = $(#InfoMenu).$(#container).box(#height);  
-            
-                if (v.$(#container).box(#height) < $(#ImgOverlay).box(#height))
+            function HideArrows()
+            {
+                if (!onImgMenuBtn)
+                    $(#ImgMenu).style["visibility"] = "none";
+            }
+            //////////////////////////////////////////////////////////////
+            // Handle button menus:
+            function HideMenus(whitelist)
+            {
+                for (var v in $$(.BtnMenu)) // Hide all other menus
                 {
-                    v.$(#container).style["height"] = $(#ImgOverlay).box(#height);         
+                    if (v != whitelist) v.style["visibility"] = "none";
                 }
             }
 
-            (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
-            view.mediaVars { window-percent : GetImgPercent() };
-        }
-
-        $(#FillImg).paintContent = paint;  
-        //////////////////////////////////////////////////////////////
-        // Add image menu functionality:
-        var onImgMenuBtn = false;
-        for (var (k,v) in $$(.ImgMenuBtn))
-        {
-            v.on("mouseenter", () => 
+            function ShowMenu(element)
             {
-                onImgMenuBtn = true;
-            })
-
-            v.on("mouseleave", () => 
-            {
-                onImgMenuBtn = false;
-            })
-        }
-
-        $(#ImgOverlay).on("mousemove", () =>
-        {  
-            if (!onToolbar)
-                $(#ImgMenu).style["display"] = "block";      
-        });
-
-        $(#ImgOverlay).on("mouseleave", () =>
-        {
-            HideArrows();
-        });
-
-        event mousestop
-        {
-            HideArrows();
-        }
-
-        function HideArrows()
-        {
-            if (!onImgMenuBtn)
-                $(#ImgMenu).style["display"] = "none";
-        }
-        //////////////////////////////////////////////////////////////
-        // Handle button menus:
-        function ShowMenu(element)
-        {
-            for (var v in $$(BtnMenu)) // Hide all other menus
-            {
-                if (v != element) v.style["display"] = "none";
+                HideMenus(element);
+                element.style["visibility"] = "visible";
+                element.attributes["fade"] = "none";
+                element.attributes["fade"] = "in";
             }
 
-            element.style["display"] = "block";
-            element.attributes["fade"] = "none";
-            element.attributes["fade"] = "in";
-        }
-
-        $(#Info).on("click", () => 
-        {
-            ShowMenu($(#InfoMenu));
-        });
-        //////////////////////////////////////////////////////////
-        // Handle links (in default browser):
-        for (var v in $$(span))
-        {
-            var theElement = v; // The inside of the event won't have access to 'v' so use this variable instead
-            v.on("click", () =>
+            $(#Settings).on("click", () => 
             {
-                Sciter.launch(theElement.attributes["href"]);
+                ShowMenu($(#SettingsMenu));
             });
-        }
-        </script>
+
+            $(#Info).on("click", () => 
+            {
+                ShowMenu($(#InfoMenu));
+            });
+            //////////////////////////////////////////////////////////
+            // Handle links (in default browser):
+            for (var v in $$(span))
+            {
+                var theElement = v; // The inside of the event won't have access to 'v' so use this variable instead
+                v.on("click", () =>
+                {
+                    Sciter.launch(theElement.attributes["href"]);
+                });
+            }
+         </script>
     </body>
 </html>

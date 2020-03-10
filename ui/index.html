@@ -22,9 +22,30 @@
                         <ul>
                             <h1>Settings</h1>
                             <hr>
-                            <h2>Controls</h2>
-                            <li>Next Image:</li>
-                            <li>Previous Image:</li>
+                            <h2>Hotkeys</h2>
+                            <div id="HotkeyCtrls">
+                                <li>Next Image: </li>
+                                <li>Previous Image: </li>
+                                <li>Zoom at cursor: </li>
+                                <li>Hide Overlay: </li>
+                                <li>Exit Theatre Mode: </li>
+                            </div>
+                            <h2>Behavior</h2>
+                            <div id="BehaviorCtrls">
+                                <h3>Overlay</h3>
+                                <ul>
+                                    <li>Hide time: </li>
+                                    <li>Include toolbar: </li>
+                                </ul>
+                                <h3>Slideshow</h3>
+                                <ul>
+                                    <li>Display time: </li>
+                                </ul>
+                                <h3>Content</h3>
+                                <ul>
+                                    <li>Stretch: </li>
+                                </ul>
+                            </div>
                         </ul>
                     </div>
                 </div>
@@ -32,6 +53,7 @@
 
             <div id="InfoMenu" class="BtnMenu">
                 <div class="container">
+                <div>
                     <h1>Info</h1>
                     <br>
                     <hr>
@@ -52,6 +74,8 @@
                         Random Photo is free and will <b>never</b> cost money, so if you would like to support the developer you can make a donation <span href="https://www.paypal.me/Ethorbit">here</span>!
                     </h3>
                 </div>
+            </div>
+
             </div>
 
             <div id="ImgMenu">
@@ -85,7 +109,47 @@
                     v.style["visibility"] = "none";
                 }
             }
-        
+
+            view.on("size", () =>
+            {
+                ExtendMenu();
+            });
+
+            view.on("move", () =>
+            {
+                ExtendMenu();
+            });
+
+            function ExtendMenu()
+            {
+                for (var v in $$(.BtnMenu))
+                { 
+                    v.style["height"] = 5000;
+                    v.style["height"] = GetTallestElement(v.$(.container)).box(#height) + $(#ImgOverlay).box(#height);
+                    v.$(.container).style["height"] = v.box(#height);
+                }
+            }
+
+            function GetTallestElement(menu)
+            {
+                var tallestEle = null;
+                for (var v in menu.$$(*))
+                {
+                    if (tallestEle)
+                    {
+                        if (v.box(#height) > tallestEle.box(#height))
+                        {
+                            tallestEle = v;
+                        }
+                    }
+                    else
+                    {
+                        tallestEle = v;
+                    }
+                }
+
+                return tallestEle;
+            }    
             ////////////////////////////////////////////////////////////////////////////////////////////
             // Global variables:
             var imgToDisplay = self.loadImage("G:/Pictures/debug/Jordan-19A-017_-_A_really_big_sandbox.jpg");
@@ -95,8 +159,25 @@
                 imgToDisplay = self.loadImage(imgPath);
             }
 
+            function MenuIsOpen()
+            {
+                var bOpen = false;
+                for (var v in $$(.BtnMenu))
+                {
+                    if (v.style["visibility"] == "visible")
+                    {
+                        bOpen = true;
+                        break;
+                    }
+                }
+
+                return bOpen;
+            }
+
             var (imgWidth, imgHeight) = 0.0;
             var imgRatio = 0.0;
+            var centerWidth = 0.0;
+            var centerHeight = 0.0;
             var htmlHeight = 0.0, htmlWidth = 0.0;
             var onToolbar = false;
             var onBtn = false;
@@ -163,7 +244,6 @@
                 var maxRatio = imgWidth * GetMaxRatio();
                 var curWidth = $(#ImgOverlay).box(#width) * 1.0;
                 var curHeight = $(#ImgOverlay).box(#height) * 1.0;
-
                 var heightPercent = curHeight / maxRatio * 100.0;
                 var widthPercent = curWidth / maxRatio * 100.0;
 
@@ -176,8 +256,8 @@
                 htmlHeight = view.box(#height);
                 htmlWidth = view.box(#width);
                 imgRatio = GetRatio();
-                var centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0);
-                var centerHeight = (htmlHeight / 2.0) - (imgHeight * imgRatio) / 2.0;
+                centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0);
+                centerHeight = (htmlHeight / 2.0) - (imgHeight * imgRatio) / 2.0;
                 gfx.drawImage(imgToDisplay, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
 
                 // Match container's size and position to the image:
@@ -197,20 +277,18 @@
 
                 // Fit all button menus inside image overlay:    
                 
-                for (var v in $$(.BtnMenu))
-                {   
-                    v.style["height"] = $(#InfoMenu).$(.container).box(#height);  
-                         
-                    if (v.$(.container).box(#height) < $(#ImgOverlay).box(#height))
-                    {
-                        v.$(.container).style["height"] = $(#ImgOverlay).box(#height);       
-                    }
-                }
-
-                $(#SettingsMenu).style["height"] = $(#ImgOverlay).box(#height);  
-
                 (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
                 view.mediaVars { window-percent : GetImgPercent() };
+
+                for (var v in $$(.BtnMenu))
+                {
+                    if (v.$(.container).box(#height) < $(#ImgOverlay).box(#height))
+                    {
+                        ExtendMenu();
+                    }
+
+                    v.update();
+                }
             }
 
             $(#FillImg).paintContent = paint;  
@@ -232,7 +310,7 @@
 
             $(#ImgOverlay).on("mousemove", () =>
             {  
-                if (!onToolbar)
+                if (!onToolbar && !MenuIsOpen())
                     $(#ImgMenu).style["visibility"] = "visible";      
             });
 
@@ -257,6 +335,7 @@
             {
                 for (var v in $$(.BtnMenu)) // Hide all other menus
                 {
+                    v.style["height"] = 0;
                     if (v != whitelist) v.style["visibility"] = "none";
                 }
             }
@@ -267,6 +346,8 @@
                 element.style["visibility"] = "visible";
                 element.attributes["fade"] = "none";
                 element.attributes["fade"] = "in";
+                ExtendMenu();
+                HideArrows();
             }
 
             $(#Settings).on("click", () => 

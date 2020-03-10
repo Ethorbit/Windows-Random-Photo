@@ -19,34 +19,39 @@
             <div id="SettingsMenu" class="BtnMenu">
                 <div class="container">
                     <div id="CenterSettings">
-                        <ul>
-                            <h1>Settings</h1>
+                        <h1>Settings</h1>
+                        <hr>
+                        <form>
+                            <div id="Ctrls">
+                                <div id="HotkeyCtrls">
+                                    <h2>Hotkeys</h2>
+                                    <li>Next Image: </li>
+                                    <li>Previous Image: </li>
+                                    <li>Zoom at cursor: </li>
+                                    <li>Hide Overlay: </li>
+                                    <li>Exit Theatre Mode: </li>
+                                </div>
+                                <div id="BehaviorCtrls">
+                                    <h2>Behavior</h2>
+                                    <h3>Overlay</h3>
+                                    <ul>
+                                        <li>Hide time: </li>
+                                        <li>Include toolbar: </li>
+                                    </ul>
+                                    <h3>Slideshow</h3>
+                                    <ul>
+                                        <li>Display time: </li>
+                                    </ul>
+                                    <h3>Content</h3>
+                                    <ul>
+                                        <li>Stretch: </li>
+                                    </ul>
+                                </div>
+                            </div>  
                             <hr>
-                            <h2>Hotkeys</h2>
-                            <div id="HotkeyCtrls">
-                                <li>Next Image: </li>
-                                <li>Previous Image: </li>
-                                <li>Zoom at cursor: </li>
-                                <li>Hide Overlay: </li>
-                                <li>Exit Theatre Mode: </li>
-                            </div>
-                            <h2>Behavior</h2>
-                            <div id="BehaviorCtrls">
-                                <h3>Overlay</h3>
-                                <ul>
-                                    <li>Hide time: </li>
-                                    <li>Include toolbar: </li>
-                                </ul>
-                                <h3>Slideshow</h3>
-                                <ul>
-                                    <li>Display time: </li>
-                                </ul>
-                                <h3>Content</h3>
-                                <ul>
-                                    <li>Stretch: </li>
-                                </ul>
-                            </div>
-                        </ul>
+                            <button type="button">Cancel</button>
+                            <button type="submit">Save</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -279,6 +284,7 @@
                 
                 (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
                 view.mediaVars { window-percent : GetImgPercent() };
+                view.mediaVars { window-width : (imgWidth * imgRatio) };
 
                 for (var v in $$(.BtnMenu))
                 {
@@ -289,6 +295,8 @@
 
                     v.update();
                 }
+
+                // $(#SettingsMenu).$(#BehaviorCtrls).style["left"] = $(#SettingsMenu).$(.container).box(#width) - 50;
             }
 
             $(#FillImg).paintContent = paint;  

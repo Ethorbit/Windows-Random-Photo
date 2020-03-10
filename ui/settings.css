@@ -1,5 +1,21 @@
 /* CSS by Ethan Christie */
 
+#SettingsMenu button
+{  
+    height: 80dip;
+    font-size: 4vmin;
+    width: 25%;
+    font-weight: bold;
+    border-radius: 20dip;
+    border: 4dip solid black;
+    color: black;
+}
+
+#SettingsMenu button[type=submit]
+{ 
+    margin-left: 50dip;
+}
+
 #SettingsMenu li
 {
     line-height: 20dip;
@@ -49,6 +65,25 @@ ul
     border-radius: 20dip;
 }
 
+@media window-width >= 815
+{
+    #Ctrls
+    {
+        flow: horizontal;
+        horizontal-align: center;
+    }
+
+    #BehaviorCtrls
+    {
+        margin-left: 25%;
+    }
+
+    #HotkeyCtrls
+    {
+        margin-right: 25%;
+    }
+}
+
 @media window-percent <= 55
 {
     #SettingsMenu .container
@@ -79,6 +114,11 @@ ul
         font-size: 20dip;
         line-height: 40dip;
     }
+
+    #SettingsMenu button
+    {  
+        font-size: 22dip;
+    }
 }
 
 @media window-percent < 40
@@ -107,5 +147,20 @@ ul
     {
         font-size: 13dip;
         line-height: 20dip;
+    }
+}
+
+@media window-percent <= 40
+{
+    #SettingsMenu button
+    {  
+        padding: 5dip;
+        font-size: 15dip;
+        height: 20dip;
+    }
+
+    #SettingsMenu button[type=submit]
+    {
+        margin-left: 10dip;
     }
 }

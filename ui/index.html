@@ -25,31 +25,46 @@
                             <div id="Ctrls">
                                 <div id="HotkeyCtrls">
                                     <h2>Hotkeys</h2>
+                                    <hr>
                                     <li>Next Image: </li>
+                                    <input type="text" name="NextHotkey" value="Enter a key" maxlength="1" name="NextImgHotkey">
                                     <li>Previous Image: </li>
-                                    <li>Zoom at cursor: </li>
+                                    <input type="text" name="PreviousHotkey" value="Enter a key" maxlength="1" name="PrevImgHotkey">
+                                    <li>Zoom in cursor: </li>
+                                    <input type="text" name="ZoomHotkey" value="Enter a key" maxlength="1" name="ZoominHotkey">
+                                    <li>Zoom out cursor: </li>
+                                    <input type="text" name="ZoomHotkey" value="Enter a key" maxlength="1" name="ZoomoutHotkey">
                                     <li>Hide Overlay: </li>
+                                    <input type="text" name="HideOverlayHotkey" value="Enter a key" maxlength="1" name="HideOverlayHotkey">
                                     <li>Exit Theatre Mode: </li>
+                                    <input type="text" name="ExitTheatureHotkey" value="Enter a key" maxlength="1" name="TheatreHotkey">
                                 </div>
                                 <div id="BehaviorCtrls">
                                     <h2>Behavior</h2>
+                                    <hr>
                                     <h3>Overlay</h3>
                                     <ul>
-                                        <li>Hide time: </li>
-                                        <li>Include toolbar: </li>
+                                        <li style="display: inline-block;">Hide time </li> <span style="display: inline-block;">(ms):</span>
+                                        <input type="hslider" min="100" max="10000" value="1800" class="sliderEle" name="OverlayHideTime"> <span class="prevSlider" time="ms" style="display: inline-block;">1800ms</span>
+                                        <br>
+                                        <br>
+                                        <li class="checkbox">Include toolbar: </li><input type="checkbox" value="false" name="OverlayHideToolbar">
                                     </ul>
                                     <h3>Slideshow</h3>
+                                    <hr>
                                     <ul>
-                                        <li>Display time: </li>
+                                        <li style="display: inline-block;">Display time </li> <span style="display: inline-block;">(sec):</span>
+                                        <input type="hslider" min="1" max="60" value="5" class="sliderEle" name="SlideshowDisplayTime"> <span class="prevSlider" time="s" style="display: inline-block;">5s</span>                     
                                     </ul>
                                     <h3>Content</h3>
+                                    <hr>
                                     <ul>
-                                        <li>Stretch: </li>
+                                        <li class="checkbox">Stretch: </li><input type="checkbox" value="false" name="ContentStretch">
                                     </ul>
                                 </div>
                             </div>  
-                            <hr>
-                            <button type="button">Cancel</button>
+                            <hr id="lastHr">
+                            <button type="cancel">Cancel</button>
                             <button type="submit">Save</button>
                         </form>
                     </div>
@@ -213,6 +228,44 @@
                     });
                 }
             }
+
+            ////////////////////////////////////////////////////////////
+            // Handle slider displays:
+            for (var v in $$(.sliderEle))
+            {
+                v.on("change", (me) =>
+                {
+                    if (me.target.next.attributes["time"] == "s")
+                        me.target.next.text = me.target.value + "s";
+                    else
+                        me.target.next.text = me.target.value + "ms";
+                });
+            }
+
+            //////////////////////////////////////////////////////////////
+            // Handle hotkey input boxes:
+            for (var v in $(#SettingsMenu).$$(input[type=text]))
+            {
+                v.on("focus", (me) =>
+                {
+                    me.target.text = " ";
+                });
+            }
+
+            ///////////////////////////////////////////////////////////////
+            // Handle setting saves:
+            $(#SettingsMenu).$(form).on("submit", (me) =>
+            {
+
+            });
+
+            $(#SettingsMenu).$(button[type=cancel]).on("click", () =>
+            {
+               var result = view.msgbox(#warning, "Abort changes and close?", "Are you sure?", [#yes, #no]);
+               if (result == #yes)
+                $(#SettingsMenu).style["visibility"] = "none";
+            });
+
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Handle image and all positioning/sizing over the image (This is used instead of size):    
             function GetRatio()
@@ -371,10 +424,9 @@
             // Handle links (in default browser):
             for (var v in $$(span))
             {
-                var theElement = v; // The inside of the event won't have access to 'v' so use this variable instead
-                v.on("click", () =>
+                v.on("click", (me) =>
                 {
-                    Sciter.launch(theElement.attributes["href"]);
+                    Sciter.launch(me.target.attributes["href"]);
                 });
             }
          </script>

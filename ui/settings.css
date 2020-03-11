@@ -16,6 +16,17 @@
     margin-left: 50dip;
 }
 
+#SettingsMenu input[type=checkbox]
+{
+    display: inline-block;
+    margin-left: 5dip;
+}
+
+#SettingsMenu .checkbox
+{
+    display: inline-block;
+}
+
 #SettingsMenu li
 {
     line-height: 20dip;
@@ -42,6 +53,16 @@
     font-size: 4vmin;
 }
 
+#SettingsMenu .prevSlider
+{
+    font-size: 10dip;
+}
+
+#SettingsMenu button.slider
+{
+    height: 12dip;
+}
+
 ul
 {
     margin: 0;
@@ -63,6 +84,11 @@ ul
     width: *;
     border: black solid 10dip;
     border-radius: 20dip;
+}
+
+#lastHr
+{
+    margin-top: 50dip;
 }
 
 @media window-width >= 815
@@ -90,6 +116,8 @@ ul
     {
         border: black solid 5dip;
     }
+
+
 }
 
 @media window-percent >= 55
@@ -106,7 +134,7 @@ ul
 
     #SettingsMenu h3
     {
-        font-size: 25dip;
+        font-size: 30dip;
     }
 
     #SettingsMenu li
@@ -118,6 +146,11 @@ ul
     #SettingsMenu button
     {  
         font-size: 22dip;
+    }
+
+    #SettingsMenu input[type=checkbox]
+    {
+        transform: scale(1.5);
     }
 }
 
@@ -147,6 +180,16 @@ ul
     {
         font-size: 13dip;
         line-height: 20dip;
+    }
+
+    #Ctrls hr
+    {
+        visibility: none;
+    }
+
+    #BehaviorCtrls hr
+    {
+        visibility: visible;
     }
 }
 

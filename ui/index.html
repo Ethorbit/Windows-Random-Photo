@@ -30,9 +30,9 @@
                                     <input type="text" name="NextHotkey" value="Enter a key" maxlength="1" name="NextImgHotkey">
                                     <li>Previous Image: </li>
                                     <input type="text" name="PreviousHotkey" value="Enter a key" maxlength="1" name="PrevImgHotkey">
-                                    <li>Zoom in cursor: </li>
+                                    <li>Zoom at cursor: </li>
                                     <input type="text" name="ZoomHotkey" value="Enter a key" maxlength="1" name="ZoominHotkey">
-                                    <li>Zoom out cursor: </li>
+                                    <li>Zoom out: </li>
                                     <input type="text" name="ZoomHotkey" value="Enter a key" maxlength="1" name="ZoomoutHotkey">
                                     <li>Hide Overlay: </li>
                                     <input type="text" name="HideOverlayHotkey" value="Enter a key" maxlength="1" name="HideOverlayHotkey">
@@ -44,22 +44,39 @@
                                     <hr>
                                     <h3>Overlay</h3>
                                     <ul>
-                                        <li style="display: inline-block;">Hide time </li> <span style="display: inline-block;">(ms):</span>
-                                        <input type="hslider" min="100" max="10000" value="1800" class="sliderEle" name="OverlayHideTime"> <span class="prevSlider" time="ms" style="display: inline-block;">1800ms</span>
+                                        <img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\questionmark.png" alt="hint" height="20" width="20" style="display:inline-block;">
+                                        <div class="HintText" style="display:inline-block;">
+                                            How long it takes before the image's overlay hides itself.
+                                        </div>
+                                        <li style="display: inline-block;">Hide time </li> <span>(ms):</span>   
+                                        <input type="hslider" min="100" max="10000" value="700" class="sliderEle" name="OverlayHideTime"> <span class="prevSlider" data="ms">700ms</span>
                                         <br>
-                                        <br>
-                                        <li class="checkbox">Include toolbar: </li><input type="checkbox" value="false" name="OverlayHideToolbar">
+                                        <br>     
+                                        <img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\questionmark.png" alt="hint" height="20" width="20" style="display:inline-block;">
+                                        <div class="HintText" style="display:inline-block;">
+                                            Hide the toolbar as well when the overlay hides itself.
+                                        </div>       
+                                        <li class="checkbox">Include toolbar: </li>
+                                        <input type="checkbox" value="false" name="OverlayHideToolbar">            
                                     </ul>
                                     <h3>Slideshow</h3>
                                     <hr>
                                     <ul>
-                                        <li style="display: inline-block;">Display time </li> <span style="display: inline-block;">(sec):</span>
-                                        <input type="hslider" min="1" max="60" value="5" class="sliderEle" name="SlideshowDisplayTime"> <span class="prevSlider" time="s" style="display: inline-block;">5s</span>                     
+                                        <img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\questionmark.png" alt="hint" height="20" width="20" style="display:inline-block;">
+                                        <div class="HintText" style="display:inline-block;">
+                                            How long it takes before a different image is shown.
+                                        </div>
+                                        <li style="display: inline-block;">Display time </li> <span>(sec):</span>
+                                        <input type="hslider" min="1" max="60" value="5" class="sliderEle" name="SlideshowDisplayTime"> <span class="prevSlider" data="s">5s</span>                                                
                                     </ul>
                                     <h3>Content</h3>
                                     <hr>
                                     <ul>
                                         <li class="checkbox">Stretch: </li><input type="checkbox" value="false" name="ContentStretch">
+                                        <div>
+                                        <li style="display: inline-block;">Zoom multiplier: </li>
+                                        <input type="hslider" min="5" max="500" value="5" step="5" class="sliderEle" name="ContentZoomMultiplier"> <span class="prevSlider" data="%">5%</span>
+                                        </div>    
                                     </ul>
                                 </div>
                             </div>  
@@ -229,16 +246,37 @@
                 }
             }
 
+            ///////////////////////////////////////////////////////////////////////////
+            // Handle custom element tool tips:
+            for (var (k, v) in $$(img[alt=hint]))
+            {
+                var eleCount = k;
+                v.on("mouseenter", (me) =>
+                {   
+                    var hintTxt = $$(.HintText)[eleCount];
+                    hintTxt.style["visibility"] = "visible";
+                    var (xx, yy) = view.cursorLocation();
+                    hintTxt.style["top"] = yy;
+                    hintTxt.style["left"] = xx - 50;
+                });
+
+                v.on("mouseleave", (me) =>
+                {   
+                    $$(.HintText)[eleCount].style["visibility"] = "none";
+                });
+            }
             ////////////////////////////////////////////////////////////
             // Handle slider displays:
             for (var v in $$(.sliderEle))
             {
                 v.on("change", (me) =>
                 {
-                    if (me.target.next.attributes["time"] == "s")
+                    if (me.target.next.attributes["data"] == "s")
                         me.target.next.text = me.target.value + "s";
-                    else
+                    if (me.target.next.attributes["data"] == "ms")
                         me.target.next.text = me.target.value + "ms";
+                    if (me.target.next.attributes["data"] == "%")  
+                        me.target.next.text = me.target.value + "%";
                 });
             }
 
@@ -262,10 +300,9 @@
             $(#SettingsMenu).$(button[type=cancel]).on("click", () =>
             {
                var result = view.msgbox(#warning, "Abort changes and close?", "Are you sure?", [#yes, #no]);
-               if (result == #yes)
-                $(#SettingsMenu).style["visibility"] = "none";
+                if (result == #yes)
+                    $(#SettingsMenu).style["visibility"] = "none";
             });
-
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Handle image and all positioning/sizing over the image (This is used instead of size):    
             function GetRatio()
@@ -333,8 +370,7 @@
                 $(#Info).style["margin-left"] = $(#toolbar).style#width;
                 $(#Info).style["margin-right"] = 5;
 
-                // Fit all button menus inside image overlay:    
-                
+                // Fit all button menus inside image overlay:                
                 (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
                 view.mediaVars { window-percent : GetImgPercent() };
                 view.mediaVars { window-width : (imgWidth * imgRatio) };
@@ -348,8 +384,6 @@
 
                     v.update();
                 }
-
-                // $(#SettingsMenu).$(#BehaviorCtrls).style["left"] = $(#SettingsMenu).$(.container).box(#width) - 50;
             }
 
             $(#FillImg).paintContent = paint;  
@@ -371,6 +405,7 @@
 
             $(#ImgOverlay).on("mousemove", () =>
             {  
+                MovedMouse = true;
                 if (!onToolbar && !MenuIsOpen())
                     $(#ImgMenu).style["visibility"] = "visible";      
             });
@@ -380,9 +415,17 @@
                 HideArrows();
             });
 
+            var MovedMouse = false;
             event mousestop
             {
-                HideArrows();
+                MovedMouse = false;
+                self.timer(700ms, () =>
+                {
+                    if (!MovedMouse)
+                        HideArrows();
+
+                    return false;
+                });
             }
 
             function HideArrows()
@@ -401,12 +444,19 @@
                 }
             }
 
+            function bgPaint(gfx)
+            {
+                gfx.fillColor(color(0, 0, 0, 0));
+                gfx.rectangle(0, 0, 100, 100);
+            }
+        
             function ShowMenu(element)
             {
                 HideMenus(element);
                 element.style["visibility"] = "visible";
                 element.attributes["fade"] = "none";
                 element.attributes["fade"] = "in";
+                // element.$(input[type=hslider]).paintBackground = bgPaint;
                 ExtendMenu();
                 HideArrows();
             }

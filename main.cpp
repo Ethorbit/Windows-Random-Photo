@@ -51,7 +51,7 @@ public:
 				GetCursorPos(&prevPoint);
 				auto checkCursor = [prevPoint]()
 				{
-					Sleep(800);
+					Sleep(100);
 					POINT nextPoint{ 0 };
 					GetCursorPos(&nextPoint);
 
@@ -84,7 +84,7 @@ int uimain(std::function<int()> run)
 	SciterSetOption
 	(
 		NULL,
-		SCITER_SET_SCRIPT_RUNTIME_FEATURES | SCITER_TRANSPARENT_WINDOW,
+		SCITER_SET_SCRIPT_RUNTIME_FEATURES,
 		ALLOW_FILE_IO |
 		ALLOW_SOCKET_IO |
 		ALLOW_SYSINFO |

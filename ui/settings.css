@@ -22,6 +22,28 @@
     margin-left: 5dip;
 }
 
+#SettingsMenu .hint
+{
+    z-index: 1000;
+}
+
+#SettingsMenu *
+{
+    z-index: 1;
+}
+
+#SettingsMenu .HintText
+{
+    position: fixed;
+    top: 0;
+    width: 200dip;
+    height: 40dip;
+    background-color: yellow;
+    border: black solid 1dip;
+    padding: 5dip;
+    visibility: none;
+}
+
 #SettingsMenu .checkbox
 {
     display: inline-block;

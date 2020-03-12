@@ -3,6 +3,7 @@
 #include <sciter-win-main.cpp>
 #include "resources.cpp"
 #include <thread>
+#include "funcs.cpp"
 
 static sciter::dom::element root;
 
@@ -18,7 +19,13 @@ public:
 			SW_MAIN |
 			SW_RESIZEABLE,
 			{ 0, 0, 500, 500 }
-		){};
+		){
+			sWndPtr = this;
+		};
+
+	BEGIN_FUNCTION_MAP
+		FUNCTION_2("saveINI", saveINI)
+	END_FUNCTION_MAP
 
 	LRESULT on_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 	{
@@ -97,7 +104,6 @@ int uimain(std::function<int()> run)
 	mainWin->load(L"this://app/index.html");
 	mainWin->expand();	
 	root = mainWin->get_root();
-
 	EventHandler eh;
 	root.attach_event_handler(&eh);
 

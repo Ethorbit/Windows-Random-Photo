@@ -3,9 +3,9 @@
 <html>
     <head>
         <title>Random Photo - By Ethorbit</title>
-        <link rel="stylesheet" type="text/css" href="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\index.css">
-        <link rel="stylesheet" type="text/css" href="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.css">
-        <link rel="stylesheet" type="text/css" href="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\settings.css">
+        <link rel="stylesheet" type="text/css" href="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\styles\index.css">
+        <link rel="stylesheet" type="text/css" href="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\styles\info.css">
+        <link rel="stylesheet" type="text/css" href="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\styles\settings.css">
     </head>
 
     <body>   
@@ -64,7 +64,7 @@
                                     <ul>
                                         <img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\questionmark.png" alt="hint" height="20" width="20" style="display:inline-block;">
                                         <div class="HintText" style="display:inline-block;">
-                                            How long it takes before a different image is shown.
+                                            Inactivity time before a new image is shown.
                                         </div>
                                         <li style="display: inline-block;">Display time </li> <span>(sec):</span>
                                         <input type="hslider" min="1" max="60" value="5" class="sliderEle" name="SlideshowDisplayTime"> <span class="prevSlider" data="s">5s</span>                                                
@@ -125,6 +125,11 @@
         </div>
 
         <script type="text/tiscript">
+            include "scripts/global.tis";
+            include "scripts/content.tis";
+            include "scripts/menu.tis";
+            include "scripts/buttons.tis";
+
             function self.ready()
             {
                 $(#ImgMenu).style["visibility"] = "none";    
@@ -145,340 +150,7 @@
 
                     v.style["visibility"] = "none";
                 }
-            }
-
-            view.on("size", () =>
-            {
-                ExtendMenu();
-            });
-
-            view.on("move", () =>
-            {
-                ExtendMenu();
-            });
-
-            function ExtendMenu()
-            {
-                for (var v in $$(.BtnMenu))
-                { 
-                    v.style["height"] = 5000;
-                    v.style["height"] = GetTallestElement(v.$(.container)).box(#height) + $(#ImgOverlay).box(#height);
-                    v.$(.container).style["height"] = v.box(#height);
-                }
-            }
-
-            function GetTallestElement(menu)
-            {
-                var tallestEle = null;
-                for (var v in menu.$$(*))
-                {
-                    if (tallestEle)
-                    {
-                        if (v.box(#height) > tallestEle.box(#height))
-                        {
-                            tallestEle = v;
-                        }
-                    }
-                    else
-                    {
-                        tallestEle = v;
-                    }
-                }
-
-                return tallestEle;
-            }    
-            ////////////////////////////////////////////////////////////////////////////////////////////
-            // Global variables:
-            var imgToDisplay = self.loadImage("G:/Pictures/debug/Jordan-19A-017_-_A_really_big_sandbox.jpg");
-
-            function ShowImage(imgPath)
-            {
-                imgToDisplay = self.loadImage(imgPath);
-            }
-
-            function MenuIsOpen()
-            {
-                var bOpen = false;
-                for (var v in $$(.BtnMenu))
-                {
-                    if (v.style["visibility"] == "visible")
-                    {
-                        bOpen = true;
-                        break;
-                    }
-                }
-
-                return bOpen;
-            }
-
-            var (imgWidth, imgHeight) = 0.0;
-            var imgRatio = 0.0;
-            var centerWidth = 0.0;
-            var centerHeight = 0.0;
-            var htmlHeight = 0.0, htmlWidth = 0.0;
-            var onToolbar = false;
-            var onBtn = false;
-            var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
-
-            $(#toolbar).on("mouseenter", () =>
-            {
-                onToolbar = true;
-            });
-
-            $(#toolbar).on("mouseleave", () =>
-            {
-                onToolbar = false;
-            });
-
-            for (var (k, v) in $$(button))
-            {
-                if (v.parent != $(#ImgMenu))
-                {
-                    v.on("mouseenter", () => 
-                    {
-                        onBtn = true;
-                    });
-                    
-                    v.on("mouseleave", () => 
-                    {
-                        onBtn = false;
-                    });
-                }
-            }
-
-            ///////////////////////////////////////////////////////////////////////////
-            // Handle custom element tool tips:
-            for (var (k, v) in $$(img[alt=hint]))
-            {
-                var eleCount = k;
-                v.on("mouseenter", (me) =>
-                {   
-                    var hintTxt = $$(.HintText)[eleCount];
-                    hintTxt.style["visibility"] = "visible";
-                    var (xx, yy) = view.cursorLocation();
-                    hintTxt.style["top"] = yy;
-                    hintTxt.style["left"] = xx - 50;
-                });
-
-                v.on("mouseleave", (me) =>
-                {   
-                    $$(.HintText)[eleCount].style["visibility"] = "none";
-                });
-            }
-            ////////////////////////////////////////////////////////////
-            // Handle slider displays:
-            for (var v in $$(.sliderEle))
-            {
-                v.on("change", (me) =>
-                {
-                    if (me.target.next.attributes["data"] == "s")
-                        me.target.next.text = me.target.value + "s";
-                    if (me.target.next.attributes["data"] == "ms")
-                        me.target.next.text = me.target.value + "ms";
-                    if (me.target.next.attributes["data"] == "%")  
-                        me.target.next.text = me.target.value + "%";
-                });
-            }
-
-            //////////////////////////////////////////////////////////////
-            // Handle hotkey input boxes:
-            for (var v in $(#SettingsMenu).$$(input[type=text]))
-            {
-                v.on("focus", (me) =>
-                {
-                    me.target.text = " ";
-                });
-            }
-
-            ///////////////////////////////////////////////////////////////
-            // Handle setting saves:
-            $(#SettingsMenu).$(form).on("submit", (me) =>
-            {
-
-            });
-
-            $(#SettingsMenu).$(button[type=cancel]).on("click", () =>
-            {
-               var result = view.msgbox(#warning, "Abort changes and close?", "Are you sure?", [#yes, #no]);
-                if (result == #yes)
-                    $(#SettingsMenu).style["visibility"] = "none";
-            });
-            ///////////////////////////////////////////////////////////////////////////////////////////////
-            // Handle image and all positioning/sizing over the image (This is used instead of size):    
-            function GetRatio()
-            {
-                var widthRatio = htmlWidth * 1.0 / imgWidth * 1.0;
-                var heightRatio = htmlHeight * 1.0 / imgHeight * 1.0;      
-                var ratio = widthRatio * 1.0;
-
-                if (imgHeight * 1.0 * widthRatio * 1.0 > htmlHeight * 1.0)
-                {
-                    ratio = heightRatio * 1.0;
-                }
-
-                return ratio * 1.0;
-            }
-
-            function GetMaxRatio() // For determining the max possible size of the image on the window
-            {
-                var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
-                var widthRatio = scrWidth * 1.0 / imgWidth * 1.0;
-                var heightRatio = scrHeight * 1.0 / imgHeight * 1.0;      
-                var ratio = widthRatio * 1.0;
-
-                if (imgHeight * 1.0 * widthRatio * 1.0 > htmlHeight * 1.0)
-                {
-                    ratio = heightRatio * 1.0;
-                }
-
-                return ratio * 1.0;
-            }
-
-            function GetImgPercent() // Get the percentage the image takes up on the window comparing to the max possible ratio for the monitor
-            {
-                var maxRatio = imgWidth * GetMaxRatio();
-                var curWidth = $(#ImgOverlay).box(#width) * 1.0;
-                var curHeight = $(#ImgOverlay).box(#height) * 1.0;
-                var heightPercent = curHeight / maxRatio * 100.0;
-                var widthPercent = curWidth / maxRatio * 100.0;
-
-                return widthPercent;
-            }
-
-            function paint(gfx)
-            {
-                (imgWidth, imgHeight) = imgToDisplay.size();  
-                htmlHeight = view.box(#height);
-                htmlWidth = view.box(#width);
-                imgRatio = GetRatio();
-                centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0);
-                centerHeight = (htmlHeight / 2.0) - (imgHeight * imgRatio) / 2.0;
-                gfx.drawImage(imgToDisplay, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
-
-                // Match container's size and position to the image:
-                $(#ImgOverlay).style["width"] = (imgWidth * imgRatio);
-                $(#ImgOverlay).style["height"] = (imgHeight * imgRatio);
-                $(#ImgOverlay).style["margin-top"] = centerHeight;
-                $(#ImgOverlay).style["margin-left"] = centerWidth;
-
-                // Place image arrows at center of image on Y axis:
-                var parentHeight = $(#ImgOverlay).style["height"];
-                $(#NextImgImg).style["top"] = parentHeight / 2;
-                $(#PrevImgImg).style["top"] = parentHeight / 2;
-
-                // Move toolbar item to the right of toolbar:
-                $(#Info).style["margin-left"] = $(#toolbar).style#width;
-                $(#Info).style["margin-right"] = 5;
-
-                // Fit all button menus inside image overlay:                
-                (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
-                view.mediaVars { window-percent : GetImgPercent() };
-                view.mediaVars { window-width : (imgWidth * imgRatio) };
-
-                for (var v in $$(.BtnMenu))
-                {
-                    if (v.$(.container).box(#height) < $(#ImgOverlay).box(#height))
-                    {
-                        ExtendMenu();
-                    }
-
-                    v.update();
-                }
-            }
-
-            $(#FillImg).paintContent = paint;  
-            //////////////////////////////////////////////////////////////
-            // Add image menu functionality:
-            var onImgMenuBtn = false;
-            for (var (k,v) in $$(.ImgMenuBtn))
-            {
-                v.on("mouseenter", () => 
-                {
-                    onImgMenuBtn = true;
-                })
-
-                v.on("mouseleave", () => 
-                {
-                    onImgMenuBtn = false;
-                })
-            }
-
-            $(#ImgOverlay).on("mousemove", () =>
-            {  
-                MovedMouse = true;
-                if (!onToolbar && !MenuIsOpen())
-                    $(#ImgMenu).style["visibility"] = "visible";      
-            });
-
-            $(#ImgOverlay).on("mouseleave", () =>
-            {
-                HideArrows();
-            });
-
-            var MovedMouse = false;
-            event mousestop
-            {
-                MovedMouse = false;
-                self.timer(700ms, () =>
-                {
-                    if (!MovedMouse)
-                        HideArrows();
-
-                    return false;
-                });
-            }
-
-            function HideArrows()
-            {
-                if (!onImgMenuBtn)
-                    $(#ImgMenu).style["visibility"] = "none";
-            }
-            //////////////////////////////////////////////////////////////
-            // Handle button menus:
-            function HideMenus(whitelist)
-            {
-                for (var v in $$(.BtnMenu)) // Hide all other menus
-                {
-                    v.style["height"] = 0;
-                    if (v != whitelist) v.style["visibility"] = "none";
-                }
-            }
-
-            function bgPaint(gfx)
-            {
-                gfx.fillColor(color(0, 0, 0, 0));
-                gfx.rectangle(0, 0, 100, 100);
-            }
-        
-            function ShowMenu(element)
-            {
-                HideMenus(element);
-                element.style["visibility"] = "visible";
-                element.attributes["fade"] = "none";
-                element.attributes["fade"] = "in";
-                // element.$(input[type=hslider]).paintBackground = bgPaint;
-                ExtendMenu();
-                HideArrows();
-            }
-
-            $(#Settings).on("click", () => 
-            {
-                ShowMenu($(#SettingsMenu));
-            });
-
-            $(#Info).on("click", () => 
-            {
-                ShowMenu($(#InfoMenu));
-            });
-            //////////////////////////////////////////////////////////
-            // Handle links (in default browser):
-            for (var v in $$(span))
-            {
-                v.on("click", (me) =>
-                {
-                    Sciter.launch(me.target.attributes["href"]);
-                });
-            }
+            }        
          </script>
     </body>
 </html>

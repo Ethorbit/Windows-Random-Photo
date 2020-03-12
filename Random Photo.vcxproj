@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="funcs.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="resources.cpp" />
   </ItemGroup>

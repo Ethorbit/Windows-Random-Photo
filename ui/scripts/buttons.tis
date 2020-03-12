@@ -1,0 +1,32 @@
+/* TIScript code by: Ethan Christie */
+
+$(#Settings).on("click", () => 
+{
+    ShowMenu($(#SettingsMenu));
+});
+
+$(#Info).on("click", () => 
+{
+    ShowMenu($(#InfoMenu));
+});
+
+// Save folder for future image loading:
+$(#PickFolder).on("click", () =>
+{
+    var folder = view.selectFolder("Load images from", System.path(#USER_HOME));
+    if (folder)
+        view.saveINI("ImgFolder", folder);
+});
+
+// Handle the saving of settings:
+$(#SettingsMenu).$(form).on("submit", (me) => 
+{
+
+});
+
+$(#SettingsMenu).$(button[type=cancel]).on("click", () =>
+{
+    var result = view.msgbox(#warning, "Abort changes and close?", "Are you sure?", [#yes, #no]);
+    if (result == #yes)
+        $(#SettingsMenu).style["visibility"] = "none";
+});

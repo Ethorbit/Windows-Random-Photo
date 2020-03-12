@@ -1,0 +1,97 @@
+/* TIScript code by: Ethan Christie */
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Global variables/functions & events:
+var imgToDisplay = self.loadImage("G:/Pictures/debug/Jordan-19A-017_-_A_really_big_sandbox.jpg");
+var (imgWidth, imgHeight) = 0.0;
+var imgRatio = 0.0;
+var centerWidth = 0.0;
+var centerHeight = 0.0;
+var htmlHeight = 0.0, htmlWidth = 0.0;
+var onToolbar = false;
+var onBtn = false;
+var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
+
+function ShowImage(imgPath)
+{
+    imgToDisplay = self.loadImage(imgPath);
+}
+
+function MenuIsOpen()
+{
+    var bOpen = false;
+    for (var v in $$(.BtnMenu))
+    {
+        if (v.style["visibility"] == "visible")
+        {
+            bOpen = true;
+            break;
+        }
+    }
+
+    return bOpen;
+}
+
+function GetTallestElement(menu)
+{
+    var tallestEle = null;
+    for (var v in menu.$$(*))
+    {
+        if (tallestEle)
+        {
+            if (v.box(#height) > tallestEle.box(#height))
+            {
+                tallestEle = v;
+            }
+        }
+        else
+        {
+            tallestEle = v;
+        }
+    }
+
+    return tallestEle;
+}    
+
+$(#toolbar).on("mouseenter", () =>
+{
+    onToolbar = true;
+});
+
+$(#toolbar).on("mouseleave", () =>
+{
+    onToolbar = false;
+});
+
+for (var (k, v) in $$(button))
+{
+    if (v.parent != $(#ImgMenu))
+    {
+        v.on("mouseenter", () => 
+        {
+            onBtn = true;
+        });
+        
+        v.on("mouseleave", () => 
+        {
+            onBtn = false;
+        });
+    }
+}
+
+//////////////////////////////////////////////////////////
+// Handle links (in default browser):
+for (var v in $$(span))
+{
+    v.on("click", (me) =>
+    {
+        Sciter.launch(me.target.attributes["href"]);
+    });
+}
+
+//////////////////////////////////////////////////////////
+// TIScript functions for C++:
+function SciterGetINIPath()
+{
+    return System.home("settings.ini");
+}

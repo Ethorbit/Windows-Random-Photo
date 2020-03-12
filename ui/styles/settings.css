@@ -1,0 +1,231 @@
+/* CSS by Ethan Christie */
+
+#SettingsMenu button
+{  
+    height: 80dip;
+    font-size: 4vmin;
+    width: 25%;
+    font-weight: bold;
+    border-radius: 20dip;
+    border: 4dip solid black;
+    color: black;
+}
+
+#SettingsMenu button[type=submit]
+{ 
+    margin-left: 50dip;
+}
+
+#SettingsMenu input[type=checkbox]
+{
+    display: inline-block;
+    margin-left: 5dip;
+}
+
+#SettingsMenu .hint
+{
+    z-index: 1000;
+}
+
+#SettingsMenu *
+{
+    z-index: 1;
+}
+
+#SettingsMenu .HintText
+{
+    position: fixed;
+    top: 0;
+    width: 200dip;
+    height: 40dip;
+    background-color: yellow;
+    border: black solid 1dip;
+    padding: 5dip;
+    visibility: none;
+}
+
+#SettingsMenu .checkbox
+{
+    display: inline-block;
+}
+
+#SettingsMenu li
+{
+    line-height: 20dip;
+}
+
+#SettingsMenu h1
+{
+    font-size: 9vmin;
+}
+
+#SettingsMenu h2
+{
+    font-size: 6vmin;
+}
+
+#SettingsMenu li
+{
+    font-size: 3vmin;
+    line-height: 5vmin;
+}
+
+#SettingsMenu h3
+{
+    font-size: 4vmin;
+}
+
+#SettingsMenu .prevSlider
+{
+    font-size: 10dip;
+}
+
+#SettingsMenu button.slider
+{
+    height: 12dip;
+}
+
+ul
+{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#SettingsMenu
+{
+    max-width: 70%;
+}
+
+#SettingsMenu .container
+{
+    text-align: center;
+    color: black;
+    background-color: white;
+    padding: 10dip; 
+    width: *;
+    border: black solid 10dip;
+    border-radius: 20dip;
+}
+
+#lastHr
+{
+    margin-top: 50dip;
+}
+
+@media window-width >= 815
+{
+    #Ctrls
+    {
+        flow: horizontal;
+        horizontal-align: center;
+    }
+
+    #BehaviorCtrls
+    {
+        margin-left: 25%;
+    }
+
+    #HotkeyCtrls
+    {
+        margin-right: 25%;
+    }
+}
+
+@media window-percent <= 55
+{
+    #SettingsMenu .container
+    {
+        border: black solid 5dip;
+    }
+
+
+}
+
+@media window-percent >= 55
+{
+    #SettingsMenu h1
+    {
+        font-size: 50dip;
+    }
+
+    #SettingsMenu h2
+    {
+        font-size: 40dip;
+    }
+
+    #SettingsMenu h3
+    {
+        font-size: 30dip;
+    }
+
+    #SettingsMenu li
+    {
+        font-size: 20dip;
+        line-height: 40dip;
+    }
+
+    #SettingsMenu button
+    {  
+        font-size: 22dip;
+    }
+
+    #SettingsMenu input[type=checkbox]
+    {
+        transform: scale(1.5);
+    }
+}
+
+@media window-percent < 40
+{
+    #SettingsMenu
+    {
+        max-width: 100%;
+    }
+
+    #SettingsMenu h1
+    {
+        font-size: 35dip;
+    }
+
+    #SettingsMenu h2
+    {
+        font-size: 25dip;
+    }
+
+    #SettingsMenu h3
+    {
+        font-size: 18dip;
+    }
+
+    #SettingsMenu li
+    {
+        font-size: 13dip;
+        line-height: 20dip;
+    }
+
+    #Ctrls hr
+    {
+        visibility: none;
+    }
+
+    #BehaviorCtrls hr
+    {
+        visibility: visible;
+    }
+}
+
+@media window-percent <= 40
+{
+    #SettingsMenu button
+    {  
+        padding: 5dip;
+        font-size: 15dip;
+        height: 20dip;
+    }
+
+    #SettingsMenu button[type=submit]
+    {
+        margin-left: 10dip;
+    }
+}

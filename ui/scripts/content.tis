@@ -1,0 +1,86 @@
+/* TIScript code by: Ethan Christie */
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// Handle image and all positioning/sizing over the image (This is used instead of size):    
+function GetRatio()
+{
+    var widthRatio = htmlWidth * 1.0 / imgWidth * 1.0;
+    var heightRatio = htmlHeight * 1.0 / imgHeight * 1.0;      
+    var ratio = widthRatio * 1.0;
+
+    if (imgHeight * 1.0 * widthRatio * 1.0 > htmlHeight * 1.0)
+    {
+        ratio = heightRatio * 1.0;
+    }
+
+    return ratio * 1.0;
+}
+
+function GetMaxRatio() // For determining the max possible size of the image on the window
+{
+    var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
+    var widthRatio = scrWidth * 1.0 / imgWidth * 1.0;
+    var heightRatio = scrHeight * 1.0 / imgHeight * 1.0;      
+    var ratio = widthRatio * 1.0;
+
+    if (imgHeight * 1.0 * widthRatio * 1.0 > htmlHeight * 1.0)
+    {
+        ratio = heightRatio * 1.0;
+    }
+
+    return ratio * 1.0;
+}
+
+function GetImgPercent() // Get the percentage the image takes up on the window comparing to the max possible ratio for the monitor
+{
+    var maxRatio = imgWidth * GetMaxRatio();
+    var curWidth = $(#ImgOverlay).box(#width) * 1.0;
+    var curHeight = $(#ImgOverlay).box(#height) * 1.0;
+    var heightPercent = curHeight / maxRatio * 100.0;
+    var widthPercent = curWidth / maxRatio * 100.0;
+
+    return widthPercent;
+}
+
+function paint(gfx)
+{
+    (imgWidth, imgHeight) = imgToDisplay.size();  
+    htmlHeight = view.box(#height);
+    htmlWidth = view.box(#width);
+    imgRatio = GetRatio();
+    centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0);
+    centerHeight = (htmlHeight / 2.0) - (imgHeight * imgRatio) / 2.0;
+    gfx.drawImage(imgToDisplay, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
+
+    // Match container's size and position to the image:
+    $(#ImgOverlay).style["width"] = (imgWidth * imgRatio);
+    $(#ImgOverlay).style["height"] = (imgHeight * imgRatio);
+    $(#ImgOverlay).style["margin-top"] = centerHeight;
+    $(#ImgOverlay).style["margin-left"] = centerWidth;
+
+    // Place image arrows at center of image on Y axis:
+    var parentHeight = $(#ImgOverlay).style["height"];
+    $(#NextImgImg).style["top"] = parentHeight / 2;
+    $(#PrevImgImg).style["top"] = parentHeight / 2;
+
+    // Move toolbar item to the right of toolbar:
+    $(#Info).style["margin-left"] = $(#toolbar).style#width;
+    $(#Info).style["margin-right"] = 5;
+
+    // Fit all button menus inside image overlay:                
+    (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
+    view.mediaVars { window-percent : GetImgPercent() };
+    view.mediaVars { window-width : (imgWidth * imgRatio) };
+
+    for (var v in $$(.BtnMenu))
+    {
+        if (v.$(.container).box(#height) < $(#ImgOverlay).box(#height))
+        {
+            ExtendMenu();
+        }
+
+        v.update();
+    }
+}
+
+$(#FillImg).paintContent = paint;  

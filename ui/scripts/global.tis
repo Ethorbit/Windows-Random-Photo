@@ -12,6 +12,19 @@ var onToolbar = false;
 var onBtn = false;
 var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
 
+namespace DefaultSettings
+{
+    const NextImgHotkey = "RIGHT";
+    const PrevImgHotkey = "LEFT";
+    const ZoominHotkey = "PLUS";
+    const ZoomoutHotkey = "SUBTRACT";  
+    const OverlayHideTime = 700;
+    const OverlayHideToolbar = false;
+    const SlideshowDisplayTime = 5;
+    const ContentStretch = false;
+    const ContentZoomMultiplier = 5;
+}
+
 function ShowImage(imgPath)
 {
     imgToDisplay = self.loadImage(imgPath);
@@ -53,6 +66,29 @@ function GetTallestElement(menu)
     return tallestEle;
 }    
 
+function NoKeyName(element)
+{
+    element.attributes["maxlength"] = 12;
+    element.text = "Enter a key";
+}
+
+function SettingIsSaved(section, key)
+{
+    if (!view.getINI)
+        return false;
+
+    if (view.getINI(section, key).length > 0)
+        return true;
+}
+
+function IsADefaultSetting(name)
+{
+    if (DefaultSettings[name])
+        return true;
+    else
+        return false;
+}
+
 $(#toolbar).on("mouseenter", () =>
 {
     onToolbar = true;
@@ -87,11 +123,4 @@ for (var v in $$(span))
     {
         Sciter.launch(me.target.attributes["href"]);
     });
-}
-
-//////////////////////////////////////////////////////////
-// TIScript functions for C++:
-function SciterGetINIPath()
-{
-    return System.home("settings.ini");
 }

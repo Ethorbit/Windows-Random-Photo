@@ -1,29 +1,39 @@
 #include <sciter-x.h>
 #include <sciter-x-window.hpp>
-static sciter::window* sWndPtr;
+static sciter::dom::element root;
 
-static sciter::value saveINI(sciter::value key, sciter::value value)
+static std::wstring GetINIPath()
 {
-	sciter::string keyStr = key.get(L"");
-	sciter::string valueStr = value.get(L"");
+	if (!root) return L"";
+	sciter::value res = root.eval(L"System.home('settings.ini')", 30);
+	return res.get(L"").c_str();
+}
 
-	if (!sWndPtr) return sciter::value();
-	SCITER_VALUE res;
-	SciterCall(sWndPtr->get_hwnd(), "SciterGetINIPath", 1, &SCITER_VALUE(NULL), &res);
-
+static sciter::value saveINI(sciter::value section, sciter::value key, sciter::value value)
+{
 	WritePrivateProfileStringW
 	(
-		L"Other",
-		keyStr.c_str(),
-		valueStr.c_str(),
-		sciter::string(res.get(L"")).c_str()
+		sciter::string(section.get(L"")).c_str(),
+		sciter::string(key.get(L"")).c_str(),
+		sciter::string(value.get(L"")).c_str(),
+		GetINIPath().c_str()
 	);
 
 	return sciter::value();
 }
 
-static sciter::value getINI(sciter::value key)
+static sciter::value getINI(sciter::value section, sciter::value key)
 {
-	sciter::value value;
-	return sciter::value(value);
+	wchar_t returnedVal[200];
+	GetPrivateProfileStringW
+	(
+		sciter::string(section.get(L"")).c_str(),
+		sciter::string(key.get(L"")).c_str(),
+		L"",
+		returnedVal,
+		sizeof(returnedVal) / sizeof(wchar_t),
+		GetINIPath().c_str()
+	);
+
+	return sciter::value(returnedVal);
 }

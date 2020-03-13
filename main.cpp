@@ -5,8 +5,6 @@
 #include <thread>
 #include "funcs.cpp"
 
-static sciter::dom::element root;
-
 class MainWindow : public sciter::window
 {
 public:
@@ -19,12 +17,11 @@ public:
 			SW_MAIN |
 			SW_RESIZEABLE,
 			{ 0, 0, 500, 500 }
-		){
-			sWndPtr = this;
-		};
+		){};
 
 	BEGIN_FUNCTION_MAP
-		FUNCTION_2("saveINI", saveINI)
+		FUNCTION_3("saveINI", saveINI)
+		FUNCTION_2("getINI", getINI)
 	END_FUNCTION_MAP
 
 	LRESULT on_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -46,7 +43,7 @@ public:
 	{
 		m_bCheckingCursor = false;
 	};
-
+	
 	bool handle_mouse(HELEMENT he, MOUSE_PARAMS& params)
 	{ 
 		if (params.cmd == MOUSE_MOVE)
@@ -72,7 +69,6 @@ public:
 						root.fire_event(params, true);
 					}
 				};
-
 				std::thread t(checkCursor);
 				t.detach();
 				m_bCheckingCursor = false;

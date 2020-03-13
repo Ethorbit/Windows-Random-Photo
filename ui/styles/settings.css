@@ -11,6 +11,11 @@
     color: black;
 }
 
+#SettingsMenu img[alt=reset]
+{
+    cursor: pointer;
+}
+
 #SettingsMenu button[type=submit]
 { 
     margin-left: 50dip;
@@ -138,9 +143,16 @@ ul
     {
         border: black solid 5dip;
     }
-
-
 }
+
+@media window-percent <= 20
+{
+    #SettingsMenu input[type=text]
+    {
+        width: 90dip;
+    }
+}
+
 
 @media window-percent >= 55
 {

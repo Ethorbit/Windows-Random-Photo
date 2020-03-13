@@ -15,8 +15,29 @@ $(#PickFolder).on("click", () =>
 {
     var folder = view.selectFolder("Load images from", System.path(#USER_HOME));
     if (folder)
-        view.saveINI("ImgFolder", folder);
+        view.saveINI("Other", "ImgFolder", folder);
 });
+
+///////////////////////////////////////////////////////////////
+// Handle Resetting Hotkeys:
+for (var v in $(#SettingsMenu).$$(img[alt=reset]))
+{
+    v.on("click", (me) =>
+    {
+        var txtBoxName = me.target.next.attributes["name"];
+        if (SettingIsSaved("Hotkeys", txtBoxName))
+            view.saveINI("Hotkey", txtBoxName, null);
+
+        if (!IsADefaultSetting(txtBoxName))
+            NoKeyName(me.target.next);
+        else
+        {
+            me.target.next.attributes["maxlength"] = DefaultSettings[txtBoxName].length;
+            me.target.next.text = DefaultSettings[txtBoxName];
+            NoDuplicateKeys(me.target.next);
+        }
+    });
+}
 
 // Handle the saving of settings:
 $(#SettingsMenu).$(form).on("submit", (me) => 

@@ -37,6 +37,9 @@ function ShowMenu(element)
     element.style["visibility"] = "visible";
     element.attributes["fade"] = "none";
     element.attributes["fade"] = "in";
+    if (element == $(#SettingsMenu))
+        TryDefaultSettings();
+
     ExtendMenu();
     HideArrows();
 }
@@ -109,25 +112,96 @@ for (var (k, v) in $$(img[alt=hint]))
 }
 ////////////////////////////////////////////////////////////
 // Handle slider displays:
+function UpdateSlider(slider)
+{
+    var nextEle = slider.next;
+
+    if (nextEle.attributes["data"] == "s")
+        nextEle.text = slider.value + "s";
+    if (nextEle.attributes["data"] == "ms")
+        nextEle.text = slider.value + "ms";
+    if (nextEle.attributes["data"] == "%")  
+        nextEle.text = slider.value + "%";
+}
+
 for (var v in $$(.sliderEle))
 {
     v.on("change", (me) =>
     {
-        if (me.target.next.attributes["data"] == "s")
-            me.target.next.text = me.target.value + "s";
-        if (me.target.next.attributes["data"] == "ms")
-            me.target.next.text = me.target.value + "ms";
-        if (me.target.next.attributes["data"] == "%")  
-            me.target.next.text = me.target.value + "%";
+        UpdateSlider(me.target);
     });
 }
 
 //////////////////////////////////////////////////////////////
 // Handle hotkey input boxes:
+function NoDuplicateKeys(element)
+{
+    for (var v in $(#SettingsMenu).$$(input[type=text]))
+    {
+        if (v != element && v.text == element.text)
+        {
+            NoKeyName(v);
+            break;
+        }
+    }
+}
+
 for (var v in $(#SettingsMenu).$$(input[type=text]))
 {
-    v.on("focus", (me) =>
+    v.subscribe("keydown", (me) =>
     {
-        me.target.text = " ";
+        for (var (keyname, keycode) in Event)
+        {
+            var keyStr = keyname.toString();
+            if (keyStr.substr(0, 2) == "VK")
+            {
+                if (keycode == me.keyCode)
+                {
+                    var hotkey = keyStr.replace("VK_", "");
+                    me.target.attributes["maxlength"] = hotkey.length;
+                    me.target.text = hotkey;
+                    NoDuplicateKeys(me.target);
+                }
+            }
+        }
     });
+}
+
+////////////////////////////////////////////////////////////////
+// Default Settings:
+function TryDefaultSettings()
+{
+    function SetValue(element, value)
+    {
+        if (element.attributes["type"] == "text")
+        {
+            element.attributes["maxlength"] = value.length;
+            element.text = value;
+        }
+        else
+        {
+            element.value = value;
+            if (element.attributes["type"] == "hslider")
+                UpdateSlider(element);
+        }
+    }
+
+    var name = "";
+    for (var v in $(#SettingsMenu).$$(input))
+    {
+        name = v.attributes["name"];
+        var savedKey = "";
+        if (view.getINI)
+            savedKey = view.getINI("Hotkeys", name);
+            
+        if (IsADefaultSetting(name))
+            SetValue(v, DefaultSettings[name]);
+        else if (SettingIsSaved("Hotkeys", name))
+            SetValue(v, savedKey);
+        else 
+        {
+            if (v.attributes["type"] == "text")
+                NoKeyName(v);
+        }
+    }
 }

@@ -11,7 +11,9 @@
     color: black;
 }
 
-#SettingsMenu img[alt=reset]
+#SettingsMenu 
+img[alt=reset],
+img[alt=resetSection]
 {
     cursor: pointer;
 }
@@ -142,6 +144,12 @@ ul
     #SettingsMenu .container
     {
         border: black solid 5dip;
+    }
+
+    #SettingsMenu img[alt=resetSection]
+    {
+        height: auto;
+        width: 15dip;
     }
 }
 

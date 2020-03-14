@@ -2,16 +2,6 @@
 
 //////////////////////////////////////////////////////////////
 // Handle button menus:
-view.on("size", () =>
-{
-    ExtendMenu();
-});
-
-view.on("move", () =>
-{
-    ExtendMenu();
-});
-
 function ExtendMenu()
 {
     for (var v in $$(.BtnMenu))
@@ -72,7 +62,6 @@ $(#ImgOverlay).on("mouseleave", () =>
     HideArrows();
 });
 
-var MovedMouse = false;
 event mousestop
 {
     MovedMouse = false;
@@ -180,9 +169,18 @@ function TryDefaultSettings()
         }
         else
         {
-            element.value = value;
-            if (element.attributes["type"] == "hslider")
-                UpdateSlider(element);
+            if (element.attributes["type"] == "checkbox")
+            {
+                if (value == true)
+                    element.checked = true;
+            }
+            else
+            {
+                element.value = value;
+
+                if (element.attributes["type"] == "hslider")
+                    UpdateSlider(element);
+            }
         }
     }
 
@@ -190,14 +188,13 @@ function TryDefaultSettings()
     for (var v in $(#SettingsMenu).$$(input))
     {
         name = v.attributes["name"];
-        var savedKey = "";
-        if (view.getINI)
-            savedKey = view.getINI("Hotkeys", name);
-            
-        if (IsADefaultSetting(name))
+        var sectionName = $(#SettingsMenu).$(input[name={name}]).attributes["section"];  
+        var savedKey = view.getINI(sectionName, name);        
+
+        if (SettingIsSaved(sectionName, name))
+            SetValue(v, savedKey);     
+        else if (IsADefaultSetting(name))
             SetValue(v, DefaultSettings[name]);
-        else if (SettingIsSaved("Hotkeys", name))
-            SetValue(v, savedKey);
         else 
         {
             if (v.attributes["type"] == "text")

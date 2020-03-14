@@ -1,5 +1,3 @@
-#include <sciter-x.h>
-#include <sciter-x-window.hpp>
 #include <sciter-win-main.cpp>
 #include "resources.cpp"
 #include <thread>
@@ -17,7 +15,8 @@ public:
 			SW_MAIN |
 			SW_RESIZEABLE,
 			{ 0, 0, 500, 500 }
-		){};
+		)
+	{};
 
 	BEGIN_FUNCTION_MAP
 		FUNCTION_3("saveINI", saveINI)
@@ -99,9 +98,13 @@ int uimain(std::function<int()> run)
 	aux::asset_ptr<MainWindow> mainWin = new MainWindow;
 	mainWin->load(L"this://app/index.html");
 	mainWin->expand();	
-	root = mainWin->get_root();
+	::root = mainWin->get_root();
+
 	EventHandler eh;
 	root.attach_event_handler(&eh);
+
+	sciter::value res = ::root.eval(L"System.home('settings.ini')", 30);
+	iniPath = res.get(L"").c_str();
 
 	return run();
 }

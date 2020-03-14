@@ -18,17 +18,16 @@ $(#PickFolder).on("click", () =>
         view.saveINI("Other", "ImgFolder", folder);
 });
 
-///////////////////////////////////////////////////////////////
-// Handle Resetting Hotkeys:
+////////////////////////////////////////////////////////////////
+// Handle resetting certain settings:
 for (var v in $(#SettingsMenu).$$(img[alt=reset]))
 {
     v.on("click", (me) =>
     {
         var txtBoxName = me.target.next.attributes["name"];
         if (SettingIsSaved("Hotkeys", txtBoxName))
-            view.saveINI("Hotkey", txtBoxName, null);
-
-        if (!IsADefaultSetting(txtBoxName))
+            view.saveINI("Hotkeys", txtBoxName, null);
+        else if (!IsADefaultSetting(txtBoxName))
             NoKeyName(me.target.next);
         else
         {
@@ -39,10 +38,42 @@ for (var v in $(#SettingsMenu).$$(img[alt=reset]))
     });
 }
 
-// Handle the saving of settings:
+for (var v in $(#SettingsMenu).$$(img[alt=resetSection]))
+{
+    v.on("click", (me) =>
+    {
+        var nextEle = me.target.next;
+        while (nextEle.$$(li)[0] == undefined)
+        {
+            nextEle = nextEle.next;
+        }
+
+        for (var n in nextEle.$$(input))
+        {
+            var name = n.attributes["name"];
+            var sectionName = n.attributes["section"]; 
+
+            n.value = DefaultSettings[name];
+            if (n.attributes["type"] == "hslider")
+                UpdateSlider(n);    
+        }
+    });
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Handle saving settings:
 $(#SettingsMenu).$(form).on("submit", (me) => 
 {
+    for (var (name, value) in me.target.value)
+    {
+        var sectionName = $(#SettingsMenu).$(input[name={name}]).attributes["section"]; 
 
+        if (value != DefaultSettings[name] && value != "Enter a key" 
+        || value == DefaultSettings[name] && SettingIsSaved(sectionName, name) && value != view.getINI(sectionName, name))
+        {          
+            view.saveINI(sectionName, name, value.toString());
+        }
+    }
 });
 
 $(#SettingsMenu).$(button[type=cancel]).on("click", () =>

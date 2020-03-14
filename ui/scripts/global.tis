@@ -11,6 +11,26 @@ var htmlHeight = 0.0, htmlWidth = 0.0;
 var onToolbar = false;
 var onBtn = false;
 var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
+var MovedMouse = false;
+
+view.on("size", () =>
+{
+    WindowChanged();
+    ExtendMenu();
+
+    self.timer(1ms, () =>
+    {
+        WindowChanged();
+        ExtendMenu();
+        return false;
+    });
+});
+
+view.on("move", () =>
+{
+    WindowChanged();
+    ExtendMenu();
+});
 
 namespace DefaultSettings
 {
@@ -74,9 +94,6 @@ function NoKeyName(element)
 
 function SettingIsSaved(section, key)
 {
-    if (!view.getINI)
-        return false;
-
     if (view.getINI(section, key).length > 0)
         return true;
 }

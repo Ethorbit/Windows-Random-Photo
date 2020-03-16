@@ -120,6 +120,17 @@ ul
     margin-top: 50dip;
 }
 
+#SettingsMenu #DuplicateError
+{
+    position: fixed;
+    background-color: red;
+    color: white;
+    font-size: 30dip;
+    width: *;
+    height: 70dip;
+    visibility: none;
+}
+
 @media window-width >= 815
 {
     #Ctrls

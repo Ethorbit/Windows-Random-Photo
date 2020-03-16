@@ -68,17 +68,6 @@ function WindowChanged()
     // Move toolbar item to the right of toolbar:
     $(#Info).style["margin-left"] = $(#toolbar).style#width;
     $(#Info).style["margin-right"] = 5;
-
-    // Fit all button menus inside image overlay:  
-    // for (var v in $$(.BtnMenu))
-    // {
-    //     // if (v.$(.container).box(#height) < $(#ImgOverlay).box(#height))
-    //     // {
-    //     //     ExtendMenu();
-    //     // }
-
-    //     v.update();
-    // }
 }
 
 function paint(gfx)

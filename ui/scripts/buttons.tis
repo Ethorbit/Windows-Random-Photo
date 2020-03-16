@@ -25,15 +25,15 @@ for (var v in $(#SettingsMenu).$$(img[alt=reset]))
     v.on("click", (me) =>
     {
         var txtBoxName = me.target.next.attributes["name"];
-        if (SettingIsSaved("Hotkeys", txtBoxName))
-            view.saveINI("Hotkeys", txtBoxName, null);
-        else if (!IsADefaultSetting(txtBoxName))
+        var defSetting = GetDefSettingObject(txtBoxName);
+
+        if (!IsADefaultSetting(txtBoxName))
             NoKeyName(me.target.next);
         else
         {
-            me.target.next.attributes["maxlength"] = DefaultSettings[txtBoxName].length;
-            me.target.next.text = DefaultSettings[txtBoxName];
-            NoDuplicateKeys(me.target.next);
+            me.target.next.attributes["maxlength"] = defSetting.value.length;
+            me.target.next.text = defSetting.value;
+            NoDuplicateKeys();
         }
     });
 }
@@ -51,9 +51,9 @@ for (var v in $(#SettingsMenu).$$(img[alt=resetSection]))
         for (var n in nextEle.$$(input))
         {
             var name = n.attributes["name"];
-            var sectionName = n.attributes["section"]; 
+            var defSetting = GetDefSettingObject(name);
 
-            n.value = DefaultSettings[name];
+            n.value = defSetting.value;
             if (n.attributes["type"] == "hslider")
                 UpdateSlider(n);    
         }
@@ -66,14 +66,20 @@ $(#SettingsMenu).$(form).on("submit", (me) =>
 {
     for (var (name, value) in me.target.value)
     {
-        var sectionName = $(#SettingsMenu).$(input[name={name}]).attributes["section"]; 
+        var setting = GetSettingObject(name);
 
-        if (value != DefaultSettings[name] && value != "Enter a key" 
-        || value == DefaultSettings[name] && SettingIsSaved(sectionName, name) && value != view.getINI(sectionName, name))
+        if (value != setting.value && value != "Enter a key" 
+        || value == setting.value && SettingIsSaved(setting.section, name) && value != view.getINI(setting.section, name))
         {          
-            view.saveINI(sectionName, name, value.toString());
+            view.saveINI(setting.section, name, value.toString());
+        }
+        else if (value == "Enter a key")
+        {
+            view.saveINI(setting.section, name, "");
         }
     }
+
+    UpdateSettingsList();
 });
 
 $(#SettingsMenu).$(button[type=cancel]).on("click", () =>

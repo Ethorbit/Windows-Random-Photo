@@ -65,11 +65,13 @@ $(#ImgOverlay).on("mouseleave", () =>
 event mousestop
 {
     MovedMouse = false;
-    self.timer(700ms, () =>
+
+    var savedTime = GetSetting("OverlayHideTime").toString() + "ms";
+
+    self.timer(Duration.parse(savedTime), () =>
     {
         if (!MovedMouse)
             HideArrows();
-
         return false;
     });
 }
@@ -123,14 +125,45 @@ for (var v in $$(.sliderEle))
 
 //////////////////////////////////////////////////////////////
 // Handle hotkey input boxes:
-function NoDuplicateKeys(element)
-{
-    for (var v in $(#SettingsMenu).$$(input[type=text]))
+function DuplicateKeyMsg()
+{   
+    var element = $(#SettingsMenu).$(#DuplicateError);
+    element.style["visibility"] = "visible";
+
+    var bContinue = true;
+    self.timer(1ms, () =>
     {
-        if (v != element && v.text == element.text)
+        if (bContinue)
         {
-            NoKeyName(v);
-            break;
+            element.style["top"] = centerHeight + $(#ImgOverlay).box(#height) - 70;
+            return true;
+        }
+        else
+            return false;
+    });
+
+    self.timer(1000ms, () =>
+    {
+        element.style["visibility"] = "none";
+        bContinue = false;
+        return false;
+    });
+}
+
+function NoDuplicateKeys()
+{
+    for (var a in $(#SettingsMenu).$$(input[type=text]))
+    {
+        for (var b in $(#SettingsMenu).$$(input[type=text]))
+        {
+            if (a.text == b.text && a != b && a.text != "Enter a key") 
+            {
+                NoKeyName(b);
+                DuplicateKeyMsg();
+
+                if (view.getINI("Hotkeys", b.attributes["name"]) == a.text)
+                    view.saveINI("Hotkeys", b.attributes["name"], null);
+            }
         }
     }
 }
@@ -149,7 +182,7 @@ for (var v in $(#SettingsMenu).$$(input[type=text]))
                     var hotkey = keyStr.replace("VK_", "");
                     me.target.attributes["maxlength"] = hotkey.length;
                     me.target.text = hotkey;
-                    NoDuplicateKeys(me.target);
+                    NoDuplicateKeys();
                 }
             }
         }
@@ -184,17 +217,20 @@ function TryDefaultSettings()
         }
     }
 
-    var name = "";
+    var mName = "";
     for (var v in $(#SettingsMenu).$$(input))
     {
-        name = v.attributes["name"];
-        var sectionName = $(#SettingsMenu).$(input[name={name}]).attributes["section"];  
-        var savedKey = view.getINI(sectionName, name);        
+        mName = v.attributes["name"];
+        var mSetting = GetSettingObject(mName);
+        var defSetting = GetDefSettingObject(mName);
+        
+        var savedKey = "";
+        savedKey = view.getINI(mSetting.section, mName);        
 
-        if (SettingIsSaved(sectionName, name))
+        if (SettingIsSaved(mSetting.section, mName))
             SetValue(v, savedKey);     
-        else if (IsADefaultSetting(name))
-            SetValue(v, DefaultSettings[name]);
+        else if (IsADefaultSetting(mName))
+            SetValue(v, defSetting.value);
         else 
         {
             if (v.attributes["type"] == "text")

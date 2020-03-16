@@ -12,12 +12,14 @@ var onToolbar = false;
 var onBtn = false;
 var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
 var MovedMouse = false;
+var debugMsg = null;
 
 view.on("size", () =>
 {
     WindowChanged();
     ExtendMenu();
 
+    // Wait 1ms in case the window is affected by Aero Snap:
     self.timer(1ms, () =>
     {
         WindowChanged();
@@ -32,17 +34,109 @@ view.on("move", () =>
     ExtendMenu();
 });
 
-namespace DefaultSettings
+namespace Settings
 {
-    const NextImgHotkey = "RIGHT";
-    const PrevImgHotkey = "LEFT";
-    const ZoominHotkey = "PLUS";
-    const ZoomoutHotkey = "SUBTRACT";  
-    const OverlayHideTime = 700;
-    const OverlayHideToolbar = false;
-    const SlideshowDisplayTime = 5;
-    const ContentStretch = false;
-    const ContentZoomMultiplier = 5;
+    class Setting
+    {
+        function this(mValue, mSection)
+        {
+            this.value = mValue;
+            this.section = mSection;
+        }
+    }
+
+    class DefaultSettings
+    {
+        var NextImgHotkey = new Setting("RIGHT", "Hotkeys");
+        var PrevImgHotkey = new Setting("LEFT", "Hotkeys");
+        var ZoominHotkey = new Setting("PLUS", "Hotkeys");
+        var ZoomoutHotkey = new Setting("SUBTRACT", "Hotkeys");
+        var OverlayHideTime = new Setting(700, "Behavior");
+        var OverlayHideToolbar = new Setting(false, "Behavior");
+        var SlideshowDisplayTime = new Setting(5, "Behavior");
+        var ContentStretch = new Setting(false, "Behavior");
+        var ContentZoomMultiplier = new Setting(5, "Behavior");
+    }
+
+    class SavedSettings 
+    {
+        var ImgFolder = new Setting(null, "Other");
+        var NextImgHotkey = new Setting(null, "Hotkeys");
+        var PrevImgHotkey = new Setting(null, "Hotkeys");
+        var ZoominHotkey = new Setting(null, "Hotkeys");
+        var ZoomoutHotkey = new Setting(null, "Hotkeys");
+        var HideOverlayHotkey = new Setting(null, "Hotkeys");
+        var TheatreHotkey = new Setting(null, "Hotkeys");
+        var OverlayHideTime = new Setting(null, "Behavior");
+        var OverlayHideToolbar = new Setting(null, "Behavior");
+        var SlideshowDisplayTime = new Setting(null, "Behavior");
+        var ContentStretch = new Setting(null, "Behavior");
+        var ContentZoomMultiplier = new Setting(null, "Behavior");
+    }
+}
+
+function UpdateSettingsList()
+{
+    for (var (name, setting) in Settings.SavedSettings)
+    {
+        if (SettingIsSaved(setting.section, name))
+            setting.value = view.getINI(setting.section, name);
+    }
+
+    NoDuplicateKeys();
+}
+
+function GetSettingObject(mName)
+{
+    for (var (name, setting) in Settings.SavedSettings)
+    {
+        if (name == mName)
+            return setting;
+    }
+}
+
+function GetDefSettingObject(mName)
+{
+    for (var (name, setting) in Settings.DefaultSettings)
+    {
+        if (name == mName)
+            return setting;
+    }
+}
+
+function GetSetting(name)
+{
+    var setting = GetSettingObject(name);
+    var defSetting = GetDefSettingObject(name);
+
+    if (setting == null)
+        return defSetting.value;
+    else
+        return setting.value;
+}
+
+function SettingIsSaved(section, key)
+{
+    if (view.getINI(section, key).length > 0)
+        return true;
+}
+
+function IsADefaultSetting(name)
+{
+    var setting = GetDefSettingObject(name);
+    if (setting)
+        return true;
+    else
+        return false;
+}
+
+function debugbox(message)
+{
+    if (debugMsg == null)
+        debugMsg = view.msgbox(#information, message, "Debug Box", #ok);
+
+    if (debugMsg == #ok)
+        debugMsg = null;
 }
 
 function ShowImage(imgPath)
@@ -90,20 +184,6 @@ function NoKeyName(element)
 {
     element.attributes["maxlength"] = 12;
     element.text = "Enter a key";
-}
-
-function SettingIsSaved(section, key)
-{
-    if (view.getINI(section, key).length > 0)
-        return true;
-}
-
-function IsADefaultSetting(name)
-{
-    if (DefaultSettings[name])
-        return true;
-    else
-        return false;
 }
 
 $(#toolbar).on("mouseenter", () =>

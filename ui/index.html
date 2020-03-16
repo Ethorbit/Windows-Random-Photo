@@ -93,6 +93,8 @@
                             <button type="cancel">Cancel</button>
                             <button type="submit">Save</button>
                         </form>
+
+                        <div id="DuplicateError">ERROR: Duplicate bind prevented.</div>
                     </div>
                 </div>
             </div>
@@ -160,7 +162,11 @@
                     v.style["visibility"] = "none";
                 }
 
-                WindowChanged();
+                self.timer(100ms, () =>
+                {
+                    WindowChanged();
+                    UpdateSettingsList();
+                });
             }        
          </script>
     </body>

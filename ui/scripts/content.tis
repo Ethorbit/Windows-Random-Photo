@@ -1,5 +1,106 @@
 /* TIScript code by: Ethan Christie */
 
+// Show/hide content displayed over image:
+function ShowContentOverlay()
+{
+    if (!onToolbar && !MenuIsOpen())
+    {
+        $(#ImgMenu).style["visibility"] = "visible";  
+        $(#ImgOverlay).style["cursor"] = "default";
+
+        if (GetSetting("OverlayHideToolbar") == true)
+        {
+            $(#toolbar).style["visibility"] = "visible";
+        }
+    } 
+}
+
+function HideContentOverlay()
+{
+    if (!onImgMenuBtn)
+    {
+        if (GetSetting("OverlayHideToolbar") == true)
+        {
+            $(#toolbar).style["visibility"] = "hidden";
+        }
+
+        $(#ImgMenu).style["visibility"] = "none";
+    }
+}
+
+// Show/Hide window border, cover taskbar & overlap all windows:
+function FullscreenToggle() 
+{
+    fullscreen = !fullscreen;
+    if (fullscreen == true)
+    {
+        view.windowState = View.WINDOW_MINIMIZED; // FULL_SCREEN won't cover taskbar if the window is already in fullscreen
+        view.windowState = View.WINDOW_FULL_SCREEN;
+    }
+    else 
+        view.windowState = View.WINDOW_SHOWN;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// Handle dynamic content functionality:
+function Slideshowoff()
+{
+    $(#Slideshow).style["opacity"] = 0.70;
+    ShowOverlayText("Slideshow was cancelled.", "red", "top", 2000ms);
+}
+
+function CancelSlideshow()
+{
+    if (slideshow == true)
+    {
+        Slideshowoff();
+        slideshow = false;
+    }
+}
+
+function SlideshowToggle() 
+{
+    slideshow = !slideshow;
+    if (slideshow == true)
+    {
+        $(#Slideshow).style["opacity"] = 1.0;
+        ShowOverlayText("Slideshow started.", "green", "top", 2000ms);
+
+        var switchTime = GetSetting("SlideshowDisplayTime").toString() + "s";
+        self.timer(Duration.parse(switchTime), () => 
+        {
+            if (!slideshow)
+                return false;
+
+            //debugbox("Next image..");
+            return true;
+        });
+    }
+    else
+    {
+        Slideshowoff();
+    }
+}
+
+function NextImage()
+{
+
+}
+
+function PreviousImage()
+{
+
+}
+
+function ZoomImage()
+{
+
+}
+
+function ZoomoutImage()
+{
+
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // Handle image and all positioning/sizing over the image (This is used instead of size):    
 function GetRatio()

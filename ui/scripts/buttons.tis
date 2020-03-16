@@ -10,12 +10,34 @@ $(#Info).on("click", () =>
     ShowMenu($(#InfoMenu));
 });
 
+$(#Fullscreen).on("click", () =>
+{
+    FullscreenToggle();
+});
+
 // Save folder for future image loading:
 $(#PickFolder).on("click", () =>
 {
     var folder = view.selectFolder("Load images from", System.path(#USER_HOME));
     if (folder)
         view.saveINI("Other", "ImgFolder", folder);
+});
+
+$$(.ImgMenuBtn)[0].on("click", () =>
+{
+    CancelSlideshow();
+    NextImage();
+});
+
+$$(.ImgMenuBtn)[1].on("click", () =>
+{
+    CancelSlideshow();
+    NextImage();
+});
+
+$(#Slideshow).on("click", () =>
+{
+    SlideshowToggle();
 });
 
 ////////////////////////////////////////////////////////////////
@@ -88,6 +110,9 @@ $(#SettingsMenu).$(button[type=submit]).on("click", (me) =>
 
     UpdateSettingsList();
     WindowChanged();
+
+    if (GetSetting("OverlayHideToolbar") == false)
+        $(#toolbar).style["visibility"] = "visible";
 });
 
 $(#SettingsMenu).$(button[type=cancel]).on("click", () =>

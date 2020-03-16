@@ -27,8 +27,7 @@ public:
 	{
 		if (uMsg == WM_GETMINMAXINFO)
 		{
-			MINMAXINFO* minMax = (MINMAXINFO*)lParam;
-			minMax->ptMinTrackSize.y = 120;
+			// Maybe useful someday?
 		}
 
 		return 0;

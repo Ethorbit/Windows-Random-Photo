@@ -13,6 +13,8 @@
             <div id="toolbar">
                 <button type="button" id="Settings"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\gear.png" alt="settings" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="tbImg"></button>
+                <button type="button" id="Fullscreen"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/fullscreen.png" height="50" width="50" class="tbImg"></button>
+                <button type="button" id="Slideshow"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/slideshow.png" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="Info"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.png" alt="info" height="50" width="50" class="tbImg"></button>
             </div> 
         
@@ -41,9 +43,9 @@
                                     <li>Hide Overlay: </li>
                                     <img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
                                     <input type="text" value="Enter a key" maxlength="1" name="HideOverlayHotkey" section="Hotkeys">
-                                    <li>Exit Theatre Mode: </li>
+                                    <li>Toggle Fullscreen: </li>
                                     <img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
-                                    <input type="text" value="Enter a key" maxlength="1" name="TheatreHotkey" section="Hotkeys">
+                                    <input type="text" value="Enter a key" maxlength="1" name="FullscreenHotkey" section="Hotkeys">
                                 </div>
                                 <div id="BehaviorCtrls">
                                     <h2>Behavior</h2>
@@ -93,8 +95,6 @@
                             <button type="cancel">Cancel</button>
                             <button type="submit">Save</button>
                         </fixedform>
-
-                        <div id="DuplicateError">ERROR: Duplicate bind prevented.</div>
                     </div>
                 </div>
             </div>
@@ -142,12 +142,14 @@
             include "scripts/buttons.tis";
 
             function self.ready()
-            {
+            {   
+                view.windowMinSize = (120, 120);   
                 $(#ImgMenu).style["visibility"] = "none";    
 
                 for (var v in $$(.BtnMenu)) // Add a button with click handler to all button menus
                 {
                     var thisEle = v;
+                    v.style["cursor"] = "default";
 
                     v.$(.container).$prepend
                     (
@@ -168,6 +170,16 @@
                     UpdateSettingsList();
                     return false;
                 });
+    
+                for (var (keyname, keycode) in Event)
+                {
+                    var keyStr = keyname.toString();
+                    if (keyStr.substr(0, 2) == "VK")
+                    {
+                        var fixedName = keyStr.replace("VK_", "");
+                        Keys.KeyList.push(new Keys.Key(fixedName, keycode));
+                    }
+                }
             }        
          </script>
     </body>

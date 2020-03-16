@@ -24,6 +24,8 @@ function HideMenus(whitelist)
 function ShowMenu(element)
 {
     HideMenus(element);
+    $(#ImgOverlay).style["cursor"] = "default";
+
     element.style["visibility"] = "visible";
     element.attributes["fade"] = "none";
     element.attributes["fade"] = "in";
@@ -31,7 +33,7 @@ function ShowMenu(element)
         TryDefaultSettings();
 
     ExtendMenu();
-    HideArrows();
+    HideContentOverlay();
 }
 
 //////////////////////////////////////////////////////////////
@@ -64,41 +66,20 @@ $(#ImgOverlay).on("mouseleave", () =>
 event mousestop
 {
     MovedMouse = false;
-
-    var savedTime = GetSetting("OverlayHideTime").toString() + "ms";
+    var savedTime = (GetSetting("OverlayHideTime").toInteger() - 100).toString() + "ms";
 
     self.timer(Duration.parse(savedTime), () =>
     {
         if (!MovedMouse)
+        {
             HideContentOverlay();
+
+            if (MenuIsOpen() == false)
+                $(#ImgOverlay).style["cursor"] = "none";
+        }
+
         return false;
     });
-}
-
-function ShowContentOverlay()
-{
-    if (!onToolbar && !MenuIsOpen())
-    {
-        $(#ImgMenu).style["visibility"] = "visible";  
-
-        if (GetSetting("OverlayHideToolbar") == true)
-        {
-            $(#toolbar).style["visibility"] = "visible";
-        }
-    } 
-}
-
-function HideContentOverlay()
-{
-    if (!onImgMenuBtn)
-    {
-        if (GetSetting("OverlayHideToolbar") == true)
-        {
-            $(#toolbar).style["visibility"] = "hidden";
-        }
-
-        $(#ImgMenu).style["visibility"] = "none";
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -144,31 +125,6 @@ for (var v in $$(.sliderEle))
 
 //////////////////////////////////////////////////////////////
 // Handle hotkey input boxes:
-function DuplicateKeyMsg()
-{   
-    var element = $(#SettingsMenu).$(#DuplicateError);
-    element.style["visibility"] = "visible";
-
-    var bContinue = true;
-    self.timer(1ms, () =>
-    {
-        if (bContinue)
-        {
-            element.style["top"] = centerHeight + $(#ImgOverlay).box(#height) - 70;
-            return true;
-        }
-        else
-            return false;
-    });
-
-    self.timer(1000ms, () =>
-    {
-        element.style["visibility"] = "none";
-        bContinue = false;
-        return false;
-    });
-}
-
 function NoDuplicateKeys()
 {
     for (var a in $(#SettingsMenu).$$(input[type=text]))
@@ -178,7 +134,7 @@ function NoDuplicateKeys()
             if (a.text == b.text && a != b && a.text != "Enter a key") 
             {
                 NoKeyName(b);
-                DuplicateKeyMsg();
+                ShowOverlayText("ERROR: Duplicate bind prevented.", "red", "bottom", 1300ms);
 
                 if (view.getINI("Hotkeys", b.attributes["name"]) == a.text)
                     view.saveINI("Hotkeys", b.attributes["name"], null);
@@ -191,18 +147,13 @@ for (var v in $(#SettingsMenu).$$(input[type=text]))
 {
     v.subscribe("keydown", (me) =>
     {
-        for (var (keyname, keycode) in Event)
+        for (var key in Keys.KeyList)
         {
-            var keyStr = keyname.toString();
-            if (keyStr.substr(0, 2) == "VK")
+            if (key.keycode == me.keyCode)
             {
-                if (keycode == me.keyCode)
-                {
-                    var hotkey = keyStr.replace("VK_", "");
-                    me.target.attributes["maxlength"] = hotkey.length;
-                    me.target.text = hotkey;
-                    NoDuplicateKeys();
-                }
+                me.target.attributes["maxlength"] = key.keyname.length;
+                me.target.text = key.keyname;
+                NoDuplicateKeys();
             }
         }
     });

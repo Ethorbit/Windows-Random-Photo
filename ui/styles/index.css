@@ -119,3 +119,8 @@ button,
     text-align: right;
     margin-right: 7vmin;
 }
+
+#Slideshow
+{
+    opacity: 0.70;
+}

@@ -8,6 +8,8 @@ var imgRatio = 0.0;
 var centerWidth = 0.0;
 var centerHeight = 0.0;
 var htmlHeight = 0.0, htmlWidth = 0.0;
+var fullscreen = false;
+var slideshow = false;
 var onToolbar = false;
 var onBtn = false;
 var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
@@ -33,6 +35,51 @@ view.on("move", () =>
     WindowChanged();
     ExtendMenu();
 });
+
+$(#ImgOverlay).on("keydown", (me) =>
+{
+    for (var key in Keys.KeyList)
+    {
+        if (me.keyCode == key.keycode)
+        {
+            switch (key.keyname)
+            {
+            case GetSetting("HideOverlayHotkey"):
+                HideContentOverlay();
+            return;
+            case GetSetting("NextImgHotkey"):
+                NextImage();
+            return;
+            case GetSetting("PrevImgHotkey"):
+                PreviousImage();
+            return;
+            case GetSetting("ZoominHotkey"):
+                ZoomImage();
+            return;
+            case GetSetting("ZoomoutHotkey"):
+                ZoomoutImage();
+            return;
+            case GetSetting("FullscreenHotkey"):
+                FullscreenToggle();
+            return;
+            }
+        }
+    }
+});
+
+namespace Keys
+{
+    class Key 
+    {
+        function this(mKeyname, mKeycode)
+        {
+            this.keyname = mKeyname;
+            this.keycode = mKeycode;
+        }
+    }
+
+    var KeyList = new Array();
+}
 
 namespace Settings
 {
@@ -66,7 +113,7 @@ namespace Settings
         var ZoominHotkey = new Setting(null, "Hotkeys");
         var ZoomoutHotkey = new Setting(null, "Hotkeys");
         var HideOverlayHotkey = new Setting(null, "Hotkeys");
-        var TheatreHotkey = new Setting(null, "Hotkeys");
+        var FullscreenHotkey = new Setting(null, "Hotkeys");
         var OverlayHideTime = new Setting(null, "Behavior");
         var OverlayHideToolbar = new Setting(null, "Behavior");
         var SlideshowDisplayTime = new Setting(null, "Behavior");
@@ -81,6 +128,8 @@ function UpdateSettingsList()
     {
         if (SettingIsSaved(setting.section, name))
             setting.value = view.getINI(setting.section, name);
+        else
+            setting.value = null;
     }
 
     NoDuplicateKeys();
@@ -180,9 +229,61 @@ function GetTallestElement(menu)
     return tallestEle;
 }    
 
+function ShowOverlayText(text, color, position, time) // Dynamically display message over image container
+{
+    for (var v in $$(#OverlayMessage)) { v.remove();} // Remove any previous messages
+    var element = $(#ImgOverlay).append(<div id="OverlayMessage"></div>);
+    element.text = text;
+    element.style["opacity"] = 0;
+    element.style["position"] = "fixed";
+    element.style["background-color"] = color;
+    element.style["color"] = "white";
+    element.style["font-size"] = "30dip";
+    element.style["width"] = "*";
+    element.style["height"] = 70dip;
+    element.style["text-align"] = "center";
+    element.style["transition"] = "opacity(linear, 150ms);"
+    element.attributes["fade"] = "none";
+    
+    self.timer(100ms, () => // Hide the part where the text is positioning
+    {
+      element.attributes["fade"] = "in"; 
+      element.style["opacity"] = 1.0;
+    });
+
+    var bContinue = true;
+    self.timer(1ms, () =>
+    {
+        if (bContinue)
+        {
+            if (position == "bottom")
+                element.style["top"] = centerHeight + $(#ImgOverlay).box(#height) - element.box(#height);
+            else if (position == "top")
+            {
+                 element.style["top"] = centerHeight;
+                 $(#toolbar).style["margin-top"] = element.box(#height); // Move toolbar out of the way
+            }
+
+            return true;
+        }
+        else
+            return false;
+    });
+
+    self.timer(time, () =>
+    {
+        if (position == "top")
+            $(#toolbar).style["margin-top"] = 0;
+            
+        element.remove();
+        bContinue = false;
+        return false;
+    });
+}
+
 function NoKeyName(element)
 {
-    element.attributes["maxlength"] = 12;
+    element.attributes["maxlength"] = 11;
     element.text = "Enter a key";
 }
 

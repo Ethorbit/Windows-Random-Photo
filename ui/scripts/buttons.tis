@@ -62,10 +62,15 @@ for (var v in $(#SettingsMenu).$$(img[alt=resetSection]))
 
 ///////////////////////////////////////////////////////////////////////////
 // Handle saving settings:
-$(#SettingsMenu).$(form).on("submit", (me) => 
+//$(#SettingsMenu).$(form).on("submit", (me) => 
+// Form element contains a massive memory leak from the API? Using custom form element instead:
+$(#SettingsMenu).$(button[type=submit]).on("click", (me) =>
 {
-    for (var (name, value) in me.target.value)
+    //for (var (name, value) in me.target.value)
+    for (var v in $(#SettingsMenu).$$(input))
     {
+        var value = v.value;
+        var name = v.attributes["name"];
         var setting = GetSettingObject(name);
 
         if (value != setting.value && value != "Enter a key" 
@@ -77,9 +82,12 @@ $(#SettingsMenu).$(form).on("submit", (me) =>
         {
             view.saveINI(setting.section, name, "");
         }
+
+        $(#SettingsMenu).style["visibility"] = "none";
     }
 
     UpdateSettingsList();
+    WindowChanged();
 });
 
 $(#SettingsMenu).$(button[type=cancel]).on("click", () =>

@@ -53,13 +53,12 @@ for (var (k,v) in $$(.ImgMenuBtn))
 $(#ImgOverlay).on("mousemove", () =>
 {  
     MovedMouse = true;
-    if (!onToolbar && !MenuIsOpen())
-        $(#ImgMenu).style["visibility"] = "visible";      
+    ShowContentOverlay();
 });
 
 $(#ImgOverlay).on("mouseleave", () =>
 {
-    HideArrows();
+    HideContentOverlay();
 });
 
 event mousestop
@@ -71,15 +70,35 @@ event mousestop
     self.timer(Duration.parse(savedTime), () =>
     {
         if (!MovedMouse)
-            HideArrows();
+            HideContentOverlay();
         return false;
     });
 }
 
-function HideArrows()
+function ShowContentOverlay()
+{
+    if (!onToolbar && !MenuIsOpen())
+    {
+        $(#ImgMenu).style["visibility"] = "visible";  
+
+        if (GetSetting("OverlayHideToolbar") == true)
+        {
+            $(#toolbar).style["visibility"] = "visible";
+        }
+    } 
+}
+
+function HideContentOverlay()
 {
     if (!onImgMenuBtn)
+    {
+        if (GetSetting("OverlayHideToolbar") == true)
+        {
+            $(#toolbar).style["visibility"] = "hidden";
+        }
+
         $(#ImgMenu).style["visibility"] = "none";
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////

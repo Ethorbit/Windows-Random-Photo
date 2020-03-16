@@ -44,9 +44,17 @@ function GetImgPercent() // Get the percentage the image takes up on the window 
 
 function WindowChanged()
 {
-    (imgWidth, imgHeight) = imgToDisplay.size();  
     htmlHeight = view.box(#height);
     htmlWidth = view.box(#width);
+
+    if (GetSetting("ContentStretch") == true)
+    {
+        imgWidth = htmlWidth;  
+        imgHeight = htmlHeight;
+    } 
+    else
+        (imgWidth, imgHeight) = imgToDisplay.size();  
+
     imgRatio = GetRatio();
     centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0);
     centerHeight = (htmlHeight / 2.0) - (imgHeight * imgRatio) / 2.0;

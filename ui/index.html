@@ -21,7 +21,7 @@
                     <div id="CenterSettings">
                         <h1>Settings</h1>
                         <hr>
-                        <form>
+                        <fixedform>
                             <div id="Ctrls">
                                 <div id="HotkeyCtrls">
                                     <h2>Hotkeys</h2>
@@ -92,7 +92,7 @@
                             <hr id="lastHr">
                             <button type="cancel">Cancel</button>
                             <button type="submit">Save</button>
-                        </form>
+                        </fixedform>
 
                         <div id="DuplicateError">ERROR: Duplicate bind prevented.</div>
                     </div>
@@ -166,6 +166,7 @@
                 {
                     WindowChanged();
                     UpdateSettingsList();
+                    return false;
                 });
             }        
          </script>

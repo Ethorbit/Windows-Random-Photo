@@ -37,6 +37,11 @@ button,
     z-index: 50;
 }
 
+#gifimg
+{
+    position: absolute;
+}
+
 #toolbar
 {
     cursor: default;
@@ -123,4 +128,42 @@ button,
 #Slideshow
 {
     opacity: 0.70;
+}
+
+#NoImageFound
+{
+    visibility: none;
+    margin: auto;
+    text-align: center;
+}
+
+@media window-width < 500
+{
+    #NoImageFound h1
+    {
+        font-size: 10vmin;
+    }
+
+    #NoImageFound h2
+    {
+        font-size: 8vmin;
+    }
+
+    #NoImageFound h3
+    {
+        font-size: 6vmin;
+    }
+}
+
+@media window-width >= 500
+{
+    #NoImageFound h1
+    {
+        font-size: 70dip;
+    }
+
+    #NoImageFound h2
+    {
+        font-size: 30dip;
+    }
 }

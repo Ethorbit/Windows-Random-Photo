@@ -1,5 +1,15 @@
 /* TIScript code by: Ethan Christie */
 
+var imgToDisplay = self.loadImage("C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/noimagefound.png");
+var ImageList = new Array();
+var CurrentImg = 0;
+
+function GetFullImgPath(filename)
+{
+    var imgPath = GetSetting("ImgFolder") + "/";
+    return imgPath + filename;
+}
+
 // Show/hide content displayed over image:
 function ShowContentOverlay()
 {
@@ -38,7 +48,10 @@ function FullscreenToggle()
         view.windowState = View.WINDOW_FULL_SCREEN;
     }
     else 
+    {
         view.windowState = View.WINDOW_SHOWN;
+        $(body).style["cursor"] = "default";
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +85,7 @@ function SlideshowToggle()
             if (!slideshow)
                 return false;
 
-            //debugbox("Next image..");
+            NextImage();
             return true;
         });
     }
@@ -82,14 +95,107 @@ function SlideshowToggle()
     }
 }
 
+function ShuffleImages()
+{
+    CurrentImg = 0;
+
+    ImageList.sort(() => 
+    {
+        if (Math.random() > 0.5)
+            return +1;
+        else
+            return -1;
+    });
+
+    DisplayFirstImage();
+    NextImage();
+}
+
+function UpdateImageList() // Reconstruct image list based on saved image path
+{
+    ImageList = new Array();
+    System.scanFiles(GetSetting("ImgFolder") + "/*.*", (name, attr) => 
+    {
+        // Only match supported whitelisted formats (jpg,png,bmp,gif,svg,webp):
+        if (!name.match(".*.[.]([Jj][Pp][Gg]|[Pp][Nn][Gg]|[Bb][Mm][Pp]|[Gg][Ii][Ff]|[Ss][Vv][Gg]|[Ww][Ee][Bb][Pp])$")) 
+            return true;
+        // Only match files (not directories):
+        if (attr & System.IS_DIR || attr & System.IS_HIDDEN) 
+            return true;
+
+        ImageList.push(name);
+        return true;
+    });
+
+    ShuffleImages();
+}
+
+function ImgIsGIF()
+{
+    if (imgToDisplay == null)
+        return false;
+
+    if (imgToDisplay.url.match(".*.[.]([Gg][Ii][Ff])$"))
+        return true;
+    else
+        return false;
+}
+
+function DisplayImage(index)
+{
+    if ($(#gifimg))
+    {
+        $(#gifimg).attributes["src"] = "";
+    }
+        
+    RefreshImage();
+
+    if (ImgIsGIF() == true)
+    {
+        (imgWidth, imgHeight) = imgToDisplay.size(); // Backup height/width for when we remove the loaded image
+        imgToDisplay = null; // If this remains valid then we would be allocating memory for 2 of the same gifs!
+        $(#gifimg).attributes["src"] = GetFullImgPath(ImageList[index]);
+    }
+
+    imgToDisplay = self.loadImage(GetFullImgPath(ImageList[index]));
+    WindowChanged();
+}
+
+function DisplayFirstImage()
+{
+    // Display no image error if the first image in the image list is null:
+    if (ImageList.length > 0)
+    {
+        if ($(#NoImageFound).style["visibility"] == "visible")
+            $(#NoImageFound).style["visibility"] = "none";
+
+        DisplayImage(1);
+    }
+    else
+    {
+        $(#NoImageFound).style["visibility"] = "visible";
+        imgToDisplay = self.loadImage("C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/noimagefound.png");
+    }
+}
+
 function NextImage()
 {
-
+    if (CurrentImg + 1 < ImageList.length)
+    {
+        CurrentImg++;
+        DisplayImage(CurrentImg);
+    }
+    else
+       ShuffleImages(); // Let the next image work forever
 }
 
 function PreviousImage()
 {
-
+    if (CurrentImg - 1 > 0)
+    {
+        CurrentImg--;
+        DisplayImage(CurrentImg);
+    }
 }
 
 function ZoomImage()
@@ -148,13 +254,16 @@ function WindowChanged()
     htmlHeight = view.box(#height);
     htmlWidth = view.box(#width);
 
-    if (GetSetting("ContentStretch") == true)
+    if (GetSetting("ContentStretch") == true && imgToDisplay)
     {
         imgWidth = htmlWidth;  
         imgHeight = htmlHeight;
     } 
     else
-        (imgWidth, imgHeight) = imgToDisplay.size();  
+    {
+        if (imgToDisplay)
+            (imgWidth, imgHeight) = imgToDisplay.size();  
+    }
 
     imgRatio = GetRatio();
     centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0);
@@ -168,6 +277,7 @@ function WindowChanged()
     $(#ImgOverlay).style["height"] = (imgHeight * imgRatio);
     $(#ImgOverlay).style["margin-top"] = centerHeight;
     $(#ImgOverlay).style["margin-left"] = centerWidth;
+    $(#ImgOverlay).style["background-image"] = imgToDisplay;
 
     // Place image arrows at center of image on Y axis:
     var parentHeight = $(#ImgOverlay).style["height"];
@@ -177,11 +287,27 @@ function WindowChanged()
     // Move toolbar item to the right of toolbar:
     $(#Info).style["margin-left"] = $(#toolbar).style#width;
     $(#Info).style["margin-right"] = 5;
+
+    $(#gifimg).style["width"] = (imgWidth * imgRatio);
+    $(#gifimg).style["top"] = centerHeight;
+    $(#gifimg).style["left"] = centerWidth;
 }
 
 function paint(gfx)
 {
-    gfx.drawImage(imgToDisplay, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
+    gfx.fillColor(color(255, 255, 255));
+    gfx.rectangle(centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
+
+    if (ImgIsGIF() == false) // gfx.drawImage won't draw the gif's frames, so we use <picture> element for that instead
+        gfx.drawImage(imgToDisplay, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
+}
+
+// Refresh functions force free memory caused by unwanted cached images:
+function RefreshImage()
+{
+    $(#FillImg).remove();
+    $(body).prepend(<div id="FillImg"></div>);
+    $(#FillImg).paintContent = paint; 
 }
 
 $(#FillImg).paintContent = paint;  

@@ -76,6 +76,9 @@ event mousestop
 
             if (MenuIsOpen() == false)
                 $(#ImgOverlay).style["cursor"] = "none";
+
+            if (fullscreen)
+                $(body).style["cursor"] = "none";
         }
 
         return false;

@@ -2,7 +2,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Global variables/functions & events:
-var imgToDisplay = self.loadImage("G:/Pictures/debug/Jordan-19A-017_-_A_really_big_sandbox.jpg");
 var (imgWidth, imgHeight) = 0.0;
 var imgRatio = 0.0;
 var centerWidth = 0.0;
@@ -36,7 +35,21 @@ view.on("move", () =>
     ExtendMenu();
 });
 
-$(#ImgOverlay).on("keydown", (me) =>
+namespace Keys
+{
+    class Key 
+    {
+        function this(mKeyname, mKeycode)
+        {
+            this.keyname = mKeyname;
+            this.keycode = mKeycode;
+        }
+    }
+
+    var KeyList = new Array();
+}
+
+event keydown(me)
 {
     for (var key in Keys.KeyList)
     {
@@ -53,6 +66,9 @@ $(#ImgOverlay).on("keydown", (me) =>
             case GetSetting("PrevImgHotkey"):
                 PreviousImage();
             return;
+            case GetSetting("ShuffleImgHotkey"):
+                ShuffleImages();
+            return;
             case GetSetting("ZoominHotkey"):
                 ZoomImage();
             return;
@@ -65,118 +81,6 @@ $(#ImgOverlay).on("keydown", (me) =>
             }
         }
     }
-});
-
-namespace Keys
-{
-    class Key 
-    {
-        function this(mKeyname, mKeycode)
-        {
-            this.keyname = mKeyname;
-            this.keycode = mKeycode;
-        }
-    }
-
-    var KeyList = new Array();
-}
-
-namespace Settings
-{
-    class Setting
-    {
-        function this(mValue, mSection)
-        {
-            this.value = mValue;
-            this.section = mSection;
-        }
-    }
-
-    class DefaultSettings
-    {
-        var NextImgHotkey = new Setting("RIGHT", "Hotkeys");
-        var PrevImgHotkey = new Setting("LEFT", "Hotkeys");
-        var ZoominHotkey = new Setting("PLUS", "Hotkeys");
-        var ZoomoutHotkey = new Setting("SUBTRACT", "Hotkeys");
-        var OverlayHideTime = new Setting(700, "Behavior");
-        var OverlayHideToolbar = new Setting(false, "Behavior");
-        var SlideshowDisplayTime = new Setting(5, "Behavior");
-        var ContentStretch = new Setting(false, "Behavior");
-        var ContentZoomMultiplier = new Setting(5, "Behavior");
-    }
-
-    class SavedSettings 
-    {
-        var ImgFolder = new Setting(null, "Other");
-        var NextImgHotkey = new Setting(null, "Hotkeys");
-        var PrevImgHotkey = new Setting(null, "Hotkeys");
-        var ZoominHotkey = new Setting(null, "Hotkeys");
-        var ZoomoutHotkey = new Setting(null, "Hotkeys");
-        var HideOverlayHotkey = new Setting(null, "Hotkeys");
-        var FullscreenHotkey = new Setting(null, "Hotkeys");
-        var OverlayHideTime = new Setting(null, "Behavior");
-        var OverlayHideToolbar = new Setting(null, "Behavior");
-        var SlideshowDisplayTime = new Setting(null, "Behavior");
-        var ContentStretch = new Setting(null, "Behavior");
-        var ContentZoomMultiplier = new Setting(null, "Behavior");
-    }
-}
-
-function UpdateSettingsList()
-{
-    for (var (name, setting) in Settings.SavedSettings)
-    {
-        if (SettingIsSaved(setting.section, name))
-            setting.value = view.getINI(setting.section, name);
-        else
-            setting.value = null;
-    }
-
-    NoDuplicateKeys();
-}
-
-function GetSettingObject(mName)
-{
-    for (var (name, setting) in Settings.SavedSettings)
-    {
-        if (name == mName)
-            return setting;
-    }
-}
-
-function GetDefSettingObject(mName)
-{
-    for (var (name, setting) in Settings.DefaultSettings)
-    {
-        if (name == mName)
-            return setting;
-    }
-}
-
-function GetSetting(name)
-{
-    var setting = GetSettingObject(name);
-    var defSetting = GetDefSettingObject(name);
-
-    if (setting == null)
-        return defSetting.value;
-    else
-        return setting.value;
-}
-
-function SettingIsSaved(section, key)
-{
-    if (view.getINI(section, key).length > 0)
-        return true;
-}
-
-function IsADefaultSetting(name)
-{
-    var setting = GetDefSettingObject(name);
-    if (setting)
-        return true;
-    else
-        return false;
 }
 
 function debugbox(message)

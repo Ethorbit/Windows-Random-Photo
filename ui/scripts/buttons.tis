@@ -20,20 +20,30 @@ $(#PickFolder).on("click", () =>
 {
     var folder = view.selectFolder("Load images from", System.path(#USER_HOME));
     if (folder)
+    {
         view.saveINI("Other", "ImgFolder", folder);
+        Settings.SavedSettings.ImgFolder.value = folder;
+        UpdateImageList();
+    }
 });
 
-$$(.ImgMenuBtn)[0].on("click", () =>
+$(#NextImg).on("click", () =>
 {
     CancelSlideshow();
     NextImage();
 });
 
-$$(.ImgMenuBtn)[1].on("click", () =>
+$(#PrevImg).on("click", () =>
 {
     CancelSlideshow();
-    NextImage();
+    PreviousImage();
 });
+
+// $$(.arrow)[1].on("click", () =>
+// {
+//     CancelSlideshow();
+//     PreviousImage();
+// });
 
 $(#Slideshow).on("click", () =>
 {

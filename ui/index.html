@@ -9,6 +9,9 @@
     </head>
 
     <body>   
+        <div id="FillImg"></div>
+        <picture id="gifimg"></picture>
+
         <div id="ImgOverlay">
             <div id="toolbar">
                 <button type="button" id="Settings"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\gear.png" alt="settings" height="50" width="50" class="tbImg"></button>
@@ -17,6 +20,19 @@
                 <button type="button" id="Slideshow"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/slideshow.png" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="Info"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.png" alt="info" height="50" width="50" class="tbImg"></button>
             </div> 
+
+            <div id="NoImageFound">
+                <h1>No image found?</h1>
+                <h2>Formats supported:</h2>
+                <h3>
+                    JPG,
+                    PNG,
+                    BMP,
+                    GIF,
+                    SVG,
+                    WebP
+                </h3>
+            </div>
         
             <div id="SettingsMenu" class="BtnMenu">
                 <div class="container">
@@ -34,6 +50,9 @@
                                     <li>Previous Image: </li>
                                     <img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
                                     <input type="text" value="Enter a key" maxlength="1" name="PrevImgHotkey" section="Hotkeys">
+                                    <li>Shuffle Images</li>
+                                    <img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
+                                    <input type="text" value="Enter a key" maxlength="1" name="ShuffleImgHotkey" section="Hotkeys">
                                     <li>Zoom at cursor: </li>
                                     <img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
                                     <input type="text" value="Enter a key" maxlength="1" name="ZoominHotkey" section="Hotkeys">
@@ -101,42 +120,39 @@
 
             <div id="InfoMenu" class="BtnMenu">
                 <div class="container">
-                <div>
-                    <h1>Info</h1>
-                    <br>
-                    <hr>
-                    <h3>
-                        Random Photo is an application designed for viewing photos from a folder in a random order
+                    <div>
+                        <h1>Info</h1>
                         <br>
-                        and was made using the <span href="https://sciter.com/">Sciter library</span>.
-                        <br>
-                        <br>
-                        <br>
-                        Random Photo was developed by Ethorbit (Ethan Christie), the project began on February 25th 2020.
-                        <br>
-                        It is open source and the repository can be found <span href="https://github.com/Ethorbit/RandomPhoto-PC">here</span>.
-                    </h3>
-                    <hr id="dev">
-                    <h1>Support the developer</h1>
-                    <h3>
-                        Random Photo is free and will <b>never</b> cost money, so if you would like to support the developer you can make a donation <span href="https://www.paypal.me/Ethorbit">here</span>!
-                    </h3>
+                        <hr>
+                        <h3>
+                            Random Photo is an application designed for viewing photos from a folder in a random order
+                            <br>
+                            and was made using the <span href="https://sciter.com/">Sciter library</span>.
+                            <br>
+                            <br>
+                            <br>
+                            Random Photo was developed by Ethorbit (Ethan Christie), the project began on February 25th 2020.
+                            <br>
+                            It is open source and the repository can be found <span href="https://github.com/Ethorbit/RandomPhoto-PC">here</span>.
+                        </h3>
+                        <hr id="dev">
+                        <h1>Support the developer</h1>
+                        <h3>
+                            Random Photo is free and will <b>never</b> cost money, so if you would like to support the developer you can make a donation <span href="https://www.paypal.me/Ethorbit">here</span>!
+                        </h3>
+                    </div>
                 </div>
             </div>
 
-            </div>
-
             <div id="ImgMenu">
-                <button type="button" class="ImgMenuBtn"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="previous img" height="50" width="50" class="arrow" id="PrevImgImg"></button>
-                <button type="button" class="ImgMenuBtn"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="next img" height="50" width="50" class="arrow" id="NextImgImg"></button>
+                <button type="button" class="ImgMenuBtn" id="PrevImg"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="previous img" height="50" width="50" class="arrow" id="PrevImgImg"></button>
+                <button type="button" class="ImgMenuBtn" id="NextImg"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\arrow.png" alt="next img" height="50" width="50" class="arrow" id="NextImgImg"></button>
             </div>
-        </div>
-        
-        <div id="FillImg">
         </div>
 
         <script type="text/tiscript">
             include "scripts/global.tis";
+            include "scripts/settings.tis";
             include "scripts/content.tis";
             include "scripts/menu.tis";
             include "scripts/buttons.tis";
@@ -146,7 +162,8 @@
                 view.windowMinSize = (120, 120);   
                 $(#ImgMenu).style["visibility"] = "none";    
 
-                for (var v in $$(.BtnMenu)) // Add a button with click handler to all button menus
+                // Add a button with click handler to all button menus:
+                for (var v in $$(.BtnMenu)) 
                 {
                     var thisEle = v;
                     v.style["cursor"] = "default";
@@ -164,14 +181,18 @@
                     v.style["visibility"] = "none";
                 }
 
+                // Initialize everything:
                 self.timer(100ms, () =>
                 {
                     WindowChanged();
                     UpdateSettingsList();
+                    UpdateImageList();
+                    DisplayFirstImage();
                     return false;
                 });
     
-                for (var (keyname, keycode) in Event)
+                // One-time loop to save all key names & key codes for use with hotkeys:
+                for (var (keyname, keycode) in Event) 
                 {
                     var keyStr = keyname.toString();
                     if (keyStr.substr(0, 2) == "VK")

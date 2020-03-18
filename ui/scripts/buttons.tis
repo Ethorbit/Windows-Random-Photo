@@ -23,7 +23,9 @@ $(#PickFolder).on("click", () =>
     {
         view.saveINI("Other", "ImgFolder", folder);
         Settings.SavedSettings.ImgFolder.value = folder;
+        CurrentImg = 0; 
         UpdateImageList();
+        ShuffleImages();
     }
 });
 

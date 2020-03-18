@@ -176,8 +176,11 @@
                         </div>
                     ).on("click", () => 
                     {
-                        $(#NoImageFound).style["visibility"] = "visible";
+                        if (ImageList.length == 0)
+                            $(#NoImageFound).style["visibility"] = "visible";
+                            
                         thisEle.style["visibility"] = "none";
+                        WindowChanged();
                     });
 
                     v.style["visibility"] = "none";

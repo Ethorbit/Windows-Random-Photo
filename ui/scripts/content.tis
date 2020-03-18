@@ -97,10 +97,10 @@ function SlideshowToggle()
 
 function ShuffleImages()
 {
-    CurrentImg = 0;
-
     if (ImageList.length > 0)
     {
+        var curImg = ImageList[CurrentImg];
+
         ImageList.sort(() => 
         {
             if (Math.random() > 0.5)
@@ -109,7 +109,18 @@ function ShuffleImages()
                 return -1;
         });
 
-        NextImage();
+        //var (index, val) = ImageList.find((e, i, arr) => { e == curImg });
+        var index = -1;
+        for (var (k, v) in ImageList)
+        {
+            if (v == curImg)
+            {
+                index = k;
+            }
+        }
+
+        ImageList.splice(index, 1);
+        ImageList.push(curImg); // Add what the user was viewing before shuffle to the end of the array
     }
 
     DisplayFirstImage();
@@ -162,7 +173,6 @@ function DisplayImage(index)
     }
 
     imgToDisplay = self.loadImage(GetFullImgPath(ImageList[index]));
-    WindowChanged();
 }
 
 function DisplayFirstImage()
@@ -173,7 +183,8 @@ function DisplayFirstImage()
         if ($(#NoImageFound).style["visibility"] == "visible")
             $(#NoImageFound).style["visibility"] = "none";
 
-        DisplayImage(1);
+        DisplayImage(0);
+        CurrentImg = 0;
     }
     else
     {
@@ -186,8 +197,24 @@ function DisplayFirstImage()
     WindowChanged();
 }
 
+function ImageChange()
+{
+    if ($(#NoImageFound).style["visibility"] == "visible")
+    $(#NoImageFound).style["visibility"] = "none";
+
+    WindowChanged();
+    self.timer(100ms, () =>
+    {
+        WindowChanged();
+        return false;
+    });
+}
+
 function NextImage()
 {
+    if (ImageList.length == 0)
+        return;
+
     if (CurrentImg + 1 < ImageList.length)
     {
         CurrentImg++;
@@ -195,15 +222,22 @@ function NextImage()
     }
     else
        ShuffleImages(); // Let the next image work forever
+
+    ImageChange();
 }
 
 function PreviousImage()
 {
-    if (CurrentImg - 1 > 0)
+    if (ImageList.length == 0)
+        return;
+
+    if (CurrentImg - 1 >= 0)
     {
         CurrentImg--;
         DisplayImage(CurrentImg);
     }
+
+    ImageChange();
 }
 
 function ZoomImage()
@@ -282,15 +316,41 @@ function WindowChanged()
 
     // Match container's size and position to the image:
     $(#ImgOverlay).style["width"] = (imgWidth * imgRatio);
-    $(#ImgOverlay).style["height"] = (imgHeight * imgRatio);
-    $(#ImgOverlay).style["margin-top"] = centerHeight;
-    $(#ImgOverlay).style["margin-left"] = centerWidth;
-    $(#ImgOverlay).style["background-image"] = imgToDisplay;
+    if (imgHeight <= 250 && (imgHeight * imgRatio) < 800) // Don't let the overlay get too low when images are tiny
+    {
+        $(#ImgOverlay).style["margin-top"] = 0;
 
-    // Place image arrows at center of image on Y axis:
-    var parentHeight = $(#ImgOverlay).style["height"];
-    $(#NextImgImg).style["top"] = parentHeight / 2;
-    $(#PrevImgImg).style["top"] = parentHeight / 2;
+        $(#ImgOverlay).style["top"] = 0;
+        $(#ImgOverlay).style["height"] = htmlHeight;
+        
+        var parentHeight = (imgHeight * imgRatio);
+        
+        if (MenuIsOpen())
+            $(#toolbar).style["visibility"] = "none";
+        else
+            $(#toolbar).style["visibility"] = "visible";
+
+        $(#toolbar).style["position"] = "absolute";
+        $(#toolbar).style["top"] = centerHeight;
+
+        $(#NextImgImg).style["top"] = parentHeight / 2;
+        $(#PrevImgImg).style["top"] = parentHeight / 2;
+    }
+    else
+    {   
+        $(#ImgOverlay).style["height"] = (imgHeight * imgRatio);
+        $(#ImgOverlay).style["margin-top"] = centerHeight;
+
+        // Place image arrows at center of image on Y axis:
+        var parentHeight = $(#ImgOverlay).style["height"];
+        $(#toolbar).style["visibility"] = "visible";
+        $(#toolbar).style["position"] = "relative";
+        $(#toolbar).style["top"] = 0;
+        $(#NextImgImg).style["top"] = parentHeight / 2;
+        $(#PrevImgImg).style["top"] = parentHeight / 2;
+    }
+
+    $(#ImgOverlay).style["margin-left"] = centerWidth;
 
     // Move toolbar item to the right of toolbar:
     $(#Info).style["margin-left"] = $(#toolbar).style#width;

@@ -39,17 +39,15 @@ $(#PrevImg).on("click", () =>
     PreviousImage();
 });
 
-// $$(.arrow)[1].on("click", () =>
-// {
-//     CancelSlideshow();
-//     PreviousImage();
-// });
-
 $(#Slideshow).on("click", () =>
 {
     SlideshowToggle();
 });
 
+$(#Refresh).on("click", () =>
+{
+    ShuffleImages();
+});
 ////////////////////////////////////////////////////////////////
 // Handle resetting certain settings:
 for (var v in $(#SettingsMenu).$$(img[alt=reset]))

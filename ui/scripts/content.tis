@@ -99,16 +99,20 @@ function ShuffleImages()
 {
     CurrentImg = 0;
 
-    ImageList.sort(() => 
+    if (ImageList.length > 0)
     {
-        if (Math.random() > 0.5)
-            return +1;
-        else
-            return -1;
-    });
+        ImageList.sort(() => 
+        {
+            if (Math.random() > 0.5)
+                return +1;
+            else
+                return -1;
+        });
+
+        NextImage();
+    }
 
     DisplayFirstImage();
-    NextImage();
 }
 
 function UpdateImageList() // Reconstruct image list based on saved image path
@@ -173,9 +177,13 @@ function DisplayFirstImage()
     }
     else
     {
-        $(#NoImageFound).style["visibility"] = "visible";
+        if (!MenuIsOpen())
+            $(#NoImageFound).style["visibility"] = "visible";
+
         imgToDisplay = self.loadImage("C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/noimagefound.png");
     }
+
+    WindowChanged();
 }
 
 function NextImage()

@@ -18,6 +18,7 @@
                 <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="Fullscreen"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/fullscreen.png" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="Slideshow"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/slideshow.png" height="50" width="50" class="tbImg"></button>
+                <button type="button" id="Refresh"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\refresh.png" alt="info" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="Info"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\info.png" alt="info" height="50" width="50" class="tbImg"></button>
             </div> 
 
@@ -175,6 +176,7 @@
                         </div>
                     ).on("click", () => 
                     {
+                        $(#NoImageFound).style["visibility"] = "visible";
                         thisEle.style["visibility"] = "none";
                     });
 

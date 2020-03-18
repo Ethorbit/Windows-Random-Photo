@@ -25,6 +25,7 @@ function ShowMenu(element)
 {
     HideMenus(element);
     $(#ImgOverlay).style["cursor"] = "default";
+    $(#NoImageFound).style["visibility"] = "none";
 
     element.style["visibility"] = "visible";
     element.attributes["fade"] = "none";
@@ -52,6 +53,11 @@ for (var (k,v) in $$(.ImgMenuBtn))
     })
 }
 
+$(body).on("mousemove", () =>
+{
+    $(body).style["cursor"] = "default";
+});
+
 $(#ImgOverlay).on("mousemove", () =>
 {  
     MovedMouse = true;
@@ -77,8 +83,7 @@ event mousestop
             if (MenuIsOpen() == false)
                 $(#ImgOverlay).style["cursor"] = "none";
 
-            if (fullscreen)
-                $(body).style["cursor"] = "none";
+            $(body).style["cursor"] = "none";
         }
 
         return false;

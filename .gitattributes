@@ -1,1 +1,2 @@
 *.tis linguist-language=javascript
+*.cpp linguist-detectable=false

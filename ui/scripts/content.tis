@@ -314,8 +314,30 @@ function WindowChanged()
     view.mediaVars { window-percent : GetImgPercent() };
     view.mediaVars { window-width : (imgWidth * imgRatio) };
 
-    // Match container's size and position to the image:
-    $(#ImgOverlay).style["width"] = (imgWidth * imgRatio);
+    if (imgWidth <= 250 && (imgWidth * imgRatio) < 250) // Add extra width to overlay if the image is too thin
+    {
+        $(#toolbar).style["top"] = 0;
+        $(#ImgOverlay).style["top"] = 0;
+
+        if (htmlWidth < 500)
+        {   
+            // + 20
+            $(#ImgOverlay).style["left"] = (htmlWidth * -1 / 2) + $(#toolbar).$(button).box(#height);
+            $(#ImgOverlay).style["width"] = htmlWidth;
+        }       
+        else
+        {
+            $(#ImgOverlay).style["width"] = 500;
+            $(#ImgOverlay).style["left"] = (imgWidth * imgRatio) - 250 - $(#toolbar).$(button).box(#height) / 2; 
+        }
+    }
+    else
+    {
+        $(#ImgOverlay).style["width"] = (imgWidth * imgRatio);
+        $(#ImgOverlay).style["left"] = 0;
+        $(#ImgOverlay).style["margin-left"] = centerWidth;
+    }
+
     if (imgHeight <= 250 && (imgHeight * imgRatio) < 800) // Don't let the overlay get too low when images are tiny
     {
         $(#ImgOverlay).style["margin-top"] = 0;
@@ -333,8 +355,8 @@ function WindowChanged()
         $(#toolbar).style["position"] = "absolute";
         $(#toolbar).style["top"] = centerHeight;
 
-        $(#NextImgImg).style["top"] = parentHeight / 2;
-        $(#PrevImgImg).style["top"] = parentHeight / 2;
+        $(#NextImgImg).style["top"] = (htmlHeight / 2) + (imgHeight * imgRatio) / imgHeight - ($(#NextImgImg).box(#height)) / 2;
+        $(#PrevImgImg).style["top"] = (htmlHeight / 2) + (imgHeight * imgRatio) / imgHeight - ($(#PrevImgImg).box(#height)) / 2;
     }
     else
     {   

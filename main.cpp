@@ -15,9 +15,8 @@ public:
 			SW_MAIN |
 			SW_RESIZEABLE,
 			{ 0, 0, 500, 500 }
-		)
-	{};
-
+		){};
+	
 	BEGIN_FUNCTION_MAP
 		FUNCTION_3("saveINI", saveINI)
 		FUNCTION_2("getINI", getINI)
@@ -25,9 +24,24 @@ public:
 
 	LRESULT on_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 	{
-		if (uMsg == WM_GETMINMAXINFO)
+		if (uMsg == WM_COMMAND)
 		{
-			// Maybe useful someday?
+			if (wParam == BringWinToTop)
+			{	
+				sciter::value isMaxed = ::root.eval(L"view.windowState", 20);
+				if (isMaxed == 2) // Main window is minimized
+					::root.eval(L"view.windowState = View.WINDOW_SHOWN;", 40); 
+
+				::root.eval(L"self.state.focus = true;", 30); // Bring window to top
+			}
+		}
+
+		if (uMsg == WM_COPYDATA)
+		{
+			COPYDATASTRUCT* cpStruct = (COPYDATASTRUCT*)lParam;
+			const wchar_t* imgPath = (wchar_t*)cpStruct->lpData;
+			sciter::value imgPathVal = imgPath;
+			SciterCallScriptingFunction(::root, "directImage", &imgPathVal, 1, NULL);
 		}
 
 		return 0;
@@ -89,15 +103,15 @@ int uimain(std::function<int()> run)
 	if (sciter::application::argv().size() >= 2)
 		openImage = sciter::application::argv().at(1).c_str();
 	
-	// Generate our unique program identifier:
+	// Save PID to string:
 	wchar_t mutexName[100];
-	swprintf_s(mutexName, sizeof(mutexName) / sizeof(wchar_t), L"sRandomPhoto%i", _getpid());
+	swprintf_s(mutexName, sizeof(mutexName) / sizeof(wchar_t), L"%i", _getpid());
 
 	//////////////////////////////////////////////////////////////////////////////////
-	// Save PID to memory, if it's been saved already then this is a new instance.
+	// Save PID to memory, if it's been saved already then this is a second instance.
 	// From here we can stop multiple instances from running:
 	HANDLE openMap = OpenFileMappingW(FILE_MAP_READ, false, L"sRandomPhotoMemMap");
-	if (openMap == NULL) // It has not been saved yet, this is the first program instance
+	if (openMap == NULL) // It has not been saved yet, this is the program's first instance
 	{
 		openMap = CreateFileMappingW
 		(
@@ -108,32 +122,35 @@ int uimain(std::function<int()> run)
 			120,
 			L"sRandomPhotoMemMap"
 		);
-		
+
 		if (openMap == NULL) MessageBox(NULL, L"It failed first?", L"", MB_OK);
 
-		LPVOID mapPtr = MapViewOfFile(openMap, FILE_MAP_ALL_ACCESS, 0, 0, 120);
+		LPVOID mapPtr = MapViewOfFile(openMap, FILE_MAP_ALL_ACCESS, 0, 0, 108);
+		CopyMemory(mapPtr, &mutexName, 108);
 		if (mapPtr == NULL)
 		{
-			//MessageBox(NULL, L"It worked?", L"", MB_OK);
-			CopyMemory(mapPtr, &mutexName, 120);
+			MessageBox(NULL, L"It worked?", L"", MB_OK);
 		}
 	}
 	else // The PID has been saved already, this is a second instance of the program
 	{
 		openMap = OpenFileMappingW(FILE_MAP_READ, false, L"sRandomPhotoMemMap");
-		if (openMap != NULL) 
+		if (openMap != NULL)
 		{
-			uniqueID = MapViewOfFile(openMap, FILE_MAP_READ, 0, 0, 120);
-			if (uniqueID != nullptr)
+			uniqueID = MapViewOfFile(openMap, FILE_MAP_READ, 0, 0, 108);
+			if (uniqueID != nullptr) // Successfully read the saved memory
 			{
-				//MessageBox(NULL, (wchar_t*)uniqueID, L"", MB_OK);
+				int matchPID = -1; // Original instance's process ID
+				matchPID = _wtoi((wchar_t*)uniqueID);				
+				EnumWindows(WindowIteratorCB, (LPARAM)matchPID); // Save the original process's window handle
 
-				if (openImage == L"") // The user opened a new instance but is not opening an image with it
-					ExitProcess(0);
-				else // The user is trying to open an image directly with a new instance, close the original instance
+				if (openImage != L"") // The user is trying to open an image directly with a new instance, close the original instance
 				{
-
+					SendPath(originalWnd, openImage);
 				}
+
+				SendMessageW(originalWnd, WM_COMMAND, BringWinToTop, NULL);
+				ExitProcess(0); 
 			}
 		}
 	}
@@ -161,6 +178,9 @@ int uimain(std::function<int()> run)
 
 	sciter::value res = ::root.eval(L"System.home('settings.ini')", 30);
 	iniPath = res.get(L"").c_str();
+
+	if (openImage != L"")
+		SendPath(mainWin->get_hwnd(), openImage);
 
 	return run();
 }

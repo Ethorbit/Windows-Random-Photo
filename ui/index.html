@@ -191,8 +191,12 @@
                 {
                     WindowChanged();
                     UpdateSettingsList();
-                    UpdateImageList();
-                    DisplayFirstImage();
+                    if (imgDirectory == null)
+                    {
+                        UpdateImageList(null);
+                        DisplayFirstImage();
+                    }
+
                     return false;
                 });
     

@@ -19,11 +19,12 @@ $(#Fullscreen).on("click", () =>
 $(#PickFolder).on("click", () =>
 {
     var folder = view.selectFolder("Load images from", System.path(#USER_HOME));
-    if (folder)
+    if (folder) // The folder is valid
     {
         view.saveINI("Other", "ImgFolder", folder);
         Settings.SavedSettings.ImgFolder.value = folder;
         CurrentImg = 0; 
+        imgDirectory = folder; // They opened a new folder within, the file they opened directly no longer applies
         UpdateImageList();
         ShuffleImages();
     }

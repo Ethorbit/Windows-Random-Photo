@@ -14,6 +14,8 @@ var onBtn = false;
 var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
 var MovedMouse = false;
 var debugMsg = null;
+var isShowingText = false;
+var allowFillImg = false;
 
 view.on("size", () =>
 {
@@ -135,6 +137,7 @@ function GetTallestElement(menu)
 
 function ShowOverlayText(text, color, position, time) // Dynamically display message over image container
 {
+    isShowingText = true;
     for (var v in $$(#OverlayMessage)) { v.remove();} // Remove any previous messages
     var element = $(#ImgOverlay).append(<div id="OverlayMessage"></div>);
     element.text = text;
@@ -161,7 +164,12 @@ function ShowOverlayText(text, color, position, time) // Dynamically display mes
         if (bContinue)
         {
             if (position == "bottom")
-                element.style["top"] = centerHeight + $(#ImgOverlay).box(#height) - element.box(#height);
+            {
+                if (imgTooShort == true) // The UI is being positioned specially for a short image
+                    element.style["top"] = htmlHeight - element.box(#height);
+                else
+                    element.style["top"] = centerHeight + $(#ImgOverlay).box(#height) - element.box(#height);
+            }
             else if (position == "top")
             {
                  element.style["top"] = centerHeight;
@@ -181,6 +189,8 @@ function ShowOverlayText(text, color, position, time) // Dynamically display mes
             
         element.remove();
         bContinue = false;
+        isShowingText = false;
+
         return false;
     });
 }

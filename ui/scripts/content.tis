@@ -407,14 +407,18 @@ function WindowChanged()
             (imgWidth, imgHeight) = imgToDisplay.size();  
     }
 
-    //Zoom in center of image:
-    //var wOffset = centerWidth - ((imgWidth * imgRatio) * imgZoomAmount) / 2 + (imgWidth * imgRatio) / 2;
-    //var hOffset = centerHeight - ((imgHeight * imgRatio) * imgZoomAmount) / 2 + (imgHeight * imgRatio) / 2;
-
     if (justZoomed == true)
     {
-        wOffset = centerWidth - overlayMouseX * imgZoomAmount + (imgWidth * imgRatio) / 2;
-        hOffset = centerHeight - overlayMouseY * imgZoomAmount + (imgHeight * imgRatio) / 2;
+        if (GetSetting("ContentZoomMethod") == "Cursor")
+        {
+            wOffset = centerWidth - overlayMouseX * imgZoomAmount + (imgWidth * imgRatio) / 2;
+            hOffset = centerHeight - overlayMouseY * imgZoomAmount + (imgHeight * imgRatio) / 2;
+        }
+        else if (GetSetting("ContentZoomMethod") == "Center")
+        {
+            wOffset = centerWidth - ((imgWidth * imgRatio) * imgZoomAmount) / 2 + (imgWidth * imgRatio) / 2;
+            hOffset = centerHeight - ((imgHeight * imgRatio) * imgZoomAmount) / 2 + (imgHeight * imgRatio) / 2;
+        }
     }
 
     imgRatio = GetRatio();

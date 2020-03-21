@@ -51,6 +51,12 @@ img[alt=resetSection]
     visibility: none;
 }
 
+#SettingsMenu select
+{
+    height: 20dip;
+    width: 90dip;
+}
+
 #SettingsMenu .checkbox
 {
     display: inline-block;

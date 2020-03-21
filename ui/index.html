@@ -9,10 +9,11 @@
     </head>
 
     <body>   
-        <div id="FillImg"></div>
         <picture id="gifimg"></picture>
 
         <div id="ImgOverlay">
+            <div id="FillImg"></div>
+
             <div id="toolbar">
                 <button type="button" id="Settings"><img src="C:\Users\ETHORBIT.DESKTOP-VGMLUB4\source\repos\Random Photo\ui\gear.png" alt="settings" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="PickFolder"><img src="C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/folder.png" height="50" width="50" class="tbImg"></button>
@@ -108,6 +109,12 @@
                                         <li style="display: inline-block;">Zoom multiplier: </li>
                                         <input type="hslider" min="5" max="500" value="5" step="5" class="sliderEle" name="ContentZoomMultiplier" section="Behavior"> <span class="prevSlider" data="%">5%</span>
                                         </div>    
+
+                                        <li>Zoom Method:</li>
+                                        <select type="dropdown" name="ContentZoomMethod">
+                                            <option value="Center">Center</option>
+                                            <option value="Cursor" selected>Cursor</option>
+                                        </select>
                                     </ul>
                                 </div>
                             </div>  
@@ -191,6 +198,7 @@
                 {
                     WindowChanged();
                     UpdateSettingsList();
+
                     if (imgDirectory == null)
                     {
                         UpdateImageList(null);
@@ -198,6 +206,11 @@
                     }
 
                     return false;
+                });
+
+                self.timer(120ms, () =>
+                {
+                    CancelZoom();
                 });
     
                 // One-time loop to save all key names & key codes for use with hotkeys:

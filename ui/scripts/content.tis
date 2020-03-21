@@ -1,11 +1,20 @@
 /* TIScript code by: Ethan Christie */
-
+var (imgWidth, imgHeight) = 0.0;
+var imgRatio = 0.0;
+var centerWidth = 0.0;
+var centerHeight = 0.0;
 var imgToDisplay = self.loadImage("C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/noimagefound.png");
 var imgDirectory = null;
 var ImageList = new Array();
 var imgTooThin = false;
 var imgTooShort = false;
 var CurrentImg = 0;
+var allowFillImg = false;
+var imgIsZoomed = false;
+var imgZoomAmount = 1.0;
+var (zoomX, zoomY);
+
+var fnRegex = ".*.[.]([Jj][Pp](?:[Ee]|)[Gg]|[Pp][Nn][Gg]|[Bb][Mm][Pp]|[Gg][Ii][Ff]|[Ss][Vv][Gg]|[Ww][Ee][Bb][Pp])$";
 
 function directImage(fullPath) // Program was passed an argument, most likely an image path due to program being opened by image
 {
@@ -26,7 +35,7 @@ function directImage(fullPath) // Program was passed an argument, most likely an
     imgDirectory = directory;
     UpdateImageList(); // Add photo randomization for the current directory of the image the user opened program with
    
-    if (filename.match(".*.[.]([Jj][Pp][Gg]|[Pp][Nn][Gg]|[Bb][Mm][Pp]|[Gg][Ii][Ff]|[Ss][Vv][Gg]|[Ww][Ee][Bb][Pp])$")) 
+    if (filename.match(fnRegex)) 
     {
         for (var (k, v) in ImageList) // User opened program with image, so show that image
         {
@@ -175,7 +184,7 @@ function UpdateImageList() // Reconstruct image list based on saved image path
     function SysCB (name, attr)
     {
          // Only match supported whitelisted formats (jpg,png,bmp,gif,svg,webp):
-        if (!name.match(".*.[.]([Jj][Pp][Gg]|[Pp][Nn][Gg]|[Bb][Mm][Pp]|[Gg][Ii][Ff]|[Ss][Vv][Gg]|[Ww][Ee][Bb][Pp])$")) 
+        if (!name.match(fnRegex)) 
             return true;
         // Only match files (not directories):
         if (attr & System.IS_DIR || attr & System.IS_HIDDEN) 
@@ -248,6 +257,8 @@ function DisplayFirstImage()
 
 function ImageChange()
 {
+    CancelZoom();
+
     if ($(#NoImageFound).style["visibility"] == "visible")
     $(#NoImageFound).style["visibility"] = "none";
 
@@ -289,14 +300,54 @@ function PreviousImage()
     ImageChange();
 }
 
+function ZoomPercentage() 
+{
+    return GetSetting("ContentZoomMultiplier").toInteger() * 1.0 / 100.0;
+};
+
+var justZoomed = false;
+function Zoomed()
+{
+    justZoomed = true;
+    self.timer(1ms, () =>
+    {
+        justZoomed = false;
+    });
+
+    WindowChanged();
+}
+
 function ZoomImage()
 {
+    imgIsZoomed = true;
 
+    if (imgZoomAmount + ZoomPercentage() <= 500.0)
+        imgZoomAmount += ZoomPercentage();
+    else 
+        imgZoomAmount = 500.0;
+
+    Zoomed();
 }
 
 function ZoomoutImage()
 {
+    if (imgZoomAmount - ZoomPercentage() <= 1.0)
+    {
+        imgZoomAmount = 1.0;
+        imgIsZoomed = false;
+    }
+    else
+        imgZoomAmount -= ZoomPercentage();
+    
+    Zoomed();
+}
 
+function CancelZoom()
+{
+    imgZoomAmount = 1.0;
+    imgIsZoomed = false;
+    wOffset = centerWidth;
+    hOffset = centerHeight;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // Handle image and all positioning/sizing over the image (This is used instead of size):    
@@ -354,6 +405,16 @@ function WindowChanged()
     {
         if (imgToDisplay)
             (imgWidth, imgHeight) = imgToDisplay.size();  
+    }
+
+    //Zoom in center of image:
+    //var wOffset = centerWidth - ((imgWidth * imgRatio) * imgZoomAmount) / 2 + (imgWidth * imgRatio) / 2;
+    //var hOffset = centerHeight - ((imgHeight * imgRatio) * imgZoomAmount) / 2 + (imgHeight * imgRatio) / 2;
+
+    if (justZoomed == true)
+    {
+        wOffset = centerWidth - overlayMouseX * imgZoomAmount + (imgWidth * imgRatio) / 2;
+        hOffset = centerHeight - overlayMouseY * imgZoomAmount + (imgHeight * imgRatio) / 2;
     }
 
     imgRatio = GetRatio();
@@ -435,15 +496,24 @@ function WindowChanged()
     $(#gifimg).style["left"] = centerWidth;
 }
 
+var (overlayMouseX, overlayMouseY);
+$(#ImgOverlay).on("mousemove", (me) =>
+{
+    overlayMouseX = me.x;
+    overlayMouseY = me.y;
+});
+
+var wOffset = centerWidth;
+var hOffset = centerHeight;
 function paint(gfx)
 {
     gfx.fillColor(color(255, 255, 255));
-    gfx.rectangle(centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
+    gfx.rectangle(wOffset, hOffset, (imgWidth * imgRatio) * imgZoomAmount, (imgHeight * imgRatio) * imgZoomAmount);
 
     if (allowFillImg == true) 
     {
-        $(#gifimg).style["visibility"] = "none";
-        gfx.drawImage(imgToDisplay, centerWidth, centerHeight, imgWidth * imgRatio, imgHeight * imgRatio);
+        $(#gifimg).style["visibility"] = "none";           
+        gfx.drawImage(imgToDisplay, wOffset, hOffset, (imgWidth * imgRatio) * imgZoomAmount, (imgHeight * imgRatio) * imgZoomAmount);
     }
 }
 

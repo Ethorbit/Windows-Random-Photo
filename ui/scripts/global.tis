@@ -2,10 +2,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Global variables/functions & events:
-var (imgWidth, imgHeight) = 0.0;
-var imgRatio = 0.0;
-var centerWidth = 0.0;
-var centerHeight = 0.0;
 var htmlHeight = 0.0, htmlWidth = 0.0;
 var fullscreen = false;
 var slideshow = false;
@@ -15,7 +11,6 @@ var (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
 var MovedMouse = false;
 var debugMsg = null;
 var isShowingText = false;
-var allowFillImg = false;
 
 view.on("size", () =>
 {
@@ -29,6 +24,8 @@ view.on("size", () =>
         ExtendMenu();
         return false;
     });
+
+    CancelZoom();
 });
 
 view.on("move", () =>
@@ -193,12 +190,6 @@ function ShowOverlayText(text, color, position, time) // Dynamically display mes
 
         return false;
     });
-}
-
-function NoKeyName(element)
-{
-    element.attributes["maxlength"] = 11;
-    element.text = "Enter a key";
 }
 
 $(#toolbar).on("mouseenter", () =>

@@ -81,14 +81,24 @@ for (var v in $(#SettingsMenu).$$(img[alt=resetSection]))
             nextEle = nextEle.next;
         }
 
-        for (var n in nextEle.$$(input))
+        function SetVal(element)
         {
-            var name = n.attributes["name"];
+            var name = element.attributes["name"];
             var defSetting = GetDefSettingObject(name);
 
-            n.value = defSetting.value;
-            if (n.attributes["type"] == "hslider")
-                UpdateSlider(n);    
+            element.value = defSetting.value;
+            if (element.attributes["type"] == "hslider")
+                UpdateSlider(element);    
+        }
+
+        for (var n in nextEle.$$(input))
+        {
+            SetVal(n);
+        }
+
+        for (var nn in nextEle.$$(select))
+        {
+            SetVal(nn);
         }
     });
 }
@@ -99,11 +109,10 @@ for (var v in $(#SettingsMenu).$$(img[alt=resetSection]))
 // Form element contains a massive memory leak from the API? Using custom form element instead:
 $(#SettingsMenu).$(button[type=submit]).on("click", (me) =>
 {
-    //for (var (name, value) in me.target.value)
-    for (var v in $(#SettingsMenu).$$(input))
+    function SaveElement(element)
     {
-        var value = v.value;
-        var name = v.attributes["name"];
+        var value = element.value;
+        var name = element.attributes["name"];
         var setting = GetSettingObject(name);
 
         if (value != setting.value && value != "Enter a key" 
@@ -115,7 +124,16 @@ $(#SettingsMenu).$(button[type=submit]).on("click", (me) =>
         {
             view.saveINI(setting.section, name, "");
         }
+    }
 
+    for (var v in $(#SettingsMenu).$$(select))
+    {
+        SaveElement(v);
+    }
+
+    for (var v in $(#SettingsMenu).$$(input))
+    {
+        SaveElement(v);
         $(#SettingsMenu).style["visibility"] = "none";
     }
 

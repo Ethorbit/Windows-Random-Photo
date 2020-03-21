@@ -197,9 +197,9 @@ function TryDefaultSettings()
     }
 
     var mName = "";
-    for (var v in $(#SettingsMenu).$$(input))
+    function SaveEle(element)
     {
-        mName = v.attributes["name"];
+        mName = element.attributes["name"];
         var mSetting = GetSettingObject(mName);
         var defSetting = GetDefSettingObject(mName);
         
@@ -207,13 +207,23 @@ function TryDefaultSettings()
         savedKey = view.getINI(mSetting.section, mName);        
 
         if (SettingIsSaved(mSetting.section, mName))
-            SetValue(v, savedKey);     
+            SetValue(element, savedKey);     
         else if (IsADefaultSetting(mName))
-            SetValue(v, defSetting.value);
+            SetValue(element, defSetting.value);
         else 
         {
-            if (v.attributes["type"] == "text")
-                NoKeyName(v);
+            if (element.attributes["type"] == "text")
+                NoKeyName(element);
         }
+    }
+
+    for (var v in $(#SettingsMenu).$$(input))
+    {
+        SaveEle(v);
+    }
+
+    for (var v in $(#SettingsMenu).$$(select))
+    {
+        SaveEle(v);
     }
 }

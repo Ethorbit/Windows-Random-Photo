@@ -16,7 +16,7 @@ namespace Settings
         var NextImgHotkey = new Setting("RIGHT", "Hotkeys");
         var PrevImgHotkey = new Setting("LEFT", "Hotkeys");
         var ZoominHotkey = new Setting("PLUS", "Hotkeys");
-        var ZoomoutHotkey = new Setting("SUBTRACT", "Hotkeys");
+        var ZoomoutHotkey = new Setting("MINUS", "Hotkeys");
         var ShuffleImgHotkey = new Setting("F5", "Hotkeys");
         var FullscreenHotkey = new Setting("F11", "Hotkeys");
         var OverlayHideTime = new Setting(700, "Behavior");
@@ -24,6 +24,7 @@ namespace Settings
         var SlideshowDisplayTime = new Setting(5, "Behavior");
         var ContentStretch = new Setting(false, "Behavior");
         var ContentZoomMultiplier = new Setting(5, "Behavior");
+        var ContentZoomMethod = new Setting("Cursor", "Behavior");
     }
 
     class SavedSettings 
@@ -41,6 +42,7 @@ namespace Settings
         var SlideshowDisplayTime = new Setting(null, "Behavior");
         var ContentStretch = new Setting(null, "Behavior");
         var ContentZoomMultiplier = new Setting(null, "Behavior");
+        var ContentZoomMethod = new Setting(null, "Behavior");
     }
 }
 
@@ -99,4 +101,10 @@ function IsADefaultSetting(name)
         return true;
     else
         return false;
+}
+
+function NoKeyName(element)
+{
+    element.attributes["maxlength"] = 11;
+    element.text = "Enter a key";
 }

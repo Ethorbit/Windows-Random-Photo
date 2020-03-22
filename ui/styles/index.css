@@ -60,6 +60,12 @@ button,
     z-index: -100;
 }
 
+#ZoomOverlay
+{
+    z-index: 300;  
+    position: absolute;
+}
+
 #ImgMenu * 
 {
     opacity: 0.6;

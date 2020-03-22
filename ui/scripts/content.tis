@@ -3,7 +3,7 @@ var (imgWidth, imgHeight) = 0.0;
 var imgRatio = 0.0;
 var centerWidth = 0.0;
 var centerHeight = 0.0;
-var imgToDisplay = self.loadImage("C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/noimagefound.png");
+var imgToDisplay = null; // self.loadImage("noimagefound.png");
 var imgDirectory = null;
 var ImageList = new Array();
 var imgTooThin = false;
@@ -249,7 +249,7 @@ function DisplayFirstImage()
         if (!MenuIsOpen())
             $(#NoImageFound).style["visibility"] = "visible";
 
-        imgToDisplay = self.loadImage("C:/Users/ETHORBIT.DESKTOP-VGMLUB4/source/repos/Random Photo/ui/noimagefound.png");
+        imgToDisplay = null;
     }
 
     WindowChanged();
@@ -260,14 +260,9 @@ function ImageChange()
     CancelZoom();
 
     if ($(#NoImageFound).style["visibility"] == "visible")
-    $(#NoImageFound).style["visibility"] = "none";
+        $(#NoImageFound).style["visibility"] = "none";
 
     WindowChanged();
-    self.timer(100ms, () =>
-    {
-        WindowChanged();
-        return false;
-    });
 }
 
 function NextImage()
@@ -319,6 +314,9 @@ function Zoomed()
 
 function ZoomImage()
 {
+    if (imgToDisplay == null)
+        return;
+
     imgIsZoomed = true;
 
     if (imgZoomAmount + ZoomPercentage() <= 500.0)
@@ -331,6 +329,9 @@ function ZoomImage()
 
 function ZoomoutImage()
 {
+    if (imgToDisplay == null)
+        return;
+
     if (imgZoomAmount - ZoomPercentage() <= 1.0)
     {
         imgZoomAmount = 1.0;
@@ -346,8 +347,6 @@ function CancelZoom()
 {
     imgZoomAmount = 1.0;
     imgIsZoomed = false;
-    wOffset = centerWidth;
-    hOffset = centerHeight;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // Handle image and all positioning/sizing over the image (This is used instead of size):    
@@ -391,8 +390,63 @@ function GetImgPercent() // Get the percentage the image takes up on the window 
     return widthPercent;
 }
 
-function WindowChanged()
+var (overlayMouseX, overlayMouseY) = 1;
+$(#ImgOverlay).on("mousemove", (me) =>
 {
+    overlayMouseX = me.x;
+    overlayMouseY = me.y;
+});
+
+$(#ImgOverlay).on("mouseup", (me) =>
+{
+    if (me.buttons == 0x01) // Left mouse button
+    {
+        if (isDragging)
+        {
+            isDragging = false;
+            if (dragStartX - me.x < 0 && (dragStartX - me.x) * -1 >= 100) // Drag/swipe right
+            {
+                PreviousImage();
+            }
+
+            if (dragStartX - me.x > 0 && (dragStartX - me.x) >= 100) // Drag/swipe left
+            {
+                NextImage();
+            }
+        }
+    }
+});
+
+$(#ImgOverlay).on("gesturezoom", () =>
+{ 
+    ZoomImage(); 
+});
+
+$(#ImgOverlay).on("mousedragrequest", (me) =>
+{
+    if (!isDragging)
+    {
+        dragStartX = me.x;
+        dragStartY = me.y;
+        isDragging = true;
+    }
+});
+
+var wOffset = centerWidth;
+var hOffset = centerHeight;
+function WindowChanged()
+{   
+    if (imgToDisplay == null) 
+    {
+        imgWidth = 400.0;
+        imgHeight = 400.0;
+        wOffset = centerWidth;
+        hOffset = centerHeight;
+        $(#ImgOverlay).style["background-color"] = "white";
+    }
+    else
+         $(#ImgOverlay).style["background-color"] = "transparent";
+
     htmlHeight = view.box(#height);
     htmlWidth = view.box(#width);
 
@@ -422,11 +476,14 @@ function WindowChanged()
     }
 
     imgRatio = GetRatio();
+
     centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0);
     centerHeight = (htmlHeight / 2.0) - (imgHeight * imgRatio) / 2.0;
     (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
     view.mediaVars { window-percent : GetImgPercent() };
     view.mediaVars { window-width : (imgWidth * imgRatio) };
+
+
 
     if (imgWidth * 2 < imgHeight) // Add extra width to overlay if the image is too thin
     {
@@ -500,17 +557,14 @@ function WindowChanged()
     $(#gifimg).style["left"] = centerWidth;
 }
 
-var (overlayMouseX, overlayMouseY);
-$(#ImgOverlay).on("mousemove", (me) =>
-{
-    overlayMouseX = me.x;
-    overlayMouseY = me.y;
-});
-
-var wOffset = centerWidth;
-var hOffset = centerHeight;
 function paint(gfx)
 {
+    if (imgToDisplay != null && imgZoomAmount == 1.0)
+    {
+        wOffset = centerWidth;
+        hOffset = centerHeight;
+    }
+
     gfx.fillColor(color(255, 255, 255));
     gfx.rectangle(wOffset, hOffset, (imgWidth * imgRatio) * imgZoomAmount, (imgHeight * imgRatio) * imgZoomAmount);
 

@@ -27,6 +27,7 @@ $(#PickFolder).on("click", () =>
         imgDirectory = folder; // They opened a new folder within, the file they opened directly no longer applies
         UpdateImageList();
         ShuffleImages();
+        CancelZoom();
     }
 });
 
@@ -49,6 +50,7 @@ $(#Slideshow).on("click", () =>
 
 $(#Refresh).on("click", () =>
 {
+    CancelZoom();
     ShuffleImages();
 });
 ////////////////////////////////////////////////////////////////

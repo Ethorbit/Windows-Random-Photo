@@ -13,6 +13,7 @@ var allowFillImg = false;
 var imgIsZoomed = false;
 var imgZoomAmount = 1.0;
 var (zoomX, zoomY);
+var isMovingImage = false;
 
 var fnRegex = ".*.[.]([Jj][Pp](?:[Ee]|)[Gg]|[Pp][Nn][Gg]|[Bb][Mm][Pp]|[Gg][Ii][Ff]|[Ss][Vv][Gg]|[Ww][Ee][Bb][Pp])$";
 
@@ -50,7 +51,6 @@ function directImage(fullPath) // Program was passed an argument, most likely an
         ShowOverlayText("Not a valid or supported image.", "red", "bottom", 3000ms);
         imgToDisplay = null;
     }
-        
 
     WindowChanged();
 }
@@ -64,10 +64,14 @@ function GetFullImgPath(filename)
 // Show/hide content displayed over image:
 function ShowContentOverlay()
 {
-    if (!onToolbar && !MenuIsOpen())
+    if (!onToolbar && !MenuIsOpen() && !isMovingImage)
     {
         $(#ImgMenu).style["visibility"] = "visible";  
-        $(#ImgOverlay).style["cursor"] = "default";
+
+        if (imgZoomAmount == 1.0)
+            $(#ImgOverlay).style["cursor"] = "default";
+        else
+            $(#ImgOverlay).style["cursor"] = "move";
 
         if (GetSetting("OverlayHideToolbar") == true)
         {
@@ -214,6 +218,8 @@ function ImgIsGIF()
         return false;
 }
 
+var (gifWidth, gifHeight);
+var isGif = false;
 function DisplayImage(index)
 {    
     imgToDisplay = self.loadImage(GetFullImgPath(ImageList[index]));
@@ -221,10 +227,10 @@ function DisplayImage(index)
 
     if (ImgIsGIF() == true)
     {           
-        (imgWidth, imgHeight) = imgToDisplay.size(); // Backup height/width for when we remove the loaded image
-        imgToDisplay = null; // If this remains valid then we would be allocating memory for 2 of the same gifs!
+        (gifWidth, gifHeight) = imgToDisplay.size(); // Backup height/width for when we remove the loaded image
+        //imgToDisplay = "GIF"; // If this remains valid then we would be allocating memory for 2 of the same gifs!
+        isGif = true;
         $(#gifimg).style["visibility"] = "visible";
-        $(#gifimg).style["background-color"] = "red";
         $(#gifimg).attributes["src"] = GetFullImgPath(ImageList[index]);
         allowFillImg = false;
     }
@@ -234,6 +240,7 @@ function DisplayImage(index)
             $(#gifimg).attributes["src"] = "";  
 
         allowFillImg = true; 
+        isGif = false;
     }
 }
 
@@ -249,7 +256,10 @@ function DisplayFirstImage()
         CurrentImg = 0;
     }
     else
-        imgToDisplay = null;
+    {
+        if (ImgIsGIF() == false)
+            imgToDisplay = null;
+    }
 
     WindowChanged();
 }
@@ -299,6 +309,19 @@ function ZoomPercentage()
     return GetSetting("ContentZoomMultiplier").toInteger() * 1.0 / 100.0;
 };
 
+function ZoomOrMove()
+{
+    self.timer(350ms, () =>
+    {
+        $(#toolbar).style["visibility"] = "visible";
+        $(#PrevImgImg).style["visibility"] = "visible";
+        $(#NextImgImg).style["visibility"] = "visible";
+        blockToolbar = false;
+        WindowChanged();
+        return false;
+    });
+}
+
 var justZoomed = false;
 function Zoomed()
 {
@@ -309,51 +332,55 @@ function Zoomed()
     });
 
     // Hide overlay stuff while zooming:
-    $(#toolbar).style["visibility"] = "none";
-    $(#PrevImgImg).style["visibility"] = "none";
-    $(#NextImgImg).style["visibility"] = "none";
-    blockToolbar = true;
-    self.timer(350ms, () =>
+    if (imgZoomAmount > 1.0)
     {
-        $(#PrevImgImg).style["visibility"] = "visible";
-        $(#NextImgImg).style["visibility"] = "visible";
-        blockToolbar = false;
-        WindowChanged();
-        return false;
-    });
+        if ($(#toolbar).style["visibility"] == "visible")
+        {
+            $(#toolbar).style["visibility"] = "none";
+            $(#PrevImgImg).style["visibility"] = "none";
+            $(#NextImgImg).style["visibility"] = "none";
+        }
+
+        blockToolbar = true;
+        ZoomOrMove();
+    }
 
     WindowChanged();
 }
 
 function ZoomImage()
 {
-    if (imgToDisplay == null)
-        return;
+    if (isGif == false && !MenuIsOpen())
+    {
+        imgIsZoomed = true;
 
-    imgIsZoomed = true;
+        if (imgZoomAmount + ZoomPercentage() <= 500.0)
+            imgZoomAmount += ZoomPercentage();
+        else 
+            imgZoomAmount = 500.0;
 
-    if (imgZoomAmount + ZoomPercentage() <= 500.0)
-        imgZoomAmount += ZoomPercentage();
-    else 
-        imgZoomAmount = 500.0;
-
-    Zoomed();
+        Zoomed();
+    }
 }
 
 function ZoomoutImage()
 {
-    if (imgToDisplay == null)
-        return;
-
-    if (imgZoomAmount - ZoomPercentage() <= 1.0)
+    if (isGif == false && !MenuIsOpen())
     {
-        imgZoomAmount = 1.0;
-        imgIsZoomed = false;
+        if (imgToDisplay == null)
+            return;
+
+        if (imgZoomAmount - ZoomPercentage() <= 1.0)
+        {
+            imgZoomAmount = 1.0;
+            imgIsZoomed = false;
+            $(#ImgOverlay).style["cursor"] = "default";
+        }
+        else
+            imgZoomAmount -= ZoomPercentage();
+        
+        Zoomed();
     }
-    else
-        imgZoomAmount -= ZoomPercentage();
-    
-    Zoomed();
 }
 
 function CancelZoom()
@@ -408,6 +435,27 @@ $(#ImgOverlay).on("mousemove", (me) =>
 {
     overlayMouseX = me.x;
     overlayMouseY = me.y;
+
+    if (me.buttons == 0x01 && isGif == false && !MenuIsOpen()) // User is dragging image around
+    {
+        if (imgZoomAmount > 1.0)
+        {
+            if ($(#toolbar).style["visibility"] == "visible")
+            {
+                $(#toolbar).style["visibility"] = "none";
+                $(#PrevImgImg).style["visibility"] = "none";
+                $(#NextImgImg).style["visibility"] = "none";
+            }
+
+            isMovingImage = true;
+            wOffset = centerWidth - overlayMouseX * imgZoomAmount + (imgWidth * imgRatio) / 2;
+            hOffset = centerHeight - overlayMouseY * imgZoomAmount + (imgHeight * imgRatio) / 2;
+
+            ZoomOrMove();
+        }
+    }
+    else
+        isMovingImage = false;
 });
 
 $(#ImgOverlay).on("mouseup", (me) =>
@@ -418,7 +466,7 @@ $(#ImgOverlay).on("mouseup", (me) =>
         {
             isDragging = false;
 
-            if (GetSetting("ContentSwipeImages") == true && !MenuIsOpen()) // Drag/swipe
+            if (GetSetting("ContentSwipeImages") == true && !MenuIsOpen() && imgZoomAmount == 1.0) // Drag/swipe
             {
                 if (dragStartX - me.x < 0 && (dragStartX - me.x) * -1 >= 100) // right
                 {
@@ -464,12 +512,21 @@ function WindowChanged()
         imgHeight = 400.0;
         wOffset = centerWidth;
         hOffset = centerHeight;
+        //$(#NoImageFound).style["margin-top"] = centerHeight + $(#toolbar).box(#height);
         $(#ImgOverlay).style["background-color"] = "white";
         if (!MenuIsOpen())
             $(#NoImageFound).style["visibility"] = "visible";
     }
     else
          $(#ImgOverlay).style["background-color"] = "transparent";
+
+    if (isGif == true)
+    {
+        imgWidth = gifWidth;
+        imgHeight = gifHeight;
+        wOffset = centerWidth;
+        hOffset = centerHeight;
+    }
 
     if (GetSetting("ContentStretch") == true && imgToDisplay)
     {
@@ -478,7 +535,7 @@ function WindowChanged()
     } 
     else
     {
-        if (imgToDisplay)
+        if (isGif == false && imgToDisplay)
             (imgWidth, imgHeight) = imgToDisplay.size();  
     }
 
@@ -497,7 +554,6 @@ function WindowChanged()
     }
 
     imgRatio = GetRatio();
-
     centerWidth = ((htmlWidth / 2.0) - (imgWidth * imgRatio) / 2.0);
     centerHeight = (htmlHeight / 2.0) - (imgHeight * imgRatio) / 2.0;
     (scrWidth, scrHeight) = view.screenBox(#workarea, #dimension);
@@ -507,7 +563,6 @@ function WindowChanged()
     if (imgWidth * 2 < imgHeight) // Add extra width to overlay if the image is too thin
     {
         imgTooThin = true;
-        $(#toolbar).style["top"] = 0;
         $(#ImgOverlay).style["top"] = 0;
 
         if (htmlWidth < 500)
@@ -529,7 +584,7 @@ function WindowChanged()
         $(#ImgOverlay).style["margin-left"] = centerWidth;
     }
 
-    if (imgHeight <= 250 && (imgHeight * imgRatio) < 800) // Don't let the overlay get too low when images are tiny
+    if (imgHeight * 2 < imgWidth && (imgHeight * imgRatio) < 800) // Don't let the overlay get too low when images are tiny
     {
         imgTooShort = true;
         $(#ImgOverlay).style["margin-top"] = 0;
@@ -543,15 +598,9 @@ function WindowChanged()
             $(#toolbar).style["visibility"] = "none";
         else
         {
-            if (!blockToolbar)
+            if (!blockToolbar && !isMovingImage)
                 $(#toolbar).style["visibility"] = "visible";
         }
-
-        $(#toolbar).style["position"] = "absolute";
-        if (imgZoomAmount == 1.0) // Don't let tool bar cover image when it is zoomed in
-            $(#toolbar).style["top"] = centerHeight;
-        else
-            $(#toolbar).style["top"] = 0;
 
         $(#NextImgImg).style["top"] = (htmlHeight / 2) + (imgHeight * imgRatio) / imgHeight - ($(#NextImgImg).box(#height)) / 2;
         $(#PrevImgImg).style["top"] = (htmlHeight / 2) + (imgHeight * imgRatio) / imgHeight - ($(#PrevImgImg).box(#height)) / 2;
@@ -564,11 +613,9 @@ function WindowChanged()
 
         // Place image arrows at center of image on Y axis:
         var parentHeight = $(#ImgOverlay).style["height"];
-        if (!blockToolbar)
+        if (!blockToolbar && !isMovingImage)
             $(#toolbar).style["visibility"] = "visible";
-
-        $(#toolbar).style["position"] = "relative";
-        $(#toolbar).style["top"] = 0;
+        
         $(#NextImgImg).style["top"] = parentHeight / 2;
         $(#PrevImgImg).style["top"] = parentHeight / 2;
     }
@@ -582,6 +629,32 @@ function WindowChanged()
     $(#gifimg).style["width"] = (imgWidth * imgRatio);
     $(#gifimg).style["top"] = centerHeight;
     $(#gifimg).style["left"] = centerWidth;
+
+    if (imgZoomAmount > 1.0) // Add support for zoomed images
+    {
+        $(#toolbar).style["position"] = "fixed";
+        $(#toolbar).style["top"] = 0;
+        $(#ImgOverlay).style["cursor"] = "move";
+    }
+    else
+    {
+        if (imgTooShort == true)
+        {
+            $(#gifimg).style["visibility"] = "none";
+            $(#toolbar).style["position"] = "fixed";
+            $(#toolbar).style["top"] = centerHeight;
+            $(#Info).style["margin-right"] = 6;
+        } 
+        else
+        {
+            $(#toolbar).style["position"] = "relative";
+            $(#toolbar).style["top"] = 0;
+            $(#toolbar).style["width"] = "*";
+            $(#Info).style["margin-right"] = 5;
+        }
+
+        $(#ImgOverlay).style["cursor"] = "default";
+    }
 }
 
 function paint(gfx)

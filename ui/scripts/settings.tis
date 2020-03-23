@@ -18,6 +18,7 @@ namespace Settings
         var ZoominHotkey = new Setting("PLUS", "Hotkeys");
         var ZoomoutHotkey = new Setting("MINUS", "Hotkeys");
         var ShuffleImgHotkey = new Setting("F5", "Hotkeys");
+        var StopSlideshowHotkey = new Setting("SPACE", "Hotkeys");
         var FullscreenHotkey = new Setting("F11", "Hotkeys");
         var OverlayHideTime = new Setting(700, "Behavior");
         var OverlayHideToolbar = new Setting(false, "Behavior");
@@ -25,6 +26,7 @@ namespace Settings
         var ContentStretch = new Setting(false, "Behavior");
         var ContentZoomMultiplier = new Setting(5, "Behavior");
         var ContentZoomMethod = new Setting("Cursor", "Behavior");
+        var ContentSwipeImages = new Setting(false, "Behavior");
     }
 
     class SavedSettings 
@@ -34,7 +36,9 @@ namespace Settings
         var PrevImgHotkey = new Setting(null, "Hotkeys");
         var ZoominHotkey = new Setting(null, "Hotkeys");
         var ZoomoutHotkey = new Setting(null, "Hotkeys");
+        var ZoomoutAllHotkey = new Setting(null, "Hotkeys");
         var ShuffleImgHotkey = new Setting(null, "Hotkeys");
+        var StopSlideshowHotkey = new Setting(null, "Hotkeys");
         var HideOverlayHotkey = new Setting(null, "Hotkeys");
         var FullscreenHotkey = new Setting(null, "Hotkeys");
         var OverlayHideTime = new Setting(null, "Behavior");
@@ -43,6 +47,7 @@ namespace Settings
         var ContentStretch = new Setting(null, "Behavior");
         var ContentZoomMultiplier = new Setting(null, "Behavior");
         var ContentZoomMethod = new Setting(null, "Behavior");
+        var ContentSwipeImages = new Setting(null, "Behavior");
     }
 }
 

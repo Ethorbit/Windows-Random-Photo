@@ -150,5 +150,8 @@ $(#SettingsMenu).$(button[type=cancel]).on("click", () =>
 {
     var result = view.msgbox(#warning, "Abort changes and close?", "Are you sure?", [#yes, #no]);
     if (result == #yes)
+    {
         $(#SettingsMenu).style["visibility"] = "none";
+        WindowChanged();
+    }
 });

@@ -46,27 +46,41 @@
                                 <div id="HotkeyCtrls">
                                     <h2>Hotkeys</h2>
                                     <hr>
+                                    <li>Hide Overlay:</li>
+                                        <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
+                                        <input type="text" value="Enter a key" maxlength="1" name="HideOverlayHotkey" section="Hotkeys">
+
+                                    <li>Stop Slideshow:</li>
+                                        <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
+                                        <input type="text" value="Enter a key" maxlength="1" name="StopSlideshowHotkey" section="Hotkeys">
+
                                     <li>Next Image: </li>
-                                    <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
-                                    <input type="text" value="Enter a key" maxlength="1" name="NextImgHotkey" section="Hotkeys">
+                                        <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
+                                        <input type="text" value="Enter a key" maxlength="1" name="NextImgHotkey" section="Hotkeys">
+
                                     <li>Previous Image: </li>
-                                    <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
-                                    <input type="text" value="Enter a key" maxlength="1" name="PrevImgHotkey" section="Hotkeys">
+                                        <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
+                                        <input type="text" value="Enter a key" maxlength="1" name="PrevImgHotkey" section="Hotkeys">
+
                                     <li>Shuffle Images</li>
-                                    <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
-                                    <input type="text" value="Enter a key" maxlength="1" name="ShuffleImgHotkey" section="Hotkeys">
+                                        <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
+                                        <input type="text" value="Enter a key" maxlength="1" name="ShuffleImgHotkey" section="Hotkeys">
+
                                     <li>Zoom at cursor: </li>
-                                    <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
-                                    <input type="text" value="Enter a key" maxlength="1" name="ZoominHotkey" section="Hotkeys">
+                                        <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
+                                        <input type="text" value="Enter a key" maxlength="1" name="ZoominHotkey" section="Hotkeys">
+
                                     <li>Zoom out: </li>
-                                    <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
-                                    <input type="text" value="Enter a key" maxlength="1" name="ZoomoutHotkey" section="Hotkeys">
-                                    <li>Hide Overlay: </li>
-                                    <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
-                                    <input type="text" value="Enter a key" maxlength="1" name="HideOverlayHotkey" section="Hotkeys">
+                                        <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
+                                        <input type="text" value="Enter a key" maxlength="1" name="ZoomoutHotkey" section="Hotkeys">
+                                    
+                                    <li>Zoom all out:</li>
+                                        <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
+                                        <input type="text" value="Enter a key" maxlength="1" name="ZoomoutAllHotkey" section="Hotkeys">
+
                                     <li>Toggle Fullscreen: </li>
-                                    <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
-                                    <input type="text" value="Enter a key" maxlength="1" name="FullscreenHotkey" section="Hotkeys">
+                                        <img src="reset.png" alt="reset" height="12" width="12" style="display:inline-block;">
+                                        <input type="text" value="Enter a key" maxlength="1" name="FullscreenHotkey" section="Hotkeys">
                                 </div>
                                 <div id="BehaviorCtrls">
                                     <h2>Behavior</h2>
@@ -104,6 +118,12 @@
                                     <h3 style="display: inline-block;">Content</h3>
                                     <hr>
                                     <ul>
+                                        <img src="questionmark.png" alt="hint" height="20" width="20" style="display:inline-block;">
+                                        <div class="HintText" style="display:inline-block;">
+                                            Swipe/drag left or right on image to change images.
+                                        </div>
+                                        <li class="checkbox">Image Swipe: </li><input type="checkbox" name="ContentSwipeImages" section="Behavior">
+                                        <div></div>
                                         <li class="checkbox">Stretch: </li><input type="checkbox" name="ContentStretch" section="Behavior">
                                         <div>
                                         <li style="display: inline-block;">Zoom multiplier: </li>

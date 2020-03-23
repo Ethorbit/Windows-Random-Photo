@@ -11,6 +11,11 @@
     color: black;
 }
 
+#SettingsMenu input
+{
+    margin-top: 10dip;
+}
+
 #SettingsMenu 
 img[alt=reset],
 img[alt=resetSection]
@@ -65,6 +70,7 @@ img[alt=resetSection]
 #SettingsMenu li
 {
     line-height: 20dip;
+    margin-top: 10dip;
 }
 
 #SettingsMenu h1

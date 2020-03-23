@@ -13,6 +13,7 @@ var debugMsg = null;
 var isShowingText = false;
 var isDragging = false;
 var (dragStartX, dragStartY) = 0;
+var blockToolbar = false;
 
 view.on("size", () =>
 {
@@ -62,19 +63,27 @@ event keydown(me)
                 HideContentOverlay();
             return;
             case GetSetting("NextImgHotkey"):
+                CancelSlideshow();
                 NextImage();
             return;
             case GetSetting("PrevImgHotkey"):
+                CancelSlideshow();
                 PreviousImage();
             return;
             case GetSetting("ShuffleImgHotkey"):
                 ShuffleImages();
+            return;
+            case GetSetting("StopSlideshowHotkey"):
+                CancelSlideshow();
             return;
             case GetSetting("ZoominHotkey"):
                 ZoomImage();
             return;
             case GetSetting("ZoomoutHotkey"):
                 ZoomoutImage();
+            return;
+            case GetSetting("ZoomoutAllHotkey"):
+                CancelZoom();
             return;
             case GetSetting("FullscreenHotkey"):
                 FullscreenToggle();

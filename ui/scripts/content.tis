@@ -348,36 +348,61 @@ function Zoomed()
     WindowChanged();
 }
 
-function ZoomImage()
+function ZoomImage(val)
 {
     if (isGif == false && !MenuIsOpen())
     {
         imgIsZoomed = true;
 
-        if (imgZoomAmount + ZoomPercentage() <= 500.0)
-            imgZoomAmount += ZoomPercentage();
-        else 
-            imgZoomAmount = 500.0;
+        if (val == -1)
+        {   
+            if (imgZoomAmount + ZoomPercentage() <= 500.0)
+                imgZoomAmount += ZoomPercentage();
+            else 
+                imgZoomAmount = 500.0;
+        }
+        else // User is zooming with pinch gesture:
+        {
+            if (imgZoomAmount + val <= 500.0)
+                imgZoomAmount += val;
+            else 
+                imgZoomAmount = 500.0;
+        }
+
 
         Zoomed();
     }
 }
 
-function ZoomoutImage()
+function ZoomoutImage(val)
 {
     if (isGif == false && !MenuIsOpen())
     {
         if (imgToDisplay == null)
             return;
 
-        if (imgZoomAmount - ZoomPercentage() <= 1.0)
-        {
-            imgZoomAmount = 1.0;
-            imgIsZoomed = false;
-            $(#ImgOverlay).style["cursor"] = "default";
+        if (val == -1)
+        { 
+            if (imgZoomAmount - ZoomPercentage() <= 1.0)
+            {
+                imgZoomAmount = 1.0;
+                imgIsZoomed = false;
+                $(#ImgOverlay).style["cursor"] = "default";
+            }
+            else
+                imgZoomAmount -= ZoomPercentage();
         }
-        else
-            imgZoomAmount -= ZoomPercentage();
+        else // User is zooming with pinch gesture:
+        {
+            if (imgZoomAmount - val <= 1.0)
+            {
+                imgZoomAmount = 1.0;
+                imgIsZoomed = false;
+                $(#ImgOverlay).style["cursor"] = "default";
+            }
+            else
+                imgZoomAmount -= val;
+        }
         
         Zoomed();
     }
@@ -482,11 +507,6 @@ $(#ImgOverlay).on("mouseup", (me) =>
             }
         }
     }
-});
-
-$(#ImgOverlay).on("gesturezoom", () =>
-{ 
-    ZoomImage(); 
 });
 
 $(#ImgOverlay).on("mousedragrequest", (me) =>
@@ -638,7 +658,7 @@ function WindowChanged()
     }
     else
     {
-        if (imgTooShort == true)
+        if (imgTooShort == true && htmlHeight > (imgHeight * imgRatio))
         {
             $(#gifimg).style["visibility"] = "none";
             $(#toolbar).style["position"] = "fixed";

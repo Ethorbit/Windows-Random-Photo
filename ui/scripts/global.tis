@@ -15,6 +15,28 @@ var isDragging = false;
 var (dragStartX, dragStartY) = 0;
 var blockToolbar = false;
 
+self.onGesture = function (me) // Support gestures, maybe user is doing remote desktop from mobile device?
+{
+    if (me.type == Event.GESTURE_ZOOM) // Pinch zoom
+    {
+        var zoomAmount = ((me.deltaV - 1.0));
+        if (zoomAmount < 0.0) zoomAmount *= -1; // Keep zoom amount a positive value
+
+        if (zoomAmount > 0.0)
+        {
+            if (me.deltaV > 1.0) // Zooming in
+            {
+                ZoomImage(zoomAmount);
+            }
+
+            if (me.deltaV < 1.0) // Zooming out
+            {
+                ZoomoutImage(zoomAmount);
+            }
+        }
+    }
+}
+
 view.on("size", () =>
 {
     WindowChanged();
@@ -77,10 +99,10 @@ event keydown(me)
                 CancelSlideshow();
             return;
             case GetSetting("ZoominHotkey"):
-                ZoomImage();
+                ZoomImage(-1);
             return;
             case GetSetting("ZoomoutHotkey"):
-                ZoomoutImage();
+                ZoomoutImage(-1);
             return;
             case GetSetting("ZoomoutAllHotkey"):
                 CancelZoom();

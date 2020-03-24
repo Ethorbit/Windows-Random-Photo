@@ -1,15 +1,15 @@
 # Windows-Random-Photo
 A simple photo gallery for Windows that shows images in a randomized order for whatever folder is selected.
 
-## It's random!
-Of course it is!
-![](https://i.imgur.com/YHEPJ40.gif)
+# It's random!
+### Of course it is!
+![](Images.gif)
 
-## It's highly customizable!
-It's not restrictive by any means.
-![](https://i.imgur.com/DBAA5lx.gif)
+# It's highly customizable!
+### It's not restrictive by any means.
+![](Settings.gif)
 
-## Features:
+# Features:
 * Slideshow
 * Fullscreen-mode
 * Zoom/pan
@@ -18,5 +18,5 @@ It's not restrictive by any means.
 * Shuffle
 * Delete
 
-# Uses the Sciter Library:
+## Uses the Sciter Library:
 https://sciter.com/

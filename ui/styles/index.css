@@ -86,6 +86,19 @@ button,
     right: 2;
 }
 
+#ImgName
+{
+    word-wrap: break-word;
+    width: *;
+    font-size: 15dip;
+    position: absolute;
+    bottom: -2dip;
+    left: 2dip;
+    color: #005580;
+    opacity: 0.8;
+    text-shadow: black 0 0 1dip;
+}
+
 .arrow
 {
     height: auto;
@@ -158,6 +171,11 @@ button,
     #NoImageFound h3
     {
         font-size: 6vmin;
+    }
+
+    #ImgName
+    {
+        font-size: 3vmin;
     }
 }
 

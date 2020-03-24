@@ -22,6 +22,7 @@ namespace Settings
         var FullscreenHotkey = new Setting("F11", "Hotkeys");
         var OverlayHideTime = new Setting(700, "Behavior");
         var OverlayHideToolbar = new Setting(false, "Behavior");
+        var OverlayHideName = new Setting(false, "Behavior");
         var SlideshowDisplayTime = new Setting(5, "Behavior");
         var ContentStretch = new Setting(false, "Behavior");
         var ContentZoomMultiplier = new Setting(5, "Behavior");
@@ -43,6 +44,7 @@ namespace Settings
         var FullscreenHotkey = new Setting(null, "Hotkeys");
         var OverlayHideTime = new Setting(null, "Behavior");
         var OverlayHideToolbar = new Setting(null, "Behavior");
+        var OverlayHideName = new Setting(null, "Behavior");
         var SlideshowDisplayTime = new Setting(null, "Behavior");
         var ContentStretch = new Setting(null, "Behavior");
         var ContentZoomMultiplier = new Setting(null, "Behavior");

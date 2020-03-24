@@ -77,6 +77,9 @@ function ShowContentOverlay()
         {
             $(#toolbar).style["visibility"] = "visible";
         }
+
+        if (GetSetting("OverlayHideName") == true && imgZoomAmount == 1.0)
+            $(#ImgName).style["visibility"] = "visible";
     } 
 }
 
@@ -90,6 +93,9 @@ function HideContentOverlay()
         }
 
         $(#ImgMenu).style["visibility"] = "none";
+
+        if (GetSetting("OverlayHideName") == true)
+            $(#ImgName).style["visibility"] = "none";
     }
 }
 
@@ -222,6 +228,8 @@ var (gifWidth, gifHeight);
 var isGif = false;
 function DisplayImage(index)
 {    
+    $(#ImgName).text = imgDirectory.replace("file://", "") + "/" + ImageList[index];
+    
     imgToDisplay = self.loadImage(GetFullImgPath(ImageList[index]));
     RefreshImage();
 
@@ -272,6 +280,11 @@ function ImageChange()
         $(#NoImageFound).style["visibility"] = "none";
 
     WindowChanged();
+
+    self.timer(1ms, () =>
+    {
+        WindowChanged();
+    });
 }
 
 function NextImage()
@@ -313,7 +326,11 @@ function ZoomOrMove()
 {
     self.timer(350ms, () =>
     {
-        $(#toolbar).style["visibility"] = "visible";
+        if (GetSetting("OverlayHideToolbar") == false)
+            $(#toolbar).style["visibility"] = "visible";
+        if (GetSetting("OverlayHideName") == false)
+            $(#ImgName).style["visibility"] = "visible";
+        
         $(#PrevImgImg).style["visibility"] = "visible";
         $(#NextImgImg).style["visibility"] = "visible";
         blockToolbar = false;
@@ -339,6 +356,7 @@ function Zoomed()
             $(#toolbar).style["visibility"] = "none";
             $(#PrevImgImg).style["visibility"] = "none";
             $(#NextImgImg).style["visibility"] = "none";
+            $(#ImgName).style["visibility"] = "none";
         }
 
         blockToolbar = true;
@@ -470,6 +488,7 @@ $(#ImgOverlay).on("mousemove", (me) =>
                 $(#toolbar).style["visibility"] = "none";
                 $(#PrevImgImg).style["visibility"] = "none";
                 $(#NextImgImg).style["visibility"] = "none";
+                $(#ImgName).style["visibility"] = "none";
             }
 
             isMovingImage = true;
@@ -548,6 +567,7 @@ function WindowChanged()
         hOffset = centerHeight;
     }
 
+    // Control image stretching:
     if (GetSetting("ContentStretch") == true && imgToDisplay)
     {
         imgWidth = htmlWidth;  
@@ -559,6 +579,15 @@ function WindowChanged()
             (imgWidth, imgHeight) = imgToDisplay.size();  
     }
 
+    if ($(#ImgName).style["visibility"] == "none" && GetSetting("OverlayHideName") == false && imgZoomAmount == 1.0)
+        $(#ImgName).style["visibility"] = "visible";
+    
+    if (MenuIsOpen() == true)
+        $(#ImgName).style["visibility"] = "none";
+    else if (imgZoomAmount == 1.0)
+        $(#ImgName).style["visibility"] = "visible";
+
+    // Control zooming methods:
     if (justZoomed == true)
     {
         if (GetSetting("ContentZoomMethod") == "Cursor")
@@ -604,7 +633,7 @@ function WindowChanged()
         $(#ImgOverlay).style["margin-left"] = centerWidth;
     }
 
-    if (imgHeight * 2 < imgWidth && (imgHeight * imgRatio) < 800) // Don't let the overlay get too low when images are tiny
+    if (imgHeight * 2 < imgWidth && (imgHeight * imgRatio) < 800) // Don't let the overlay get too low when images are too short
     {
         imgTooShort = true;
         $(#ImgOverlay).style["margin-top"] = 0;
@@ -615,7 +644,7 @@ function WindowChanged()
         var parentHeight = (imgHeight * imgRatio);
         
         if (MenuIsOpen())
-            $(#toolbar).style["visibility"] = "none";
+            $(#toolbar).style["visibility"] = "hidden";
         else
         {
             if (!blockToolbar && !isMovingImage)
@@ -633,7 +662,7 @@ function WindowChanged()
 
         // Place image arrows at center of image on Y axis:
         var parentHeight = $(#ImgOverlay).style["height"];
-        if (!blockToolbar && !isMovingImage)
+        if (!blockToolbar && !isMovingImage && GetSetting("OverlayHideToolbar") == false)
             $(#toolbar).style["visibility"] = "visible";
         
         $(#NextImgImg).style["top"] = parentHeight / 2;
@@ -643,8 +672,8 @@ function WindowChanged()
     $(#ImgOverlay).style["margin-left"] = centerWidth;
 
     // Move toolbar item to the right of toolbar:
-    $(#Info).style["margin-left"] = $(#toolbar).style#width;
-    $(#Info).style["margin-right"] = 5;
+    $(#DeleteImg).style["margin-left"] = $(#toolbar).style#width;
+    $(#DeleteImg).style["margin-right"] = 5;
 
     $(#gifimg).style["width"] = (imgWidth * imgRatio);
     $(#gifimg).style["top"] = centerHeight;
@@ -652,28 +681,41 @@ function WindowChanged()
 
     if (imgZoomAmount > 1.0) // Add support for zoomed images
     {
-        $(#toolbar).style["position"] = "fixed";
-        $(#toolbar).style["top"] = 0;
-        $(#ImgOverlay).style["cursor"] = "move";
+        if ($(#ImgOverlay).style["cursor"] != "none")
+        {
+            $(#toolbar).style["position"] = "fixed";
+            $(#toolbar).style["top"] = 0;
+            $(#ImgOverlay).style["cursor"] = "move";
+        }
     }
     else
     {
         if (imgTooShort == true && htmlHeight > (imgHeight * imgRatio))
         {
+            $(#ImgName).style["position"] = "absolute";
+            $(#ImgName).style["bottom"] = centerHeight;
             $(#gifimg).style["visibility"] = "none";
             $(#toolbar).style["position"] = "fixed";
             $(#toolbar).style["top"] = centerHeight;
-            $(#Info).style["margin-right"] = 6;
+            $(#toolbar).style["width"] = "*";
+            $(#Info).style["position"] = "relative";
+            $(#Info).style["right"] = 0;
+            $(#Info).style["margin-right"] = 3;
+            $(#DeleteImg).style["position"] = "relative";
+            $(#DeleteImg).style["right"] = 0;
         } 
         else
         {
+            $(#ImgName).style["position"] = "absolute";
+            $(#ImgName).style["bottom"] = "-2dip";
             $(#toolbar).style["position"] = "relative";
             $(#toolbar).style["top"] = 0;
-            $(#toolbar).style["width"] = "*";
-            $(#Info).style["margin-right"] = 5;
+            $(#toolbar).style["width"] = (imgWidth * imgRatio);
+            $(#DeleteImg).style["position"] = "absolute";
+            $(#Info).style["position"] = "absolute";
+            $(#Info).style["right"] = 5;
+            $(#DeleteImg).style["right"] = $(#DeleteImg).box(#height);
         }
-
-        $(#ImgOverlay).style["cursor"] = "default";
     }
 }
 
@@ -685,7 +727,7 @@ function paint(gfx)
         hOffset = centerHeight;
     }
 
-    gfx.fillColor(color(255, 255, 255));
+    gfx.fillColor(color(255, 255, 255, 100));
     gfx.rectangle(wOffset, hOffset, (imgWidth * imgRatio) * imgZoomAmount, (imgHeight * imgRatio) * imgZoomAmount);
 
     if (allowFillImg == true) 

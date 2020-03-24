@@ -12,6 +12,7 @@
         <picture id="gifimg"></picture>
 
         <div id="ImgOverlay">
+            <h1 id="ImgName"></h1>
             <div id="FillImg"></div>
 
             <div id="toolbar">
@@ -20,6 +21,7 @@
                 <button type="button" id="Fullscreen"><img src="fullscreen.png" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="Slideshow"><img src="slideshow.png" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="Refresh"><img src="refresh.png" alt="info" height="50" width="50" class="tbImg"></button>
+                <button type="button" id="DeleteImg"><img src="delete.png" alt="delete" height="50" width="50" class="tbImg"></button>
                 <button type="button" id="Info"><img src="info.png" alt="info" height="50" width="50" class="tbImg"></button>
             </div> 
 
@@ -101,7 +103,10 @@
                                             Hide the toolbar as well when the overlay hides itself.
                                         </div>       
                                         <li class="checkbox">Include toolbar: </li>
-                                        <input type="checkbox" name="OverlayHideToolbar" section="Behavior">            
+                                        <input type="checkbox" name="OverlayHideToolbar" section="Behavior">         
+                                        <div></div>   
+                                        <li class="checkbox">Include name: </li>
+                                        <input type="checkbox" name="OverlayHideName" section="Behavior">   
                                     </ul>
                                     <img src="reset.png" alt="resetSection" height="20" width="20" style="display:inline-block; margin-right: 5dip;">
                                     <h3 style="display: inline-block;">Slideshow</h3>
@@ -224,6 +229,9 @@
                         UpdateImageList(null);
                         DisplayFirstImage();
                     }
+
+                    if (GetSetting("OverlayHideName") == true)
+                        $(#ImgName).style["visibility"] = "none";
 
                     return false;
                 });

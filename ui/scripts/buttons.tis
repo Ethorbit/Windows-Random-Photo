@@ -31,6 +31,44 @@ $(#PickFolder).on("click", () =>
     }
 });
 
+$(#DeleteImg).on("click", () =>
+{
+    if (imgToDisplay != null)
+    {
+        var del = view.msgbox
+        (
+            #warning, 
+            "Are you sure you want to delete this image?\n It will be moved to the recycle bin.", 
+            "Delete image?",
+            [#yes, #no]
+        );
+
+        if (del == #yes)
+        {
+            // Remove image from image list so the file can be deleted:
+            for (var (k, v) in ImageList)
+            {
+                if (k == CurrentImg)
+                {
+                    ImageList.remove(k);
+                    break;
+                }
+            }
+            
+            imgToDisplay = null;
+            $(#ImgName).text = "";
+            NextImage();
+            var wasRemoved = view.deleteFile(fullImgPath);
+            if (wasRemoved != true)
+                view.msgbox("Error", "Failed to delete file");
+
+            fullImgPath = null;
+        }  
+
+        WindowChanged();  
+    }      
+});
+
 $(#NextImg).on("click", () =>
 {
     CancelSlideshow();

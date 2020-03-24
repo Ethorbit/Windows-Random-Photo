@@ -20,6 +20,7 @@ public:
 	BEGIN_FUNCTION_MAP
 		FUNCTION_3("saveINI", saveINI)
 		FUNCTION_2("getINI", getINI)
+		FUNCTION_1("deleteFile", deleteFile)
 	END_FUNCTION_MAP
 
 	LRESULT on_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -28,8 +29,8 @@ public:
 		{
 			if (wParam == BringWinToTop)
 			{	
-				sciter::value isMaxed = ::root.eval(L"view.windowState", 20);
-				if (isMaxed == 2) // Main window is minimized
+				sciter::value iState = ::root.eval(L"view.windowState", 20);
+				if (iState == 2) // Main window is minimized
 					::root.eval(L"view.windowState = View.WINDOW_SHOWN;", 40); 
 
 				::root.eval(L"self.state.focus = true;", 30); // Bring window to top
@@ -104,8 +105,8 @@ int uimain(std::function<int()> run)
 		openImage = sciter::application::argv().at(1).c_str();
 	
 	// Save PID to string:
-	wchar_t mutexName[100];
-	swprintf_s(mutexName, sizeof(mutexName) / sizeof(wchar_t), L"%i", _getpid());
+	wchar_t pidStr[100];
+	swprintf_s(pidStr, sizeof(pidStr) / sizeof(wchar_t), L"%i", _getpid());
 
 	//////////////////////////////////////////////////////////////////////////////////
 	// Save PID to memory, if it's been saved already then this is a second instance.
@@ -126,7 +127,7 @@ int uimain(std::function<int()> run)
 		if (openMap == NULL) MessageBox(NULL, L"It failed first?", L"", MB_OK);
 
 		LPVOID mapPtr = MapViewOfFile(openMap, FILE_MAP_ALL_ACCESS, 0, 0, 108);
-		CopyMemory(mapPtr, &mutexName, 108);
+		CopyMemory(mapPtr, &pidStr, 108);
 		if (mapPtr == NULL)
 		{
 			MessageBox(NULL, L"It worked?", L"", MB_OK);

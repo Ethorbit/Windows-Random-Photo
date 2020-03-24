@@ -5,6 +5,7 @@ var centerWidth = 0.0;
 var centerHeight = 0.0;
 var imgToDisplay = null; 
 var imgDirectory = null;
+var fullImgPath = null;
 var ImageList = new Array();
 var imgTooThin = false;
 var imgTooShort = false;
@@ -181,7 +182,7 @@ function ShuffleImages()
         }
 
         ImageList.splice(index, 1);
-        ImageList.push(curImg); // Add what the user was viewing before shuffle to the end of the array
+        ImageList.push(curImg); // Add what the user was viewing before to the end of the array
     }
 
     DisplayFirstImage();
@@ -193,7 +194,6 @@ function UpdateImageList() // Reconstruct image list based on saved image path
         imgDirectory = GetSetting("ImgFolder");
 
     ImageList.splice(0, ImageList.length + 1);
-    //ImageList = new Array();
 
     function SysCB (name, attr)
     {
@@ -228,8 +228,9 @@ var (gifWidth, gifHeight);
 var isGif = false;
 function DisplayImage(index)
 {    
-    $(#ImgName).text = imgDirectory.replace("file://", "") + "/" + ImageList[index];
-    
+    fullImgPath = imgDirectory.replace("file://", "").replace("/", "\\") + "\\" + ImageList[index];
+    $(#ImgName).text = fullImgPath;
+
     imgToDisplay = self.loadImage(GetFullImgPath(ImageList[index]));
     RefreshImage();
 

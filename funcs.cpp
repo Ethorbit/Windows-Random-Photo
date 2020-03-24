@@ -1,12 +1,62 @@
 #include <sciter-x.h>
 #include <sciter-x-window.hpp>
 #include <string>
+#include <atlbase.h>
+#include <Shobjidl_core.h>
+#include <Shellapi.h>
 
 #define BringWinToTop 4928
 #define OpenImage 4930
 
 static sciter::dom::element root;
 static std::wstring iniPath;
+
+static sciter::value deleteFile(sciter::value filePath)
+{
+	CComPtr<IFileOperation> filePtr;
+	HRESULT res = CoCreateInstance
+	(
+		CLSID_FileOperation,
+		NULL,
+		CLSCTX_INPROC_SERVER,
+		IID_PPV_ARGS(&filePtr)
+	);
+
+	if (res == S_OK)
+	{
+		CComPtr<IShellItem> itemPtr; 
+
+		wchar_t val[MAX_PATH];
+		wcscpy_s(val, MAX_PATH, sciter::string(filePath.get(L"")).c_str());
+
+		res = SHCreateItemFromParsingName
+		(
+			val,
+			NULL,
+			IID_PPV_ARGS(&itemPtr)
+		);
+
+		if (res == S_OK)
+		{
+			res = filePtr->DeleteItem(itemPtr, NULL);
+			if (res != S_OK) return sciter::value();
+
+			res = filePtr->SetOperationFlags(FOF_ALLOWUNDO | FOF_NOCONFIRMATION);
+			if (res != S_OK) return sciter::value();
+
+			res = filePtr->PerformOperations();
+			if (res != S_OK) return sciter::value();
+
+			return sciter::value(true);
+		}
+		else
+		{
+			return sciter::value(val);
+		}
+	}
+
+	return sciter::value();
+}
 
 static sciter::value saveINI(sciter::value section, sciter::value key, sciter::value value)
 {

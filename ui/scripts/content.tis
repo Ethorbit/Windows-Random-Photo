@@ -215,8 +215,7 @@ function UpdateImageList() // Reconstruct image list based on saved image path
 
 function ImgIsGIF()
 {
-    if (imgToDisplay == null)
-        return false;
+    if (gifURL.length > 0) return true;
 
     if (imgToDisplay.url.match(".*.[.]([Gg][Ii][Ff])$"))
         return true;
@@ -226,18 +225,21 @@ function ImgIsGIF()
 
 var (gifWidth, gifHeight);
 var isGif = false;
+var gifURL = "";
 function DisplayImage(index)
 {    
     fullImgPath = imgDirectory.replace("file://", "").replace("/", "\\") + "\\" + ImageList[index];
     $(#ImgName).text = fullImgPath;
 
-    imgToDisplay = self.loadImage(GetFullImgPath(ImageList[index]));
     RefreshImage();
+    imgToDisplay = self.loadImage(GetFullImgPath(ImageList[index]));
 
     if (ImgIsGIF() == true)
     {           
         (gifWidth, gifHeight) = imgToDisplay.size(); // Backup height/width for when we remove the loaded image
-        //imgToDisplay = "GIF"; // If this remains valid then we would be allocating memory for 2 of the same gifs!
+        gifURL = "GIF";
+        imgToDisplay = "GIF"; // If this remains valid then we would be allocating memory for 2 of the same gifs!
+  
         isGif = true;
         $(#gifimg).style["visibility"] = "visible";
         $(#gifimg).attributes["src"] = GetFullImgPath(ImageList[index]);
@@ -250,6 +252,7 @@ function DisplayImage(index)
 
         allowFillImg = true; 
         isGif = false;
+        gifURL = "";
     }
 }
 
@@ -552,7 +555,7 @@ function WindowChanged()
         imgHeight = 400.0;
         wOffset = centerWidth;
         hOffset = centerHeight;
-        //$(#NoImageFound).style["margin-top"] = centerHeight + $(#toolbar).box(#height);
+
         $(#ImgOverlay).style["background-color"] = "white";
         if (!MenuIsOpen())
             $(#NoImageFound).style["visibility"] = "visible";

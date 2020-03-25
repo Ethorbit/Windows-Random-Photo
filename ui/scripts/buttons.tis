@@ -44,8 +44,17 @@ $(#DeleteImg).on("click", () =>
         );
 
         if (del == #yes)
-        {
-            // Remove image from image list so the file can be deleted:
+        {    
+            imgToDisplay = null;
+            $(#ImgName).text = "";
+       
+            var wasRemoved = view.deleteFile(fullImgPath);
+            if (wasRemoved != true)
+                view.msgbox("Error", "Failed to delete file");
+
+            fullImgPath = null;
+
+            // Remove image from image list:
             for (var (k, v) in ImageList)
             {
                 if (k == CurrentImg)
@@ -54,15 +63,8 @@ $(#DeleteImg).on("click", () =>
                     break;
                 }
             }
-            
-            imgToDisplay = null;
-            $(#ImgName).text = "";
-            NextImage();
-            var wasRemoved = view.deleteFile(fullImgPath);
-            if (wasRemoved != true)
-                view.msgbox("Error", "Failed to delete file");
 
-            fullImgPath = null;
+            NextImage();
         }  
 
         WindowChanged();  

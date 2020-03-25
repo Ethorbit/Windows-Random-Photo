@@ -14,6 +14,7 @@ var isShowingText = false;
 var isDragging = false;
 var (dragStartX, dragStartY) = 0;
 var blockToolbar = false;
+var movingWithGesture = false;
 
 self.onGesture = function (me) // Support gestures, maybe user is doing remote desktop from mobile device?
 {
@@ -75,7 +76,7 @@ namespace Keys
 
 event keydown(me)
 {
-    for (var key in Keys.KeyList)
+    for (var key in Keys.KeyList) 
     {
         if (me.keyCode == key.keycode)
         {

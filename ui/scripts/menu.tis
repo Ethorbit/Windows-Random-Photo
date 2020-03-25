@@ -140,7 +140,7 @@ function NoDuplicateKeys()
     {
         for (var b in $(#SettingsMenu).$$(input[type=text]))
         {
-            if (a.text == b.text && a != b && a.text != "Enter a key") 
+            if (a.text == b.text && a != b && a.text != "Enter a key" && b.text != "Enter a key") 
             {
                 NoKeyName(b);
                 ShowOverlayText("ERROR: Duplicate bind prevented.", "red", "bottom", 1300ms);

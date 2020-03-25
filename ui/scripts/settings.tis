@@ -17,8 +17,10 @@ namespace Settings
         var PrevImgHotkey = new Setting("LEFT", "Hotkeys");
         var ZoominHotkey = new Setting("PLUS", "Hotkeys");
         var ZoomoutHotkey = new Setting("MINUS", "Hotkeys");
+        var ZoomoutAllHotkey = new Setting("Enter a key", "Hotkeys");
         var ShuffleImgHotkey = new Setting("F5", "Hotkeys");
         var StopSlideshowHotkey = new Setting("SPACE", "Hotkeys");
+        var HideOverlayHotkey = new Setting("Enter a key", "Hotkeys");
         var FullscreenHotkey = new Setting("F11", "Hotkeys");
         var OverlayHideTime = new Setting(700, "Behavior");
         var OverlayHideToolbar = new Setting(false, "Behavior");
@@ -73,6 +75,8 @@ function GetSettingObject(mName)
         if (name == mName)
             return setting;
     }
+
+    return null;
 }
 
 function GetDefSettingObject(mName)
@@ -82,6 +86,8 @@ function GetDefSettingObject(mName)
         if (name == mName)
             return setting;
     }
+
+    return null;
 }
 
 function GetSetting(name)
@@ -89,7 +95,9 @@ function GetSetting(name)
     var setting = GetSettingObject(name);
     var defSetting = GetDefSettingObject(name);
 
-    if (setting == null)
+   // debugbox(defSetting.value);
+    
+    if (setting == null || setting.value == null)
         return defSetting.value;
     else
         return setting.value;

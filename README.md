@@ -1,7 +1,7 @@
 # Windows-Random-Photo
 A simple photo gallery for Windows that shows images in a randomized order for whatever folder is selected.
 ## Download here:
-https://github.com/Ethorbit/Anti-AFK/releases/latest
+https://github.com/Ethorbit/Windows-Random-Photo/releases/latest
 
 # It's random!
 ![](Images.gif)

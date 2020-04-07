@@ -16,7 +16,7 @@ var imgZoomAmount = 1.0;
 var (zoomX, zoomY);
 var isMovingImage = false;
 
-var fnRegex = ".*.[.]([Jj][Pp](?:[Ee]|)[Gg]|[Pp][Nn][Gg]|[Bb][Mm][Pp]|[Gg][Ii][Ff]|[Ss][Vv][Gg]|[Ww][Ee][Bb][Pp])$";
+var fnRegex = ".*.[.]([Jj][Pp](?:[Ee])[Gg]|[Jj][Ff][Ii][Ff]|[Pp][Nn][Gg]|[Bb][Mm][Pp]|[Gg][Ii][Ff]|[Ss][Vv][Gg]|[Ww][Ee][Bb][Pp])$";
 
 function directImage(fullPath) // Program was passed an argument, most likely an image path due to program being opened by image
 {
